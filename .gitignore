@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Datetime files
+src/datetimes_processed.txt
+src/datetimes_to_process.txt
