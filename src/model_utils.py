@@ -13,14 +13,14 @@ dtformat = '%Y%m%d%H'
 dtformatprnt = '%Y%m%d %Hz'
 
 
-def run_bash_command(command,output):
+def run_bash_command(command,tail='tail.txt'):
 
   fname = 'bash_command.sh'
 
   # Create file with bash command
   fh = open(fname, "w")
   fh.write("#!/bin/bash \n")
-  fh.write(command+' &> '+output)
+  fh.write(command+' &> '+tail)
   fh.close()
 
   # Make executable and run
@@ -32,6 +32,9 @@ def run_bash_command(command,output):
   # Remove file
   os.remove(fname)
 
+  # User didn't request any output
+  if (tail=='tail.txt'):
+    os.remove('tail.txt')
 
 def lines_that_contain(string, fp):
     return [line for line in fp if string in line]
