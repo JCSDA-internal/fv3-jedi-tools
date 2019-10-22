@@ -37,7 +37,8 @@ import datetime
 import argparse
 import random
 
-import model_tools
+import model_utils as mu
+import fv3model
 
 # User input
 # ----------
@@ -76,11 +77,14 @@ print("  - Model being used is "+model)
 print("\n")
 
 
+# Construct class with model specific methods
+# -------------------------------------------
+print('create')
+fv3model = fv3model.factory.create(model.upper())
+print('donecreate')
+
 # Set up list of dates to process
 # -------------------------------
-
-dtformat = '%Y%m%d%H'
-dtformatprnt = '%Y%m%d %Hz'
 
 if (readdts):
 
@@ -99,13 +103,13 @@ if (readdts):
 
   for n in range(ncycs):
     tmp = str(datetimes_str[n])
-    datetimes[n] = datetime.datetime.strptime(tmp[0:10], dtformat)
+    datetimes[n] = datetime.datetime.strptime(tmp[0:10], mu.dtformat)
 
 else:
 
   # Set datetime and delta objects based on total range
-  datetime_start = datetime.datetime.strptime(start, dtformat)
-  datetime_final = datetime.datetime.strptime(final, dtformat)
+  datetime_start = datetime.datetime.strptime(start, mu.dtformat)
+  datetime_final = datetime.datetime.strptime(final, mu.dtformat)
   totaldelta = datetime_final-datetime_start
   totalhour = totaldelta.total_seconds()/3600
 
@@ -141,17 +145,15 @@ else:
 # -------------------------------------------
 with open('datetimes_processed.txt', 'w') as fh:
   for item in datetimes:
-    fh.write("%s\n" % item.strftime(dtformat))
+    fh.write("%s\n" % item.strftime(mu.dtformat))
 
 
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 
-et = ens_tools()
-
 for n in range(ncycs):
 
-  print(" Working on "+datetimes[n].strftime(dtformatprnt))
+  fv3model.getEnsembleMembers(datetimes[n])
 
 
 
