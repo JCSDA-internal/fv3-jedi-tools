@@ -20,11 +20,11 @@ class GFS:
     self.nGrps = 8                                    # Number of ensemble groups per cycle
     self.stageDir = 'stageGFS'
 
-  def __del__(self):
-    if not os.listdir(self.stageDir) :
-      os.rmdir(self.stageDir)
-    else:
-      print("WARNING: directory ",self.stageDir, " was not left empty.")
+#  def __del__(self):
+#    if not os.listdir(self.stageDir) :
+#      os.rmdir(self.stageDir)
+#    else:
+#      print("WARNING: directory ",self.stageDir, " was not left empty.")
 
   # Method to get an ensemble member and stage it
   # ---------------------------------------------
@@ -55,18 +55,21 @@ class GFS:
       # Search for line with file size
       found = False
       with open(hsils_file, "r") as fp:
-        for line in mu.lines_that_contain("", fp):
+        for line in mu.lines_that_contain("rstprod", fp):
           found = True
-          size_line = line
-          print (size_line)
-
-      remote_file_size = size_line[0]
-
-      print(remote_file_size)
+          size_line = line.split()
 
       # Fail safety if unable to determine file size
       if (not found):
         print("ABORT: unable to find size of remote file")
         exit()
+
+      remote_file_size = size_line[4]
+
+      # Remove file
+      os.remove(hsils_file)
+
+      print(remote_file_size)
+
 
       exit()
