@@ -12,10 +12,8 @@ from geos import GEOS
 class GFSBuilder:
   def __init__(self):
     self._instance = None
-    print('__init__ GFSBuilder')
 
   def __call__(self):
-    print('__call__ GFSBuilder')
     if not self._instance:
       self._instance = GFS()
     return self._instance
@@ -26,10 +24,8 @@ class GFSBuilder:
 class GEOSBuilder:
   def __init__(self):
     self._instance = None
-    print('__init__ GEOSBuilder')
 
   def __call__(self):
-    print('__call__ GEOSBuilder')
     if not self._instance:
       self._instance = GEOS()
     return self._instance

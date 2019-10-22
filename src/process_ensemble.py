@@ -79,9 +79,8 @@ print("\n")
 
 # Construct class with model specific methods
 # -------------------------------------------
-print('create')
 fv3model = fv3model.factory.create(model.upper())
-print('donecreate')
+
 
 # Set up list of dates to process
 # -------------------------------

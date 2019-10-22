@@ -48,9 +48,25 @@ class GFS:
       if not os.path.exists(self.stageDir):
         os.makedirs(self.stageDir)
 
-      remote_file_ls = subprocess.check_output(['ls', '-l', path+file]).split(" ")
-      archive_size = remote_file_ls[7]
+      # Run hsi ls command on the current file
+      hsils_file = "ls_remote_member.txt"
+      mu.run_bash_command("hsi ls -l "+path+file,hsils_file)
 
-      print(archive_size)
+      # Search for line with file size
+      found = False
+      with open(hsils_file, "r") as fp:
+        for line in mu.lines_that_contain("", fp):
+          found = True
+          size_line = line
+          print (size_line)
+
+      remote_file_size = size_line[0]
+
+      print(remote_file_size)
+
+      # Fail safety if unable to determine file size
+      if (not found):
+        print("ABORT: unable to find size of remote file")
+        exit()
 
       exit()
