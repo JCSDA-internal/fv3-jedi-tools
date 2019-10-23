@@ -37,7 +37,7 @@ class GFS:
       file = ('gpfs_dell1_nco_ops_com_gfs_prod_enkfgdas'
              '.'+Y+m+d+'_'+H+'.enkfgdas_restart_grp'+str(g+1)+'.tar')
 
-      print(" Working on "+path+file)
+      print("\n Working on "+path+file)
 
       # Create directory to stage files
       if not os.path.exists(self.stageDir):
@@ -65,16 +65,25 @@ class GFS:
       # Get the file size
       remote_file_size = size_line[4]
 
-      # Check for already having been copied
-      ls_local_file = subprocess.call(['ls', '-l', path+file]).split()
-      filesize = ls_local_file[4]
-      print(filesize)
+      get_member_set = True
 
-      exit()
+      if (os.path.exists(file)):
+        
+        # Check for already having been copied
+        proc = subprocess.Popen(['ls', '-l', file], stdout=subprocess.PIPE)
+        local_file_size = proc.stdout.readline().split()[4]
+
+        # If size matches no get required, already staged
+        if (local_file_size != remote_file_size):
+          get_member_set = False
+
 
       # Copy the file to stage directory
-      tailfile = "copy_remote_member.txt"
-      mu.run_bash_command("hsi get "+path+file, tailfile)
+      if (local_file_size != remote_file_size):
+        tailfile = "copy_remote_member.txt"
+        mu.run_bash_command("hsi get "+path+file, tailfile)
+
+      # Convert the member to psi/chi
 
 
-      exit()
+    exit()

@@ -25,9 +25,10 @@ def run_bash_command(command,tail='tail.txt'):
 
   # Make executable and run
 
-  print("Run bash command")
+  print(" Run bash command: "+command)
   os.chmod(fname, 0o755)
   subprocess.call(['./bash_command.sh'])
+
 
   # Remove file
   os.remove(fname)
