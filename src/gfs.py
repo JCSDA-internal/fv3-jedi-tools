@@ -65,6 +65,12 @@ class GFS:
       # Get the file size
       remote_file_size = size_line[4]
 
+      # Check for already having been copied
+      ls_local_file = subprocess.call(['ls', '-l', path+file]).split()
+      filesize = ls_local_file[4]
+      print(filesize)
+
+      exit()
 
       # Copy the file to stage directory
       tailfile = "copy_remote_member.txt"
