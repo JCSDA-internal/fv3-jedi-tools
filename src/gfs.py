@@ -68,7 +68,7 @@ class GFS:
 
       # Copy the file to stage directory
       tailfile = "copy_remote_member.txt"
-      mu.run_bash_command("hsi get "+path+file+" "+self.stageDir+"/", tailfile)
+      mu.run_bash_command("hsi get "+path+file, tailfile)
 
 
       exit()
