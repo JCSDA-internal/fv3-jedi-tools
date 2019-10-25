@@ -206,6 +206,21 @@ class GFS:
         tailfile = "untar_remote_member.txt"
         mu.run_bash_command("tar -xvf ./"+file, tailfile)
 
+      # Clean up non-restart files
+      for e in range(memStart,memFinal+1):
+        files = ['enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_air',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_int',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_pc',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.atminc.nc',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.cnvstat',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.gsistat',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.oznstat',
+                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.radstat']
+        for f in range(len(files)):
+          if os.path.exists(files[f]):
+            os.remove(files[f])
+
       # Recheck for success
       do_untar = False
       for e in range(memStart,memFinal+1):
@@ -227,7 +242,7 @@ class GFS:
   # Remove tar files obtained from the arhcive
   # ------------------------------------------
 
-  def removeEnsembleArchiveFiles():
+  def removeEnsembleArchiveFiles(self):
 
     print(" removeEnsembleArchiveFiles \n")
 
@@ -242,9 +257,44 @@ class GFS:
              '.'+self.Y+self.m+self.d+'_'+self.H+'.enkfgdas_restart_grp'+str(g+1)+'.tar')
 
       # Remove the file
-      os.remove(file)
+      if os.path.exists(file):
+        print( " Removing "+file)
+        os.remove(file)
 
     os.chdir(self.homeDir)
+
+
+  # Prepare directories for the members and the yaml files
+  # ------------------------------------------------------
+  def prepareConvertDirsYamls(self):
+
+    print(" prepareConvertDirsYamls")
+
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    # Create directories for converted members
+    dir_convert = self.Y+self.m+self.d+'_'+self.H
+    if not os.path.exists(dir_convert):
+      os.makedirs(dir_convert)
+
+    os.chdir(dir_convert)
+
+    # Loop over groups of members
+    for g in range(self.nEns):
+
+      memdir = 'mem'+str(g+1).zfill(3)
+      if not os.path.exists(memdir):
+        os.makedirs(memdir)
+
+      # Create the yaml files
+
+
+    os.chdir(self.homeDir)
+
+
+
+
 
 #  def convertMembersUnbalanced(command,tail='tail.txt'):
 #

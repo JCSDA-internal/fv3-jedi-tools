@@ -172,6 +172,8 @@ for n in range(ncycs):
   if os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
     fv3model.removeEnsembleArchiveFiles()
 
+  # Prepare target directories and yaml files
+  fv3model.prepareConvertDirsYamls()
 
   exit()
 
