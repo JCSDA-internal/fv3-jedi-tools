@@ -104,5 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # Datetime files
-src/datetimes_processed.txt
-src/datetimes_to_process.txt
+src/*.txt
+src/*.tar
+src/enswork_*
+src/tmpnwprd1

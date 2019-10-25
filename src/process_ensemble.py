@@ -122,7 +122,7 @@ else:
   ntcycs = int(totalhour / freq) + 1
 
   # Array to sample from
-  tdatetimes = np.array([datetime_start + datetime.timedelta(hours=6*i) for i in xrange(ntcycs)])
+  tdatetimes = np.array([datetime_start + datetime.timedelta(hours=6*i) for i in range(ntcycs)])
 
   # Check that number of cycles user wants is compatible with provided range
   if (ntcycs < ncycs):
@@ -152,10 +152,28 @@ with open('datetimes_processed.txt', 'w') as fh:
 
 for n in range(ncycs):
 
-  fv3model.getEnsembleMembers(datetimes[n])
+  # Datetime and directories for this cycle
+  fv3model.cycleTime(datetimes[n])
+  fv3model.setDirectories()
+
+  # Get the members for this cycle from archive
+  if not os.path.exists(fv3model.workDir+'/'+fv3model.ArchDone):
+    fv3model.getEnsembleMembersFromArchive()
+  else:
+    print(" getEnsembleMembersFromArchive already complete \n")
+
+  # Untar the members
+  if not os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
+    fv3model.extractEnsembleMembers()
+  else:
+    print(" extractEnsembleMembers already complete \n")
+
+  # Remove ensemble tar files
+  if os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
+    fv3model.removeEnsembleArchiveFiles()
 
 
-
+  exit()
 
 
 
