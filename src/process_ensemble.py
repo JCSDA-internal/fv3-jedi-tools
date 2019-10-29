@@ -51,15 +51,17 @@ sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
 sargs.add_argument( "-m", "--model",         default='gfs')
+sargs.add_argument( "-j", "--jedi_build",    default='/scratch1/NCEPDEV/da/Daniel.Holdaway/JediDev/fv3-bundle-dev/build-intel-17.0.5.239-release-default')
 
-args = sargs.parse_args()
+args    = sargs.parse_args()
 readdts = int(args.readdatetimes)==1
-start = args.start
-final = args.end
-freq  = int(args.freq)
-ncycs = int(args.ncycs)
-rseed = int(args.rseed)
-model = args.model
+start   = args.start
+final   = args.end
+freq    = int(args.freq)
+ncycs   = int(args.ncycs)
+rseed   = int(args.rseed)
+model   = args.model
+jbuild  = args.jedi_build
 
 print("\n Ensemble processing for Static B ... \n")
 if (readdts):
@@ -73,6 +75,7 @@ else:
   print("  - Random seed:    "+str(rseed))
 
 print("  - Model being used is "+model)
+print("  - JEDI build path: "+jbuild)
 
 print("\n")
 
@@ -174,6 +177,9 @@ for n in range(ncycs):
 
   # Prepare target directories and yaml files
   fv3model.prepareConvertDirsYamls()
+
+  # Convert each member
+  fv3model.convertMembersUnbalanced(jbuild)
 
   exit()
 

@@ -10,20 +10,20 @@ import datetime
 def setup_dict(path):
 
   dict = {
-    "nml_file": path+"fmsmpp.nml",
+    "nml_file": path+"/fmsmpp.nml",
   }
 
   return dict
 
 # Geometry config
 # ---------------
-def geometry_dict(section_name,path,cube):
+def geometry_dict(section_name,path):
 
   dict = {
     section_name: {
-      "nml_file": path+"/input_gfs_c"+cube+".nml",
+      "nml_file": path+"/input.nml",
       "trc_file": path+"/field_table",
-      "pathfile_akbk": path+"/akbk.nc",
+      "pathfile_akbk": path+"/akbk64.nc4",
     },
   }
   return dict
@@ -73,10 +73,10 @@ def varcha_a2c_dict(path_femps):
     "varchange": "Control2Analysis",
     "femps_iterations": "50",
     "femps_ngrids": "5",
-    "femps_path2fv3gridfiles": path_femps+"/femps",
+    "femps_path2fv3gridfiles": path_femps,
     "doinverse": "1",
     "outputVariables": {
-    "variables": ["psi","chi","vort","divg","t","tv","delp","ps","q","rh","qi","ql","o3"],
+    "variables": ["psi","chi","vort","divg","T","tv","DELP","ps","sphum","rh","ice_wat","liq_wat","o3mr","phis"],
     },
   }
 
