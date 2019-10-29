@@ -440,3 +440,12 @@ class GFS:
     mu.run_bash_command("sbatch run.sh")
 
     os.chdir(self.homeDir)
+
+  # Submit MPI job that converts the ensemble members
+  # -------------------------------------------------
+  def tarconvertedMembers(self):
+
+
+
+
+    #

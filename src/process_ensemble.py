@@ -181,6 +181,9 @@ for n in range(ncycs):
   # Convert each member
   fv3model.convertMembersUnbalanced(jbuild)
 
+  # Tar converted members for transfer
+  fv3model.tarconvertedMembers()
+
   exit()
 
 
