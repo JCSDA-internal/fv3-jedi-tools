@@ -52,6 +52,8 @@ sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
 sargs.add_argument( "-m", "--model",         default='gfs')
 sargs.add_argument( "-j", "--jedi_build",    default='/scratch1/NCEPDEV/da/Daniel.Holdaway/JediDev/fv3-bundle-dev/build-intel-17.0.5.239-release-default')
+sargs.add_argument( "-w", "--work_dir",      default='')
+
 
 args    = sargs.parse_args()
 readdts = int(args.readdatetimes)==1
@@ -62,6 +64,12 @@ ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
 model   = args.model
 jbuild  = args.jedi_build
+wrkdir  = args.work_dir
+
+if wrkdir == '':
+  wdir = os.getcwd()
+else:
+  wdir = wrkdir
 
 print("\n Ensemble processing for Static B ... \n")
 if (readdts):
@@ -76,6 +84,7 @@ else:
 
 print("  - Model being used is "+model)
 print("  - JEDI build path: "+jbuild)
+print("  - Working directory: "+wdir)
 
 print("\n")
 
@@ -153,11 +162,16 @@ with open('datetimes_processed.txt', 'w') as fh:
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 
-for n in range(ncycs):
+for n in range(1): #range(ncycs):
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
-  fv3model.setDirectories()
+  fv3model.setDirectories(wdir)
+
+  if os.path.exists(fv3model.workDir+'/AllDone'):
+    print(" This cycle is done, skipping ...")
+    os.remove(fv3model.workDir+'/working')
+    continue
 
   # Get the members for this cycle from archive
   if not os.path.exists(fv3model.workDir+'/'+fv3model.ArchDone):
@@ -174,18 +188,28 @@ for n in range(ncycs):
   # Remove ensemble tar files
   if os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
     fv3model.removeEnsembleArchiveFiles()
+  else:
+    print(" removeEnsembleArchiveFiles already complete \n")
 
   # Prepare target directories and yaml files
-  fv3model.prepareConvertDirsYamls()
+  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
+    fv3model.prepareConvertDirsYamls()
+  else:
+    print(" prepareConvertDirsYamls already complete \n")
 
   # Convert each member
-  fv3model.convertMembersUnbalanced(jbuild)
+  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
+    fv3model.convertMembersUnbalanced(jbuild)
+  else:
+    print(" convertMembersUnbalanced already complete \n")
 
   # Tar converted members for transfer
-  fv3model.tarconvertedMembers()
+  fv3model.tarConvertedMembers()
 
-  exit()
+  # Final clean up
+  fv3model.cleanUp()
 
+exit()
 
 
 

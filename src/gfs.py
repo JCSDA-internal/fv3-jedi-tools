@@ -11,6 +11,7 @@ import datetime as dt
 import pathlib
 import tarfile
 import shutil
+import time
 
 import yaml
 import gfs_yaml as myam
@@ -44,6 +45,12 @@ class GFS:
     self.m = ''
     self.d = ''
     self.H = ''
+    self.YRst = ''
+    self.mRst = ''
+    self.dRst = ''
+    self.HRst = ''
+    self.YmDRst = ''
+    self.YmD_HRst = ''
 
     # Directories
     self.homeDir = ''
@@ -52,8 +59,9 @@ class GFS:
     self.ExtcDone = 'ExtcDone'
     self.ConvDone = 'ConvDone'
     self.ReArDone = 'ReArDone'
+    self.AllDone = 'AllDone'
 
-    self.dirConvert = ''
+    self.convertDir = ''
 
   # Set time for cycle
   # ------------------
@@ -68,20 +76,38 @@ class GFS:
     self.m = self.dateTime.strftime('%m')
     self.d = self.dateTime.strftime('%d')
     self.H = self.dateTime.strftime('%H')
-    self.YmD = self.Y+self.m+self.d
+    self.YRst = self.dateTimeRst.strftime('%Y')
+    self.mRst = self.dateTimeRst.strftime('%m')
+    self.dRst = self.dateTimeRst.strftime('%d')
+    self.HRst = self.dateTimeRst.strftime('%H')
+
+    self.YmD   = self.Y+self.m+self.d
+    self.YmD_H = self.Y+self.m+self.d+"_"+self.H
+    self.YmDRst   = self.YRst+self.mRst+self.dRst
+    self.YmD_HRst = self.YRst+self.mRst+self.dRst+"_"+self.HRst
 
     print(" Cycle time: "+self.Y+self.m+self.d+' '+self.H+" \n")
 
   # Work and home directories
   # -------------------------
-  def setDirectories(self):
+  def setDirectories(self,wrk_root):
 
     self.homeDir = os.getcwd()
-    self.workDir = self.homeDir+'/enswork_'+self.Y+self.m+self.d+self.H
+    self.workDir = wrk_root+'/enswork_'+self.Y+self.m+self.d+self.H
+
+    if (os.path.exists(self.workDir+'/working')):
+      'ABORT: This date is already being processed elsewhere'
+      os.remove(self.workDir+'/working')
+      exit()
 
     # Create working directory
     if not os.path.exists(self.workDir):
       os.makedirs(self.workDir)
+
+    # Directory for converted members
+    self.convertDir = self.workDir+'/'+self.YRst+self.mRst+self.dRst+'_'+self.HRst
+
+    pathlib.Path(self.workDir+'/working').touch()
 
     print(" Home directory: "+self.homeDir)
     print(" Work directory: "+self.workDir,"\n")
@@ -126,6 +152,7 @@ class GFS:
       # Fail if unable to determine remote file size
       if (remote_file_size == -1):
         print("ABORT: unable to find size of remote file")
+        os.remove(self.workDir+'/working')
         exit()
 
       #  Logic to determine whether to copy member. Only copied if group
@@ -317,19 +344,12 @@ class GFS:
     # Move to work directory
     os.chdir(self.workDir)
 
-    # Create directories for converted members
-    Y = self.dateTimeRst.strftime('%Y')
-    m = self.dateTimeRst.strftime('%m')
-    d = self.dateTimeRst.strftime('%d')
-    H = self.dateTimeRst.strftime('%H')
-
     # Path
-    self.dirConvert = self.workDir+'/'+Y+m+d+'_'+H
-    if not os.path.exists(self.dirConvert):
-      os.makedirs(self.dirConvert)
+    if not os.path.exists(self.convertDir):
+      os.makedirs(self.convertDir)
 
     # Path for fv3files
-    path_fv3files = self.dirConvert+'/fv3files'
+    path_fv3files = self.convertDir+'/fv3files'
     if os.path.exists(path_fv3files):
       shutil.rmtree(path_fv3files)
 
@@ -352,12 +372,12 @@ class GFS:
     # Loop over groups of members
     for e in range(self.nEns):
 
-      memdir_done = self.dirConvert+'/mem'+str(e+1).zfill(3)
+      memdir_done = self.convertDir+'/mem'+str(e+1).zfill(3)
 
       if not os.path.exists(memdir_done):
 
         # Create member directory
-        memdir = self.dirConvert+'/_mem'+str(e+1).zfill(3)
+        memdir = self.convertDir+'/_mem'+str(e+1).zfill(3)
         if not os.path.exists(memdir):
           os.makedirs(memdir)
 
@@ -389,7 +409,7 @@ class GFS:
 
     print(" convertMembersUnbalanced \n")
 
-    os.chdir(self.dirConvert)
+    os.chdir(self.convertDir)
 
     # Number of processors for job
     nprocs = str(6*int(self.nProcNx)*int(self.nProcNy))
@@ -443,9 +463,69 @@ class GFS:
 
   # Submit MPI job that converts the ensemble members
   # -------------------------------------------------
-  def tarconvertedMembers(self):
+  def tarConvertedMembers(self):
 
+    print(" tarConvertedMembers \n")
 
+    # Move to work directory
+    os.chdir(self.workDir)
+    waited = 0
 
+    # Wait until the batch job submitted above is done
+    done_convert = False
+    while not done_convert:
 
-    #
+      if os.path.exists(self.workDir+'/ConvertDone'):
+        done_convert = True
+        break
+
+      # If not finished wait another minute
+      time.sleep(60)
+      waited += 60
+
+    print(' Tarring up converted ensemble members for transfer')
+    tar_file_name = 'ens_'+self.YmD_HRst+'.tar'
+    tailfile = "tar_converted_members.txt"
+
+    if not os.path.exists(self.workDir+'/'+tar_file_name):
+      mu.run_bash_command("tar -cvf "+tar_file_name+" "+self.YmD_HRst, tailfile)
+    else:
+      print(" Tar file for converted members already created")
+
+  # Clean up large files
+  # --------------------
+  def cleanUp(self):
+
+    print(" cleanUp \n")
+
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    tar_file_name = 'ens_'+self.YmD_HRst+'.tar'
+    filesearch = self.YmD_HRst+'/mem001/'+self.YRst+self.mRst+self.dRst+'.'+self.HRst+'0000.fv_core.res.tile1.nc'
+    tailfile = "tar_check.txt"
+
+    mu.run_bash_command("tar -tvf "+tar_file_name+" "+filesearch, tailfile)
+
+    # Search tail for line with file size
+    filesearch_found = ''
+    with open(tailfile, "r") as fp:
+      for line in mu.lines_that_contain('failure', fp):
+        filesearch_found = line
+    #os.remove(tailfile)
+
+    # Delete all the original ensemble members and touch done file
+    if filesearch_found == '':
+      print(" Tar file apears to be in tact, removing all files no longer needed")
+
+      shutil.rmtree(self.convertDir)
+      shutil.rmtree(self.workDir+'/enkfgdas.'+self.YmD)
+      pathlib.Path(self.AllDone).touch()
+      
+    else:
+      print("ABORT: tar file apears to be corrupt")
+      os.remove(self.workDir+'/working')
+      exit()
+
+    # Remove working flag
+    os.remove(self.workDir+'/working')
