@@ -12,8 +12,8 @@ import shutil
 import time
 import yaml
 
-import model_utils as mu
-import gfs_yaml as myam
+import ConvertEnsemble.modules.model_utils as mu
+import Config.modules.gfs_conf as modconf
 
 
 class GFS:
@@ -318,15 +318,15 @@ class GFS:
     variables = ["u","v","T","DELP","sphum","ice_wat","liq_wat","o3mr","phis"]
 
     # Geometry
-    inputresolution  = myam.geometry_dict('inputresolution' ,path_fv3files)
-    outputresolution = myam.geometry_dict('outputresolution',path_fv3files)
+    inputresolution  = modconf.geometry_dict('inputresolution' ,path_fv3files)
+    outputresolution = modconf.geometry_dict('outputresolution',path_fv3files)
 
     # States
-    input  = myam.state_dict('input',path_bkg,self.dateTimeRst,variables)
-    output = myam.output_dict('output',path_write)
+    input  = modconf.state_dict('input',path_bkg,self.dateTimeRst,variables)
+    output = modconf.output_dict('output',path_write)
 
     # Variable change
-    varcha = myam.varcha_a2c_dict(path_fv3files)
+    varcha = modconf.varcha_a2c_dict(path_fv3files)
 
     return {**inputresolution, **outputresolution, **input, **output}
 
@@ -602,11 +602,11 @@ class GFS:
   def convertOneJobDict(self,path_fv3files):
 
     # Geometry
-    inputresolution  = myam.geometry_dict('inputresolution' ,path_fv3files)
-    outputresolution = myam.geometry_dict('outputresolution',path_fv3files)
+    inputresolution  = modconf.geometry_dict('inputresolution' ,path_fv3files)
+    outputresolution = modconf.geometry_dict('outputresolution',path_fv3files)
 
     # Variable change
-    varcha = myam.varcha_a2c_dict(path_fv3files)
+    varcha = modconf.varcha_a2c_dict(path_fv3files)
 
     input  = {}
     output = {}
@@ -619,8 +619,8 @@ class GFS:
       path_mem = 'mem'+str(e).zfill(3)+'/'
 
       # Input/output for member
-      input  = myam.state_dict('input',path_mem,self.dateTimeRst)
-      output = myam.output_dict('output',path_mem,'bmat.')
+      input  = modconf.state_dict('input',path_mem,self.dateTimeRst)
+      output = modconf.output_dict('output',path_mem,'bmat.')
       inputout = {**input, **output}
 
       dict_states["states"].append(inputout)

@@ -37,8 +37,8 @@ import datetime
 import argparse
 import random
 
-import model_utils as mu
-import fv3model
+import ConvertEnsemble.modules.model_utils as mu
+import ConvertEnsemble.modules.fv3model as fv3model
 
 # User input
 # ----------
