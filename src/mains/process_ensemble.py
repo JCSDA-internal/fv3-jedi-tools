@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.7
 
 # (C) Copyright 2019 UCAR
 #
@@ -209,7 +209,7 @@ for n in range(1): #range(ncycs):
   # Final clean up
   fv3model.cleanUp()
   fv3model.allDone()
-  
+
 exit()
 
 

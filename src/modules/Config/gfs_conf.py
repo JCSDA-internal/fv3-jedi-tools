@@ -5,8 +5,8 @@
 
 import datetime
 
-# Geometry config
-# ---------------
+# --------------------------------------------------------------------------------------------------
+
 def geometry_dict(section_name,path):
 
   geomdict = {
@@ -19,8 +19,8 @@ def geometry_dict(section_name,path):
   }
   return geomdict
 
-# State config
-# ------------
+# --------------------------------------------------------------------------------------------------
+
 def state_dict(section_name,path,dt,variables=''):
 
   datetime_str = dt.strftime('%Y%m%d.%H%M%S.')
@@ -45,7 +45,6 @@ def state_dict(section_name,path,dt,variables=''):
     statedict = {
       section_name: {
         "filetype": "gfs",
-        "nml_file_mpp": "fv3files/fmsmpp.nml",
         "datapath_tile": path,
         "filename_core": datetime_str+"fv_core.res.nc",
         "filename_trcr": datetime_str+"fv_tracer.res.nc",
@@ -57,12 +56,13 @@ def state_dict(section_name,path,dt,variables=''):
 
   return statedict
 
+# --------------------------------------------------------------------------------------------------
+
 def output_dict(section_name,path,name=''):
 
   outputdict = {
     section_name: {
       "filetype": "gfs",
-      "nml_file_mpp": "fv3files/fmsmpp.nml",
       "datapath_tile": path,
       "filename_core": name+"fv_core.res.nc",
       "filename_trcr": name+"fv_tracer.res.nc",
@@ -82,10 +82,10 @@ def output_dict(section_name,path,name=''):
 
   return outputdict
 
-# Analysis to control config
-# --------------------------
+# --------------------------------------------------------------------------------------------------
 
 def varcha_a2c_dict(path_femps):
+
   varchadict = {
     "varchange": "Control2Analysis",
     "femps_iterations": "75",
@@ -103,3 +103,5 @@ def varcha_a2c_dict(path_femps):
   }
 
   return varchadict
+
+# --------------------------------------------------------------------------------------------------
