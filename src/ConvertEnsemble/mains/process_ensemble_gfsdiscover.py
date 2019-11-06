@@ -19,16 +19,16 @@ etc
 
 Looping over number of cycles the algorithm is:
 
-1. Get all ensemble memebers for the cycle.
+1. Get all ensemble members for the cycle.
 2. Untar the data
-3. Convert to B matrix variables, psi chi etc using an parallel job.
+3. Convert to B matrix variables, psi chi etc using a parallel job.
 4. Check for sucessful conversion.
 5. Remove the original data
 
 """
 
 
-# External libraries
+# External libradasries
 # ------------------
 
 import numpy as np
