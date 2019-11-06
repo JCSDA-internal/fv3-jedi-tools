@@ -173,43 +173,27 @@ for n in range(1): #range(ncycs):
     os.remove(fv3model.workDir+'/working')
     continue
 
-  # Get the members for this cycle from archive
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.ArchDone):
-    fv3model.getEnsembleMembersFromArchive()
-  else:
-    print(" getEnsembleMembersFromArchive already complete \n")
-
-  # Untar the members
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
-    fv3model.extractEnsembleMembers()
-  else:
-    print(" extractEnsembleMembers already complete \n")
-
-  # Remove ensemble tar files
-  if os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
-    fv3model.removeEnsembleArchiveFiles()
-  else:
-    print(" removeEnsembleArchiveFiles already complete \n")
-
-  # Prepare target directories and yaml files
-  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
-    fv3model.prepareConvertDirsYamls()
-  else:
-    print(" prepareConvertDirsYamls already complete \n")
-
   # Convert each member
-  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
-    fv3model.convertMembersUnbalanced(jbuild)
+  if not os.path.exists(fv3model.workDir+'/'+fv3model.HeraCopyDone):
+    fv3model.membersFromHera()
   else:
-    print(" convertMembersUnbalanced already complete \n")
+    print(" membersFromHera already complete \n")
 
-  # Tar converted members for transfer
-  fv3model.tarConvertedMembers()
+  # Extract member
+  if not os.path.exists(fv3model.workDir+'/'+fv3model.HeraExtrDone):
+    fv3model.extractConvertedMembers()
+  else:
+    print(" extractConvertedMembers already complete \n")
 
-  # Final clean up
-  fv3model.cleanUp()
+  #
+  fv3model.prepareConvertDirsYamls()
+
+  fv3model.convertMembersUnbalanced(jbuild)
+
+  # All done
   fv3model.allDone()
-  
+
+
 exit()
 
 

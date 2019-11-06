@@ -3,8 +3,6 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-import model_utils as mu
-
 import os
 import subprocess
 import datetime as dt
@@ -12,10 +10,10 @@ import pathlib
 import tarfile
 import shutil
 import time
-
 import yaml
+
+import model_utils as mu
 import gfs_yaml as myam
-import fileinput
 
 
 class GFS:
@@ -60,6 +58,8 @@ class GFS:
     self.ConvDone = 'ConvDone'
     self.ReArDone = 'ReArDone'
     self.AllDone = 'AllDone'
+    self.HeraCopyDone = 'HeraCopyDone'
+    self.HeraExtrDone = 'HeraExtrDone'
 
     self.convertDir = ''
 
@@ -96,8 +96,7 @@ class GFS:
     self.workDir = wrk_root+'/enswork_'+self.Y+self.m+self.d+self.H
 
     if (os.path.exists(self.workDir+'/working')):
-      'ABORT: This date is already being processed elsewhere'
-      os.remove(self.workDir+'/working')
+      print('ABORT: '+self.workDir+'/working exists...')
       exit()
 
     # Create working directory
@@ -318,9 +317,6 @@ class GFS:
     # Input variables
     variables = ["u","v","T","DELP","sphum","ice_wat","liq_wat","o3mr","phis"]
 
-    # Setup
-    setup = myam.setup_dict(path_fv3files)
-
     # Geometry
     inputresolution  = myam.geometry_dict('inputresolution' ,path_fv3files)
     outputresolution = myam.geometry_dict('outputresolution',path_fv3files)
@@ -332,7 +328,7 @@ class GFS:
     # Variable change
     varcha = myam.varcha_a2c_dict(path_fv3files)
 
-    return {**setup, **inputresolution, **outputresolution, **input, **output}
+    return {**inputresolution, **outputresolution, **input, **output}
 
 
   # Prepare directories for the members and the yaml files
@@ -405,9 +401,9 @@ class GFS:
 
   # Submit MPI job that converts the ensemble members
   # -------------------------------------------------
-  def convertMembersUnbalanced(self,jbuild):
+  def convertMembersVariableRemove(self,jbuild):
 
-    print(" convertMembersUnbalanced \n")
+    print(" convertMembersVariableRemove \n")
 
     os.chdir(self.convertDir)
 
@@ -521,11 +517,176 @@ class GFS:
       shutil.rmtree(self.convertDir)
       shutil.rmtree(self.workDir+'/enkfgdas.'+self.YmD)
       pathlib.Path(self.AllDone).touch()
-      
+
     else:
       print("ABORT: tar file apears to be corrupt")
       os.remove(self.workDir+'/working')
       exit()
 
+
+  # Remove the working flag
+  # -----------------------
+  def allDone(self):
+
     # Remove working flag
     os.remove(self.workDir+'/working')
+
+
+  # Copy tarred up converted members from hera
+  # ------------------------------------------
+  def membersFromHera(self):
+
+    print(" membersFromHera \n")
+
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    tar_file = 'ens_'+self.YmD_HRst+'.tar'
+    hera_path = '/scratch1/NCEPDEV/da/Daniel.Holdaway/JediScratch/StaticB/wrk/enswork_'+self.Y+self.m+self.d+self.H+'/'
+    tailfile = "ls_hera_tar.txt"
+    mu.run_bash_command("ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+tar_file, tailfile)
+
+    # Search tail for line with file size
+    hera_file_size = -1
+    with open(tailfile, "r") as fp:
+      for line in mu.lines_that_contain(tar_file, fp):
+        print(line)
+        hera_file_size = line.split()[4]
+    os.remove(tailfile)
+
+    # Check if copy already attempted
+    disc_file_size = -1
+    if (os.path.exists(self.workDir+'/'+tar_file)):
+      proc = subprocess.Popen(['ls', '-l', self.workDir+'/'+tar_file], stdout=subprocess.PIPE)
+      disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
+
+    # If not matching in file size copy
+    if not hera_file_size == disc_file_size:
+      print(' Copying:')
+      tailfile = "scp_hera_tar.txt"
+      mu.run_bash_command("scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+tar_file+" ./", tailfile)
+      os.remove(tailfile)
+
+    # Check copy was successful
+    disc_file_size = -1
+    if (os.path.exists(self.workDir+'/'+tar_file)):
+      proc = subprocess.Popen(['ls', '-l', self.workDir+'/'+tar_file], stdout=subprocess.PIPE)
+      disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
+
+    # Tag as done
+    if hera_file_size == disc_file_size:
+      pathlib.Path(self.HeraCopyDone).touch()
+
+    os.chdir(self.homeDir)
+
+  # Untar the converted members
+  # ---------------------------
+
+  def extractConvertedMembers(self):
+
+    print(" extractConvertedMembers \n")
+
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    tar_file = 'ens_'+self.YmD_HRst+'.tar'
+    tailfile = "untar_converted_members.txt"
+    mu.run_bash_command("tar -xvf ./"+tar_file, tailfile)
+
+    # Check all members accounted for
+    #for e in range(1,self.nEns+1):
+
+
+  # Dictionary for converting a state to psi/chi
+  # --------------------------------------------
+  def convertOneJobDict(self,path_fv3files):
+
+    # Geometry
+    inputresolution  = myam.geometry_dict('inputresolution' ,path_fv3files)
+    outputresolution = myam.geometry_dict('outputresolution',path_fv3files)
+
+    # Variable change
+    varcha = myam.varcha_a2c_dict(path_fv3files)
+
+    input  = {}
+    output = {}
+
+    dict_states = {}
+    dict_states["states"] = []
+
+    for e in range(1,self.nEns+1):
+
+      path_mem = 'mem'+str(e).zfill(3)+'/'
+
+      # Input/output for member
+      input  = myam.state_dict('input',path_mem,self.dateTimeRst)
+      output = myam.output_dict('output',path_mem,'bmat.')
+      inputout = {**input, **output}
+
+      dict_states["states"].append(inputout)
+
+    return {**inputresolution, **outputresolution, **varcha, **dict_states}
+
+  # Prepare directories for the members and the yaml files
+  # ------------------------------------------------------
+  def prepareConvertDirsYamls(self):
+
+    print(" prepareConvertDirsYamls \n")
+
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    # Create the yaml files
+    csdict = self.convertOneJobDict('fv3files')
+
+    # Write dictionary to yaml
+    yaml_file = self.convertDir+'/convert_all_states.yaml'
+    with open(yaml_file, 'w') as outfile:
+      yaml.dump(csdict, outfile, default_flow_style=False)
+
+    os.chdir(self.homeDir)
+
+  # Submit MPI job that converts the ensemble members
+  # -------------------------------------------------
+  def convertMembersUnbalanced(self,jbuild):
+
+    print(" convertMembersUnbalanced \n")
+
+    os.chdir(self.convertDir)
+
+    # Number of processors for job
+    nprocs = str(6*int(self.nProcNx)*int(self.nProcNy))
+
+    # Bash shell script that runs through all members
+    fname = 'run.sh'
+    fh = open(fname, "w")
+    fh.write("#!/bin/bash\n")
+    fh.write("\n")
+    fh.write("#SBATCH --export=NONE\n")
+    fh.write("#SBATCH --partition=compute\n")
+    fh.write("#SBATCH --account=g0613\n")
+    fh.write("#SBATCH --qos=advda\n")
+    fh.write("#SBATCH --job-name=fv3jedi_ensbal\n")
+    fh.write("#SBATCH --output=fv3jedi_ensbal.o%j\n")
+    fh.write("#SBATCH --nodes=8\n")
+    fh.write("#SBATCH --ntasks-per-node=12\n")
+    fh.write("#SBATCH --time=06:00:00\n")
+    fh.write("\n")
+    fh.write("source /usr/share/modules/init/bash\n")
+    fh.write("module purge\n")
+    fh.write("module use -a /discover/nobackup/projects/gmao/obsdev/rmahajan/opt/modulefiles\n")
+    fh.write("module load apps/jedi/intel-17.0.7.259\n")
+    fh.write("module list\n")
+    fh.write("\n")
+    fh.write("cd "+self.convertDir+"\n")
+    fh.write("\n")
+    fh.write("export OOPS_TRACE=1\n")
+    fh.write("export build="+jbuild+"\n")
+    fh.write("mpirun -np "+nprocs+" $build/bin/fv3jedi_convertstate.x convert_all_states.yaml\n")
+    fh.write("\n")
+    fh.close()
+
+    # Submit job
+    #mu.run_bash_command("sbatch run.sh")
+
+    os.chdir(self.homeDir)
