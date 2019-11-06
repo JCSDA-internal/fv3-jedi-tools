@@ -7,3 +7,5 @@
 
 2. Diagnostics:
 	- Plotting of Poisson solver convergence
+
+3. Config file generation
