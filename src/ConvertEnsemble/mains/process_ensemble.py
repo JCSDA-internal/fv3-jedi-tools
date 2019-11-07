@@ -51,8 +51,9 @@ sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
 sargs.add_argument( "-m", "--model",         default='gfs')
-sargs.add_argument( "-j", "--jedi_build",    default='/scratch1/NCEPDEV/da/Daniel.Holdaway/JediDev/fv3-bundle-dev/build-intel-17.0.5.239-release-default')
+sargs.add_argument( "-j", "--jedi_dir",      default='')
 sargs.add_argument( "-w", "--work_dir",      default='')
+sargs.add_argument( "-d", "--data_dir",      default='')
 
 
 args    = sargs.parse_args()
@@ -63,13 +64,21 @@ freq    = int(args.freq)
 ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
 model   = args.model
-jbuild  = args.jedi_build
-wrkdir  = args.work_dir
+jedidir = args.jedi_dir
+workdir = args.work_dir
+datadir = args.data_dir
 
-if wrkdir == '':
-  wdir = os.getcwd()
-else:
-  wdir = wrkdir
+if jedidir == '':
+  print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
+  exit()
+
+if workdir == '':
+  print("ABORT: please provide diretory to work from with -w or --work_dir")
+  exit()
+
+if datadir == '':
+  print("ABORT: please provide data directory with -d or --data_dir")
+  exit()
 
 print("\n Ensemble processing for Static B ... \n")
 if (readdts):
@@ -83,8 +92,9 @@ else:
   print("  - Random seed:    "+str(rseed))
 
 print("  - Model being used is "+model)
-print("  - JEDI build path: "+jbuild)
-print("  - Working directory: "+wdir)
+print("  - JEDI build path: "+jedidir)
+print("  - Working directory: "+workdir)
+print("  - Data directory: "+workdir)
 
 print("\n")
 
@@ -166,7 +176,7 @@ for n in range(1): #range(ncycs):
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
-  fv3model.setDirectories(wdir)
+  fv3model.setDirectories(workdir,datadir)
 
   if os.path.exists(fv3model.workDir+'/AllDone'):
     print(" This cycle is done, skipping ...")
@@ -199,7 +209,7 @@ for n in range(1): #range(ncycs):
 
   # Convert each member
   if not os.path.exists(fv3model.workDir+'/ConvertDone'):
-    fv3model.convertMembersUnbalanced(jbuild)
+    fv3model.convertMembersUnbalanced(jedidir)
   else:
     print(" convertMembersUnbalanced already complete \n")
 

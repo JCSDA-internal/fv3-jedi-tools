@@ -185,14 +185,29 @@ for n in range(1): #range(ncycs):
   else:
     print(" extractConvertedMembers already complete \n")
 
-  #
+  # Prepare yaml file for converting the members
   fv3model.prepareConvertDirsYamls()
 
-  fv3model.convertMembersUnbalanced(jbuild)
+  # Convert the ensemble members to psi/chi
+  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.ConvertDone)):
+    fv3model.convertMembersUnbalanced(jbuild)
+  else:
+    print(" convertMembersUnbalanced already complete \n")
+
+  # Tar up members
+  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.tarUpMembersDone)):
+    fv3model.tarUpMembers()
+  else:
+    print(" tarUpAndShipS3 already complete \n")
+
+  # Ship to S3
+  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.Ship2S3Done)):
+    fv3model.Ship2S3()
+  else:
+    print(" Ship2S3 already complete \n")
 
   # All done
   fv3model.allDone()
-
 
 exit()
 

@@ -11,17 +11,20 @@ import tarfile
 import shutil
 import time
 import yaml
+import json
+from random import randint
 
 import ConvertEnsemble.modules.model_utils as mu
 import Config.modules.gfs_conf as modconf
 
+# --------------------------------------------------------------------------------------------------
 
 class GFS:
 
-  # Initialize
-  # ----------
-
   def __init__(self):
+
+    # Initialize
+
     self.myName = 'gfs'                               # Name for this model
     self.hpssRoot = '/NCEPPROD/hpssprod/runhistory/'  # Path to archived files
     self.nGrps = 8                                    # Number of ensemble groups per cycle
@@ -35,6 +38,8 @@ class GFS:
 
     self.ensRes = '384' # Horizontal resolution, e.g. 384 where there are 384 by 384 per cube face.
     self.ensLev = '64'  # Number of vertical levels
+
+    self.yamlOrJson = 'yaml'
 
     # String datetimes
     self.dateTime    = dt.datetime(1900,1,1)
@@ -53,6 +58,11 @@ class GFS:
     # Directories
     self.homeDir = ''
     self.workDir = ''
+    self.dataDir = ''
+    self.fv3fDir = ''
+
+    # Section done markers
+    self.Working = ''
     self.ArchDone = 'ArchDone'
     self.ExtcDone = 'ExtcDone'
     self.ConvDone = 'ConvDone'
@@ -63,9 +73,11 @@ class GFS:
 
     self.convertDir = ''
 
-  # Set time for cycle
-  # ------------------
+  # ------------------------------------------------------------------------------------------------
+
   def cycleTime(self,datetime):
+
+    # Set time information for this cycle
 
     self.dateTime = datetime
 
@@ -88,32 +100,62 @@ class GFS:
 
     print(" Cycle time: "+self.Y+self.m+self.d+' '+self.H+" \n")
 
-  # Work and home directories
-  # -------------------------
-  def setDirectories(self,wrk_root):
+  # ------------------------------------------------------------------------------------------------
+
+  def abort(self,message):
+
+    print('ABORT: '+message)
+    os.remove(self.Working)
+    raise(SystemExit)
+
+  # ------------------------------------------------------------------------------------------------
+
+  def setDirectories(self,work_dir,data_dir):
+
+    # Setup the work and home directories
 
     self.homeDir = os.getcwd()
-    self.workDir = wrk_root+'/enswork_'+self.Y+self.m+self.d+self.H
+    self.workDir = os.path.join(work_dir,'enswork_'+self.Y+self.m+self.d+self.H)
+    self.dataDir = data_dir
 
-    if (os.path.exists(self.workDir+'/working')):
-      print('ABORT: '+self.workDir+'/working exists...')
-      exit()
+    self.Working = os.path.join(self.Working)
+
+    if (os.path.exists(self.Working):
+      print('ABORT: '+self.Working+' exists. Already running or previous fail ...')
+      raise(SystemExit)
 
     # Create working directory
     if not os.path.exists(self.workDir):
       os.makedirs(self.workDir)
 
     # Directory for converted members
-    self.convertDir = self.workDir+'/'+self.YRst+self.mRst+self.dRst+'_'+self.HRst
+    self.convertDir = os.path.join(self.workDir,self.YRst+self.mRst+self.dRst+'_'+self.HRst)
 
-    pathlib.Path(self.workDir+'/working').touch()
+    if not os.path.exists(self.convertDir):
+      os.makedirs(self.convertDir)
+
+    # Create working file
+    pathlib.Path(self.Working).touch()
+
+    # Path for fv3files
+    self.fv3fDir = os.path.join(self.convertDir,'fv3files')
 
     print(" Home directory: "+self.homeDir)
     print(" Work directory: "+self.workDir,"\n")
 
-  # Method to get an ensemble member and stage it
-  # ---------------------------------------------
+  # ------------------------------------------------------------------------------------------------
+
+  def allDone(self):
+
+    # Remove the working flag
+
+    os.remove(self.Working)
+
+  # ------------------------------------------------------------------------------------------------
+
   def getEnsembleMembersFromArchive(self):
+
+    # Method to get an ensemble member and stage it
 
     print(" getEnsembleMembersFromArchive \n")
 
@@ -131,15 +173,18 @@ class GFS:
     # Loop over groups of members
     for g in range(self.nGrps):
 
-      # Path and file for this group of restarts
-      path = self.hpssRoot+'rh'+Y+'/'+Y+m+'/'+Y+m+d+'/'
+      # File name
       file = ('gpfs_dell1_nco_ops_com_gfs_prod_enkfgdas'
              '.'+Y+m+d+'_'+H+'.enkfgdas_restart_grp'+str(g+1)+'.tar')
-      print(" Acquiring on "+path+file)
+
+      # File on hpss
+      remote_file = os.path.join(self.hpssRoot+'rh'+Y,Y+m,Y+m+d,file)
+
+      print(" Acquiring "+remote_file)
 
       # Run hsi ls command on the current file for expected size
       tailfile = "ls_remote_member.txt"
-      mu.run_bash_command("hsi ls -l "+path+file,tailfile)
+      mu.run_bash_command("hsi ls -l "+remote_file,tailfile)
 
       # Search tail for line with file size
       remote_file_size = -1
@@ -150,9 +195,7 @@ class GFS:
 
       # Fail if unable to determine remote file size
       if (remote_file_size == -1):
-        print("ABORT: unable to find size of remote file")
-        os.remove(self.workDir+'/working')
-        exit()
+        call self.abort('unable to determine size of remote file')
 
       #  Logic to determine whether to copy member. Only copied if group
       #  - Does not exist at all
@@ -185,7 +228,7 @@ class GFS:
       if (get_member_set):
         print(" Copyng member group")
         tailfile = "copy_remote_member.txt"
-        mu.run_bash_command("hsi get "+path+file, tailfile)
+        mu.run_bash_command("hsi get "+remote_file, tailfile)
 
       # Check that the files are copied properly
       if (not os.path.exists(file)):
@@ -207,19 +250,22 @@ class GFS:
 
     os.chdir(self.homeDir)
 
+  # ------------------------------------------------------------------------------------------------
 
-  # Check for expected number of restarts in path
-  # ---------------------------------------------
   def checkGfsRestartFiles(self,path):
+
+    # Check for expected number of restarts in path
+
     if os.path.exists(path):
-      return len(os.listdir(path)) == self.nRstFiles
+      return len(os.listdir(path+'/')) == self.nRstFiles
     else:
       return False
 
+  # ------------------------------------------------------------------------------------------------
 
-  # Extract each group of ensemble members
-  # --------------------------------------
   def extractEnsembleMembers(self):
+
+    # Extract each group of ensemble members
 
     print(" extractEnsembleMembers \n")
 
@@ -243,7 +289,7 @@ class GFS:
       # Check whether extracted files already exist
       do_untar = False
       for e in range(memStart,memFinal+1):
-        path_rst = 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/RESTART/'
+        path_rst = os.path.join('enkfgdas.'+self.YmDm,self.H,'mem'+str(e).zfill(3),'RESTART')
         done_mem = self.checkGfsRestartFiles(path_rst)
         if (not done_mem):
           do_untar = True
@@ -251,19 +297,19 @@ class GFS:
       # Extract file
       if (do_untar):
         tailfile = "untar_remote_member.txt"
-        mu.run_bash_command("tar -xvf ./"+file, tailfile)
+        mu.run_bash_command("tar -xvf "+file, tailfile)
 
       # Clean up non-restart files
       for e in range(memStart,memFinal+1):
-        files = ['enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_air',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_int',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.abias_pc',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.atminc.nc',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.cnvstat',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.gsistat',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.oznstat',
-                 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/gdas.t06z.radstat']
+        files = [os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.abias'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.abias_air'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.abias_int'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.abias_pc'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.atminc.nc'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.cnvstat'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.gsistat'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.oznstat'),
+                 os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'gdas.t06z.radstat')]
         for f in range(len(files)):
           if os.path.exists(files[f]):
             os.remove(files[f])
@@ -271,7 +317,7 @@ class GFS:
       # Recheck for success
       do_untar = False
       for e in range(memStart,memFinal+1):
-        path_rst = 'enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e).zfill(3)+'/RESTART/'
+        path_rst = os.path.join('enkfgdas.'+self.YmD,self.H,'mem'+str(e).zfill(3),'RESTART')
         done_mem = self.checkGfsRestartFiles(path_rst)
         if (not done_mem):
           do_untar = True
@@ -285,11 +331,11 @@ class GFS:
 
     os.chdir(self.homeDir)
 
-
-  # Remove tar files obtained from the arhcive
-  # ------------------------------------------
+  # ------------------------------------------------------------------------------------------------
 
   def removeEnsembleArchiveFiles(self):
+
+    # Remove tar files obtained from the arhcive
 
     print(" removeEnsembleArchiveFiles \n")
 
@@ -310,156 +356,189 @@ class GFS:
 
     os.chdir(self.homeDir)
 
-  # Dictionary for converting a state to psi/chi
-  # --------------------------------------------
-  def convertStateDict(self,path_fv3files,path_bkg,path_write):
+  # ------------------------------------------------------------------------------------------------
 
-    # Input variables
-    variables = ["u","v","T","DELP","sphum","ice_wat","liq_wat","o3mr","phis"]
+  # Dictionary for converting a state to psi/chi
+
+  def convertStatesDict(self,path_state_in,path_state_out,varchange='id',output_name=''):
+
+    # Path to the fv3files, e.g. input.nml
+    path_fv3files = os.path.join(self.workDir,fv3files)
 
     # Geometry
     inputresolution  = modconf.geometry_dict('inputresolution' ,path_fv3files)
     outputresolution = modconf.geometry_dict('outputresolution',path_fv3files)
 
-    # States
-    input  = modconf.state_dict('input',path_bkg,self.dateTimeRst,variables)
-    output = modconf.output_dict('output',path_write)
-
     # Variable change
-    varcha = modconf.varcha_a2c_dict(path_fv3files)
+    if (varchange == 'a2c'):
+      varcha = modconf.varcha_a2c_dict(path_fv3files)
+    else:
+      varcha = {}
 
-    return {**inputresolution, **outputresolution, **input, **output}
+    input  = {}
+    output = {}
 
+    dict_states = {}
+    dict_states["states"] = []
 
-  # Prepare directories for the members and the yaml files
-  # ------------------------------------------------------
-  def prepareConvertDirsYamls(self):
+    for e in range(1,self.nEns+1):
 
-    print(" prepareConvertDirsYamls \n")
+      path_mem_in  = 'mem'+str(e).zfill(3)+'/RESTART/'
+      path_mem_out = '_mem'+str(e).zfill(3)+'/'
 
-    # Move to work directory
-    os.chdir(self.workDir)
+      # Input/output for member
+      input  = modconf.state_dict('input', path_mem, self.dateTimeRst)
+      output = modconf.output_dict('output', path_mem, output_name)
+      inputout = {**input, **output}
 
-    # Path
-    if not os.path.exists(self.convertDir):
-      os.makedirs(self.convertDir)
+      dict_states["states"].append(inputout)
 
-    # Path for fv3files
-    path_fv3files = self.convertDir+'/fv3files'
-    if os.path.exists(path_fv3files):
-      shutil.rmtree(path_fv3files)
+    return {**inputresolution, **outputresolution, **varcha, **dict_states}
 
-    # Copy fv3files
-    fv3files_src = self.homeDir+'/fv3files'
-    shutil.copytree(fv3files_src, path_fv3files)
-    os.rename(path_fv3files+'/input.nml_template',path_fv3files+'/input.nml')
+  # ------------------------------------------------------------------------------------------------
+
+  def preparefv3Files(self):
+
+    # First remove fv3files path if it exists
+    if os.path.exists(self.fv3fDir):
+      shutil.rmtree(self.fv3fDir)
+
+    # Copy from the user provided Data directory
+    shutil.copytree(os.path.join(self.dataDir,'fv3files'), self.fv3fDir)
 
     # Update input.nml for this run
-    nml_in = open(path_fv3files+'/input.nml').read()
+    nml_in = open(os.path.join(self.fv3fDir,'input.nml_template')).read()
     nml_in = nml_in.replace('NPX_DIM', str(int(self.ensRes)+1))
     nml_in = nml_in.replace('NPY_DIM', str(int(self.ensRes)+1))
     nml_in = nml_in.replace('NPZ_DIM', self.ensLev)
     nml_in = nml_in.replace('NPX_PROC', self.nProcNx)
     nml_in = nml_in.replace('NPY_PROC', self.nProcNy)
-    nml_out = open(path_fv3files+'/input.nml', 'w')
+    nml_out = open(os.path.join(self.fv3fDir,'input.nml'), 'w')
     nml_out.write(nml_in)
     nml_out.close()
+
+  # ------------------------------------------------------------------------------------------------
+
+  def prepareConvertDirsConf(self):
+
+    # Prepare directories for the members and the configuration files
+
+    print(" prepareConvertDirsConf \n")
 
     # Loop over groups of members
     for e in range(self.nEns):
 
-      memdir_done = self.convertDir+'/mem'+str(e+1).zfill(3)
+      # Create member directory
+      memdir = os.path.join(self.convertDir,'_mem'+str(e+1).zfill(3))
+      if not os.path.exists(memdir):
+        os.makedirs(memdir)
 
-      if not os.path.exists(memdir_done):
+    # Create the config files
+    csdict = self.convertStatesDict(varchange='id',output_name='')
 
-        # Create member directory
-        memdir = self.convertDir+'/_mem'+str(e+1).zfill(3)
-        if not os.path.exists(memdir):
-          os.makedirs(memdir)
+    # Write dictionary to config file
+    conf_file = os.path.join(memdir,'convert_state.'+self.yamlOrJson)
+    with open(conf_file, 'w') as outfile:
+      if self.yamlOrJson == 'yaml':
+        yaml.dump(csdict, outfile, default_flow_style=False)
+      elif self.yamlOrJson == 'json':
+        json.dump(csdict, outfile)
 
-        # Symbolic links to prevent long paths
-        path = memdir+'/fv3files'
-        if os.path.exists(path):
-          os.remove(path)
-        os.symlink(path_fv3files, path)
-
-        path = memdir+'/RESTART'
-        if os.path.exists(path):
-          os.remove(path)
-        os.symlink(self.workDir+'/enkfgdas.'+self.YmD+'/'+self.H+'/mem'+str(e+1).zfill(3)+'/RESTART', path)
-
-        # Create the yaml files
-        csdict = self.convertStateDict('./fv3files','./RESTART/','./')
-
-        # Write dictionary to yaml
-        yaml_file = memdir+'/convert_state.yaml'
-        with open(yaml_file, 'w') as outfile:
-          yaml.dump(csdict, outfile, default_flow_style=False)
-
-    os.chdir(self.homeDir)
-
+  # ------------------------------------------------------------------------------------------------
 
   # Submit MPI job that converts the ensemble members
-  # -------------------------------------------------
-  def convertMembersVariableRemove(self,jbuild):
 
-    print(" convertMembersVariableRemove \n")
+  def convertMembersSlurm(self,machine,nodes,taskspernode,hours,jbuild,machine):
 
-    os.chdir(self.convertDir)
+    print(" convertMembersSlurm \n")
 
     # Number of processors for job
     nprocs = str(6*int(self.nProcNx)*int(self.nProcNy))
 
+    # Filename
+    fname = os.path.join(self.convertDir,'run.sh')
+
+    # Job ID
+    jobid = randint(1000000,9999999)
+    jobnm = "convertstates."+str(jobid)
+
+    # Hours
+    hh = str(hours),zfill(2)
+
     # Bash shell script that runs through all members
-    fname = 'run.sh'
     fh = open(fname, "w")
     fh.write("#!/bin/bash\n")
     fh.write("\n")
-    fh.write("#SBATCH --export=NONE\n")
-    fh.write("#SBATCH --job-name=fv3jedi_ensbal\n")
-    fh.write("#SBATCH --output=fv3jedi_ensbal.o%j\n")
-    fh.write("#SBATCH --ntasks="+nprocs+"\n")
-    fh.write("#SBATCH --account=da-cpu\n")
-    fh.write("#SBATCH --time=04:00:00\n")
-    fh.write("\n")
-    fh.write("module use -a /scratch1/NCEPDEV/stmp4/Daniel.Holdaway/opt/modulefiles/\n")
-    fh.write("module load apps/jedi/intel-17.0.5.239\n")
-    fh.write("module list\n")
-    fh.write("\n")
-    fh.write("members=`ls -d _mem*`\n")
-    fh.write("\n")
-    fh.write("for mem in $members\n")
-    fh.write("do\n")
-    fh.write("  cd $mem\n")
-    fh.write("  echo \"Working in \"$PWD\n")
-    fh.write("  export build="+jbuild+"\n")
-    fh.write("  mpirun -np "+nprocs+" $build/bin/fv3jedi_convertstate.x convert_state.yaml\n")
-    fh.write("  export numfiles=`ls -1 *nc | wc -l`\n")
-    fh.write("  cd ..\n")
-    fh.write("  if [ \"$numfiles\" == \"12\" ]\n")
-    fh.write("  then\n")
-    fh.write("    export newdir=`echo $mem | cut -c2-`\n")
-    fh.write("    mv $mem $newdir\n")
-    fh.write("  fi\n")
-    fh.write("done\n")
-    fh.write("\n")
-    fh.write("resmembers=`ls -d _mem*`\n")
-    fh.write("if [ \"$resmembers\" == \"\" ]\n")
-    fh.write("then\n")
-    fh.write("  echo \"All members processed successfully\"\n")
-    fh.write("  touch ../ConvertDone\n")
-    fh.write("fi\n")
 
+    fh.write("#SBATCH --export=NONE\n")
+    fh.write("#SBATCH --job-name="+jobnm+"\n")
+    fh.write("#SBATCH --output="+jobnm+".log\n")
+    if machine == 'discover':
+      fh.write("#SBATCH --partition=compute\n")
+      fh.write("#SBATCH --account=g0613\n")
+      fh.write("#SBATCH --qos=advda\n")
+    elif machine == 'hera':
+      fh.write("#SBATCH --account=da-cpu\n")
+    fh.write("#SBATCH --nodes="+str(nodes)+"\n")
+    fh.write("#SBATCH --ntasks-per-node="+str(taskspernode)+"\n")
+    fh.write("#SBATCH --time="+hh+":00:00\n")
+
+    fh.write("\n")
+
+    fh.write("source /usr/share/modules/init/bash\n")
+    fh.write("module purge\n")
+    if machine == 'discover':
+      fh.write("module use -a /discover/nobackup/projects/gmao/obsdev/rmahajan/opt/modulefiles\n")
+      fh.write("module load apps/jedi/intel-17.0.7.259\n")
+    elif machine == 'hera':
+      fh.write("module use -a /scratch1/NCEPDEV/stmp4/Daniel.Holdaway/opt/modulefiles/\n")
+      fh.write("module load apps/jedi/intel-17.0.5.239\n")
+    fh.write("module list\n")
+
+    fh.write("\n")
+    fh.write("cd "+self.convertDir+"\n")
+    fh.write("\n")
+    #fh.write("export OOPS_TRACE=1\n")
+    fh.write("export build="+jbuild+"\n")
+    fh.write("mpirun -np "+nprocs+" $build/bin/fv3jedi_convertstate.x convert_states."+self.yamlOrJson+"\n")
+    fh.write("\n")
     fh.close()
 
     # Submit job
-    mu.run_bash_command("sbatch run.sh")
+    mu.run_bash_command("sbatch "+fname)
 
-    os.chdir(self.homeDir)
+    # Wait for finish
+    print(" Waiting for sbatch job to finish")
 
-  # Submit MPI job that converts the ensemble members
-  # -------------------------------------------------
+    done_convert = False
+    while not done_convert:
+
+      try:
+        squeue_res = subprocess.check_output(['squeue', '-l -h -n', jobnm], shell=True)
+      except subprocess.CalledProcessError
+        self.abort('squeue command failed.')
+
+
+      if squeue_res is '':
+        done_convert = True
+        break
+
+      # If not finished wait another minute
+      time.sleep(60)
+
+    # Grep for success
+    with open(jobnm+'.log', "r") as fp:
+      for line in fp:
+        if re.search("status = 0", line):
+          pathlib.Path(sys.path.join(self.workDir,self.ConvDone).touch()
+        else:
+          self.abort("convertMembersSlurm failed. Job name: "+jobnm)
+
+  # ------------------------------------------------------------------------------------------------
+
   def tarConvertedMembers(self):
+
+    # Submit MPI job that converts the ensemble members
 
     print(" tarConvertedMembers \n")
 
@@ -469,9 +548,10 @@ class GFS:
 
     # Wait until the batch job submitted above is done
     done_convert = False
+    print(" Waiting for convert job to run")
     while not done_convert:
 
-      if os.path.exists(self.workDir+'/ConvertDone'):
+      if os.path.exists(os.path.join(self.workDir,'ConvertDone')):
         done_convert = True
         break
 
@@ -483,14 +563,16 @@ class GFS:
     tar_file_name = 'ens_'+self.YmD_HRst+'.tar'
     tailfile = "tar_converted_members.txt"
 
-    if not os.path.exists(self.workDir+'/'+tar_file_name):
+    if not os.path.exists(os.path.join(self.workDir,tar_file_name)):
       mu.run_bash_command("tar -cvf "+tar_file_name+" "+self.YmD_HRst, tailfile)
     else:
       print(" Tar file for converted members already created")
 
-  # Clean up large files
-  # --------------------
+  # ------------------------------------------------------------------------------------------------
+
   def cleanUp(self):
+
+    # Clean up large files
 
     print(" cleanUp \n")
 
@@ -498,7 +580,7 @@ class GFS:
     os.chdir(self.workDir)
 
     tar_file_name = 'ens_'+self.YmD_HRst+'.tar'
-    filesearch = self.YmD_HRst+'/mem001/'+self.YRst+self.mRst+self.dRst+'.'+self.HRst+'0000.fv_core.res.tile1.nc'
+    filesearch = os.path.join(self.YmD_HRst,'mem001',self.YRst+self.mRst+self.dRst+'.'+self.HRst+'0000.fv_core.res.tile1.nc')
     tailfile = "tar_check.txt"
 
     mu.run_bash_command("tar -tvf "+tar_file_name+" "+filesearch, tailfile)
@@ -515,26 +597,17 @@ class GFS:
       print(" Tar file apears to be in tact, removing all files no longer needed")
 
       shutil.rmtree(self.convertDir)
-      shutil.rmtree(self.workDir+'/enkfgdas.'+self.YmD)
+      shutil.rmtree(os.path.join(self.workDir,'enkfgdas.'+self.YmD))
       pathlib.Path(self.AllDone).touch()
 
     else:
-      print("ABORT: tar file apears to be corrupt")
-      os.remove(self.workDir+'/working')
-      exit()
+      self.abort('tar file apears to be corrupt')
 
+  # ------------------------------------------------------------------------------------------------
 
-  # Remove the working flag
-  # -----------------------
-  def allDone(self):
-
-    # Remove working flag
-    os.remove(self.workDir+'/working')
-
-
-  # Copy tarred up converted members from hera
-  # ------------------------------------------
   def membersFromHera(self):
+
+    # Copy tarred up converted members from hera
 
     print(" membersFromHera \n")
 
@@ -542,7 +615,7 @@ class GFS:
     os.chdir(self.workDir)
 
     tar_file = 'ens_'+self.YmD_HRst+'.tar'
-    hera_path = '/scratch1/NCEPDEV/da/Daniel.Holdaway/JediScratch/StaticB/wrk/enswork_'+self.Y+self.m+self.d+self.H+'/'
+    hera_path = os.path.join('/scratch1','NCEPDEV','da','Daniel.Holdaway','JediScratch','StaticB','wrk','enswork_'+self.Y+self.m+self.d+self.H)
     tailfile = "ls_hera_tar.txt"
     mu.run_bash_command("ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+tar_file, tailfile)
 
@@ -556,8 +629,8 @@ class GFS:
 
     # Check if copy already attempted
     disc_file_size = -1
-    if (os.path.exists(self.workDir+'/'+tar_file)):
-      proc = subprocess.Popen(['ls', '-l', self.workDir+'/'+tar_file], stdout=subprocess.PIPE)
+    if (os.path.exists(os.path.join(self.workDir,tar_file))):
+      proc = subprocess.Popen(['ls', '-l', os.path.join(self.workDir,tar_file)], stdout=subprocess.PIPE)
       disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
     # If not matching in file size copy
@@ -569,8 +642,8 @@ class GFS:
 
     # Check copy was successful
     disc_file_size = -1
-    if (os.path.exists(self.workDir+'/'+tar_file)):
-      proc = subprocess.Popen(['ls', '-l', self.workDir+'/'+tar_file], stdout=subprocess.PIPE)
+    if (os.path.exists(os.path.join(self.workDir,tar_file))):
+      proc = subprocess.Popen(['ls', '-l', os.path.join(self.workDir,tar_file)], stdout=subprocess.PIPE)
       disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
     # Tag as done
@@ -579,8 +652,9 @@ class GFS:
 
     os.chdir(self.homeDir)
 
+  # ------------------------------------------------------------------------------------------------
+
   # Untar the converted members
-  # ---------------------------
 
   def extractConvertedMembers(self):
 
@@ -593,100 +667,29 @@ class GFS:
     tailfile = "untar_converted_members.txt"
     mu.run_bash_command("tar -xvf ./"+tar_file, tailfile)
 
-    # Check all members accounted for
-    #for e in range(1,self.nEns+1):
+  # ------------------------------------------------------------------------------------------------
 
+  # Prepare directories for the members and the configuration files
 
-  # Dictionary for converting a state to psi/chi
-  # --------------------------------------------
-  def convertOneJobDict(self,path_fv3files):
+  def prepareConvertDirsConfig(self):
 
-    # Geometry
-    inputresolution  = modconf.geometry_dict('inputresolution' ,path_fv3files)
-    outputresolution = modconf.geometry_dict('outputresolution',path_fv3files)
-
-    # Variable change
-    varcha = modconf.varcha_a2c_dict(path_fv3files)
-
-    input  = {}
-    output = {}
-
-    dict_states = {}
-    dict_states["states"] = []
-
-    for e in range(1,self.nEns+1):
-
-      path_mem = 'mem'+str(e).zfill(3)+'/'
-
-      # Input/output for member
-      input  = modconf.state_dict('input',path_mem,self.dateTimeRst)
-      output = modconf.output_dict('output',path_mem,'bmat.')
-      inputout = {**input, **output}
-
-      dict_states["states"].append(inputout)
-
-    return {**inputresolution, **outputresolution, **varcha, **dict_states}
-
-  # Prepare directories for the members and the yaml files
-  # ------------------------------------------------------
-  def prepareConvertDirsYamls(self):
-
-    print(" prepareConvertDirsYamls \n")
+    print(" prepareConvertDirsConfig \n")
 
     # Move to work directory
     os.chdir(self.workDir)
 
-    # Create the yaml files
-    csdict = self.convertOneJobDict('fv3files')
+    # Create the config dictionary
+    csdict = self.convertStatesDict('a2m','bmat.')
 
-    # Write dictionary to yaml
-    yaml_file = self.convertDir+'/convert_all_states.yaml'
-    with open(yaml_file, 'w') as outfile:
-      yaml.dump(csdict, outfile, default_flow_style=False)
+    # Write dictionary to configuration file
+    conf_file = os.path.join(self.convertDir,'convert_states.'+self.yamlOrJson)
+    with open(conf_file, 'w') as outfile:
+      if self.yamlOrJson == 'yaml':
+        yaml.dump(csdict, outfile, default_flow_style=False)
+      elif self.yamlOrJson == 'json':
+        json.dump(csdict, outfile)
 
-    os.chdir(self.homeDir)
-
-  # Submit MPI job that converts the ensemble members
-  # -------------------------------------------------
-  def convertMembersUnbalanced(self,jbuild):
-
-    print(" convertMembersUnbalanced \n")
-
-    os.chdir(self.convertDir)
-
-    # Number of processors for job
-    nprocs = str(6*int(self.nProcNx)*int(self.nProcNy))
-
-    # Bash shell script that runs through all members
-    fname = 'run.sh'
-    fh = open(fname, "w")
-    fh.write("#!/bin/bash\n")
-    fh.write("\n")
-    fh.write("#SBATCH --export=NONE\n")
-    fh.write("#SBATCH --partition=compute\n")
-    fh.write("#SBATCH --account=g0613\n")
-    fh.write("#SBATCH --qos=advda\n")
-    fh.write("#SBATCH --job-name=fv3jedi_ensbal\n")
-    fh.write("#SBATCH --output=fv3jedi_ensbal.o%j\n")
-    fh.write("#SBATCH --nodes=8\n")
-    fh.write("#SBATCH --ntasks-per-node=12\n")
-    fh.write("#SBATCH --time=06:00:00\n")
-    fh.write("\n")
-    fh.write("source /usr/share/modules/init/bash\n")
-    fh.write("module purge\n")
-    fh.write("module use -a /discover/nobackup/projects/gmao/obsdev/rmahajan/opt/modulefiles\n")
-    fh.write("module load apps/jedi/intel-17.0.7.259\n")
-    fh.write("module list\n")
-    fh.write("\n")
-    fh.write("cd "+self.convertDir+"\n")
-    fh.write("\n")
-    fh.write("export OOPS_TRACE=1\n")
-    fh.write("export build="+jbuild+"\n")
-    fh.write("mpirun -np "+nprocs+" $build/bin/fv3jedi_convertstate.x convert_all_states.yaml\n")
-    fh.write("\n")
-    fh.close()
-
-    # Submit job
-    #mu.run_bash_command("sbatch run.sh")
 
     os.chdir(self.homeDir)
+
+  # ------------------------------------------------------------------------------------------------

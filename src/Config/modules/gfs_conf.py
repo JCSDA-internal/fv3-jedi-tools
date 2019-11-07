@@ -25,34 +25,20 @@ def state_dict(section_name,path,dt,variables=''):
 
   datetime_str = dt.strftime('%Y%m%d.%H%M%S.')
 
-  if not variables=='':
+  statedict = {
+    section_name: {
+      "filetype": "gfs",
+      "datapath_tile": path,
+      "filename_core": datetime_str+"fv_core.res.nc",
+      "filename_trcr": datetime_str+"fv_tracer.res.nc",
+      "filename_sfcd": datetime_str+"sfc_data.nc",
+      "filename_sfcw": datetime_str+"fv_srf_wnd.res.nc",
+      "filename_cplr": datetime_str+"coupler.res",
+    },
+  }
 
-    statedict = {
-      section_name: {
-        "filetype": "gfs",
-        "datapath_tile": path,
-        "filename_core": datetime_str+"fv_core.res.nc",
-        "filename_trcr": datetime_str+"fv_tracer.res.nc",
-        "filename_sfcd": datetime_str+"sfc_data.nc",
-        "filename_sfcw": datetime_str+"fv_srf_wnd.res.nc",
-        "filename_cplr": datetime_str+"coupler.res",
-        "variables": variables
-      },
-    }
-
-  else:
-
-    statedict = {
-      section_name: {
-        "filetype": "gfs",
-        "datapath_tile": path,
-        "filename_core": datetime_str+"fv_core.res.nc",
-        "filename_trcr": datetime_str+"fv_tracer.res.nc",
-        "filename_sfcd": datetime_str+"sfc_data.nc",
-        "filename_sfcw": datetime_str+"fv_srf_wnd.res.nc",
-        "filename_cplr": datetime_str+"coupler.res"
-      },
-    }
+  if variables != '':
+    statedict[section_name]['variables'] = variables
 
   return statedict
 
@@ -71,14 +57,6 @@ def output_dict(section_name,path,name=''):
       "filename_cplr": name+"coupler.res",
     },
   }
-
-#  outputdict = {
-#    section_name: {
-#      "filetype": "geos",
-#      "datapath": path,
-#      "filename": "geos",
-#    },
-#  }
 
   return outputdict
 
