@@ -54,6 +54,7 @@ sargs.add_argument( "-m", "--model",         default='gfs')
 sargs.add_argument( "-j", "--jedi_dir",      default='')
 sargs.add_argument( "-w", "--work_dir",      default='')
 sargs.add_argument( "-d", "--data_dir",      default='')
+sargs.add_argument( "-c", "--machine",       default='')
 
 
 args    = sargs.parse_args()
@@ -67,6 +68,7 @@ model   = args.model
 jedidir = args.jedi_dir
 workdir = args.work_dir
 datadir = args.data_dir
+compt   = args.machine
 
 if jedidir == '':
   print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
@@ -78,6 +80,10 @@ if workdir == '':
 
 if datadir == '':
   print("ABORT: please provide data directory with -d or --data_dir")
+  exit()
+
+if compt == '':
+  print("ABORT: please provide maching to run on, hera or discover")
   exit()
 
 print("\n Ensemble processing for Static B ... \n")
@@ -172,55 +178,43 @@ with open('datetimes_processed.txt', 'w') as fh:
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 
-for n in range(1): #range(ncycs):
+for n in range(1,2): #range(ncycs):
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
   fv3model.setDirectories(workdir,datadir)
 
-  if os.path.exists(fv3model.workDir+'/AllDone'):
+  # Check on whether this cycle is done
+  print(fv3model.allDone)
+  if os.path.exists(fv3model.allDone):
     print(" This cycle is done, skipping ...")
-    os.remove(fv3model.workDir+'/working')
+    os.remove(fv3model.Working)
     continue
 
   # Get the members for this cycle from archive
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.ArchDone):
-    fv3model.getEnsembleMembersFromArchive()
-  else:
-    print(" getEnsembleMembersFromArchive already complete \n")
+  fv3model.getEnsembleMembersFromArchive()
 
   # Untar the members
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
-    fv3model.extractEnsembleMembers()
-  else:
-    print(" extractEnsembleMembers already complete \n")
+  fv3model.extractEnsembleMembers()
 
   # Remove ensemble tar files
-  if os.path.exists(fv3model.workDir+'/'+fv3model.ExtcDone):
-    fv3model.removeEnsembleArchiveFiles()
-  else:
-    print(" removeEnsembleArchiveFiles already complete \n")
+  fv3model.removeEnsembleArchiveFiles()
 
-  # Prepare target directories and yaml files
-  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
-    fv3model.prepareConvertDirsYamls()
-  else:
-    print(" prepareConvertDirsYamls already complete \n")
+  # Prepare for slurm job
+  fv3model.prepare2Convert()
 
-  # Convert each member
-  if not os.path.exists(fv3model.workDir+'/ConvertDone'):
-    fv3model.convertMembersUnbalanced(jedidir)
-  else:
-    print(" convertMembersUnbalanced already complete \n")
+  # Submit slurm job to convert members
+  fv3model.convertMembersSlurm(compt,'3','32','04',jedidir)
 
   # Tar converted members for transfer
-  fv3model.tarConvertedMembers()
+  #fv3model.tarConvertedMembers()
 
   # Final clean up
-  fv3model.cleanUp()
-  fv3model.allDone()
+  #fv3model.cleanUp()
 
-exit()
+  fv3model.finished()
+
+  exit()
 
 
 

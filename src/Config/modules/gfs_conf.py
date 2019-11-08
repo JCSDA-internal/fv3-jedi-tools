@@ -62,6 +62,18 @@ def output_dict(section_name,path,name=''):
 
 # --------------------------------------------------------------------------------------------------
 
+def varcha_id_dict(variables):
+
+  varchadict = {
+    "inputVariables": {
+    "variables": variables,
+    },
+  }
+
+  return varchadict
+
+# --------------------------------------------------------------------------------------------------
+
 def varcha_a2c_dict(path_femps):
 
   varchadict = {
