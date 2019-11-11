@@ -65,6 +65,7 @@ class GFS:
     self.dataDir = ''
     self.fv3fDir = ''
     self.trakDir = ''
+    self.convertDir = ''
 
     # Section done markers
     self.Working = 'no'
@@ -72,9 +73,9 @@ class GFS:
     # Tar file for finished product
     self.tarFile = ''
 
-    self.HeraCopyDone = 'HeraCopyDone'
+    # Path on S3 for GFS
+    self.s3path = 's3://fv3-jedi/StaticB/gfs_ensemble/'
 
-    self.convertDir = ''
 
   # ------------------------------------------------------------------------------------------------
 
@@ -153,7 +154,7 @@ class GFS:
     self.fv3fDir = os.path.join(self.convertDir,'fv3files')
 
     # Tar file name for finished product
-    self.tarFile = os.path.join(self.rootDir,'ens_'+self.YmD_HRst+'.tar')
+    self.tarFile = 'ens_'+self.YmD_HRst+'.tar'
 
     print(" Home directory: "+self.homeDir)
     print(" Work directory: "+self.workDir)
@@ -495,7 +496,7 @@ class GFS:
     self.__preparefv3Files()
 
     # Create the config files
-    csdict = self.__convertStatesDict('id','slim.')
+    csdict = self.__convertStatesDict('a2c','')
 
     # Write dictionary to config file
     conf_file = os.path.join(self.convertDir,'convert_states.'+self.yamlOrJson)
@@ -657,7 +658,7 @@ class GFS:
     # Avoid absolute paths in tar file
     os.chdir(self.rootDir)
 
-    if not os.path.exists(os.path.join(self.workDir,self.tarFile)):
+    if not os.path.exists(os.path.join(self.tarFile)):
       utils.run_bash_command("tar -cvf "+self.tarFile+" "+"enswork_"+self.Y+self.m+self.d+self.H)
     else:
       print(" Tar file for converted members already created")
@@ -693,46 +694,50 @@ class GFS:
 
   def membersFromHera(self):
 
-    # Copy tarred up converted members from hera
+    # Check if done and depends
+    myname = 'membersFromHera'
+    if utils.isDone(self.trakDir,myname):
+      return
 
-    # Move to work directory
-    os.chdir(self.workDir)
+    # Move to root directory
+    os.chdir(self.rootDir)
 
-    tar_file = 'ens_'+self.YmD_HRst+'.tar'
     hera_path = os.path.join('/scratch1','NCEPDEV','da','Daniel.Holdaway','JediScratch','StaticB','wrk','enswork_'+self.Y+self.m+self.d+self.H)
     tailfile = "ls_hera_tar.txt"
-    utils.run_bash_command("ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+tar_file, tailfile)
+    utils.run_bash_command("ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+self.tarFile, tailfile)
 
     # Search tail for line with file size
     hera_file_size = -1
     with open(tailfile, "r") as fp:
-      for line in utils.lines_that_contain(tar_file, fp):
+      for line in utils.lines_that_contain(self.tarFile, fp):
         print(line)
         hera_file_size = line.split()[4]
     os.remove(tailfile)
 
     # Check if copy already attempted
     disc_file_size = -1
-    if (os.path.exists(os.path.join(self.workDir,tar_file))):
-      proc = subprocess.Popen(['ls', '-l', os.path.join(self.workDir,tar_file)], stdout=subprocess.PIPE)
+    if (os.path.exists(self.tarFile)):
+      proc = subprocess.Popen(['ls', '-l', self.tarFile], stdout=subprocess.PIPE)
       disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
     # If not matching in file size copy
     if not hera_file_size == disc_file_size:
       print(' Copying:')
       tailfile = "scp_hera_tar.txt"
-      utils.run_bash_command("scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+tar_file+" ./", tailfile)
+      utils.run_bash_command("scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+self.tarFile+" ./", tailfile)
       os.remove(tailfile)
 
     # Check copy was successful
     disc_file_size = -1
-    if (os.path.exists(os.path.join(self.workDir,tar_file))):
-      proc = subprocess.Popen(['ls', '-l', os.path.join(self.workDir,tar_file)], stdout=subprocess.PIPE)
+    if (os.path.exists(self.tarFile))):
+      proc = subprocess.Popen(['ls', '-l', self.tarFile], stdout=subprocess.PIPE)
       disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
-    # Tag as done
-    if hera_file_size == disc_file_size:
-      pathlib.Path(self.HeraCopyDone).touch()
+    if not hera_file_size == disc_file_size:
+      self.abort(' In copying from hera there\'s a size discrepancy')
+
+    # Set as done
+    utils.setDone(self.trakDir,myname)
 
     os.chdir(self.homeDir)
 
@@ -740,36 +745,62 @@ class GFS:
 
   # Untar the converted members
 
-  def extractConvertedMembers(self):
+  def extractWorkDirectory(self):
+
+    myname = 'extractWorkDirectory'
+    if utils.isDone(self.trakDir,myname):
+      return
+    utils.depends(self.trakDir,myname,'membersFromHera')
+
+    # Move to root directory
+    os.chdir(self.rootDir)
 
     # Move to work directory
     os.chdir(self.workDir)
 
-    tar_file = 'ens_'+self.YmD_HRst+'.tar'
     tailfile = "untar_converted_members.txt"
-    utils.run_bash_command("tar -xvf ./"+tar_file, tailfile)
+    utils.run_bash_command("tar -xvf "+self.tarFile, tailfile)
+
+    # Move to root directory
+    os.chdir(self.homeDir)
+
+    # Set as done
+    utils.setDone(self.trakDir,myname)
 
   # ------------------------------------------------------------------------------------------------
 
-  # Prepare directories for the members and the configuration files
+  def ship2S3(self):
 
-  def prepareConvertDirsConfig(self):
+    myname = 'ship2S3'
+    if utils.isDone(self.trakDir,myname):
+      return
+    utils.depends(self.trakDir,myname,'membersFromHera')
 
-    # Move to work directory
-    os.chdir(self.workDir)
+    utils.run_bash_command("aws s3 cp "+self.rootDir+self.tarFile+" "+self.s3path)
 
-    # Create the config dictionary
-    csdict = self.convertStatesDict('a2m','bmat.')
+    # File size on Discover
+    local_file = os.path.join(self.rootDir,self.tarFile)
+    local_file_size = -1
+    if (os.path.exists(local_file)):
+      proc = subprocess.Popen(['ls', '-l', local_file], stdout=subprocess.PIPE)
+      local_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
-    # Write dictionary to configuration file
-    conf_file = os.path.join(self.convertDir,'convert_states.'+self.yamlOrJson)
-    with open(conf_file, 'w') as outfile:
-      if self.yamlOrJson == 'yaml':
-        yaml.dump(csdict, outfile, default_flow_style=False)
-      elif self.yamlOrJson == 'json':
-        json.dump(csdict, outfile)
+    # File size on S3
+    tailfile = "ls_remote_file.txt"
+    utils.run_bash_command("aws s3 ls "+os.path.join(self.s3path,self.tarFile), tailfile)
 
+    # Search tail for line with file size
+    remote_file_size = -1
+    with open(tailfile, "r") as fp:
+      for line in utils.lines_that_contain("rstprod", fp):
+        remote_file_size = line.split()[4]
+    os.remove(tailfile)
 
-    os.chdir(self.homeDir)
+    # Fail if not matching
+    if local_file_size != remote_file_size:
+      self.abort("Local size does not match S3 size")
+
+    # Set as done
+    utils.setDone(self.trakDir,myname)
 
   # ------------------------------------------------------------------------------------------------

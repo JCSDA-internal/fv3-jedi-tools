@@ -19,16 +19,16 @@ etc
 
 Looping over number of cycles the algorithm is:
 
-1. Get all ensemble members for the cycle.
+1. Get all ensemble memebers for the cycle.
 2. Untar the data
-3. Convert to B matrix variables, psi chi etc using a parallel job.
+3. Convert to B matrix variables, psi chi etc using an parallel job.
 4. Check for sucessful conversion.
 5. Remove the original data
 
 """
 
 
-# External libradasries
+# External libraries
 # ------------------
 
 import numpy as np
@@ -51,8 +51,10 @@ sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
 sargs.add_argument( "-m", "--model",         default='gfs')
-sargs.add_argument( "-j", "--jedi_build",    default='/scratch1/NCEPDEV/da/Daniel.Holdaway/JediDev/fv3-bundle-dev/build-intel-17.0.5.239-release-default')
+sargs.add_argument( "-j", "--jedi_dir",      default='')
 sargs.add_argument( "-w", "--work_dir",      default='')
+sargs.add_argument( "-d", "--data_dir",      default='')
+sargs.add_argument( "-c", "--machine",       default='')
 
 
 args    = sargs.parse_args()
@@ -63,13 +65,26 @@ freq    = int(args.freq)
 ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
 model   = args.model
-jbuild  = args.jedi_build
-wrkdir  = args.work_dir
+jedidir = args.jedi_dir
+workdir = args.work_dir
+datadir = args.data_dir
+compt   = args.machine
 
-if wrkdir == '':
-  wdir = os.getcwd()
-else:
-  wdir = wrkdir
+if jedidir == '':
+  print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
+  exit()
+
+if workdir == '':
+  print("ABORT: please provide diretory to work from with -w or --work_dir")
+  exit()
+
+if datadir == '':
+  print("ABORT: please provide data directory with -d or --data_dir")
+  exit()
+
+if compt == '':
+  print("ABORT: please provide maching to run on, hera or discover")
+  exit()
 
 print("\n Ensemble processing for Static B ... \n")
 if (readdts):
@@ -83,8 +98,9 @@ else:
   print("  - Random seed:    "+str(rseed))
 
 print("  - Model being used is "+model)
-print("  - JEDI build path: "+jbuild)
-print("  - Working directory: "+wdir)
+print("  - JEDI build path: "+jedidir)
+print("  - Working directory: "+workdir)
+print("  - Data directory: "+workdir)
 
 print("\n")
 
@@ -162,60 +178,32 @@ with open('datetimes_processed.txt', 'w') as fh:
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 
-for n in range(1): #range(ncycs):
+for n in range(ncycs):
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
-  fv3model.setDirectories(wdir)
+  fv3model.setDirectories(workdir,datadir)
 
-  if os.path.exists(fv3model.workDir+'/AllDone'):
-    print(" This cycle is done, skipping ...")
-    os.remove(fv3model.workDir+'/working')
-    continue
+  # Copy members from Hera
+  available = fv3model.membersFromHera()
+  if not available:
+    print("This date not reached on Hera")
+    break
 
-  # Convert each member
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.HeraCopyDone):
-    fv3model.membersFromHera()
-  else:
-    print(" membersFromHera already complete \n")
+  # Extract tar file members
+  fv3model.extractWorkDirectory()
 
-  # Extract member
-  if not os.path.exists(fv3model.workDir+'/'+fv3model.HeraExtrDone):
-    fv3model.extractConvertedMembers()
-  else:
-    print(" extractConvertedMembers already complete \n")
+  # Prepare for converting members
+  fv3model.prepare2Convert()
 
-  # Prepare yaml file for converting the members
-  fv3model.prepareConvertDirsYamls()
+  # Convert to psi/chi
+  fv3model.convertMembersSlurm()
 
-  # Convert the ensemble members to psi/chi
-  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.ConvertDone)):
-    fv3model.convertMembersUnbalanced(jbuild)
-  else:
-    print(" convertMembersUnbalanced already complete \n")
+  # Clean up post conversion
+  fv3model.postConvertCleanUp()
 
-  # Tar up members
-  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.tarUpMembersDone)):
-    fv3model.tarUpMembers()
-  else:
-    print(" tarUpAndShipS3 already complete \n")
+  # Tar up the directory
+  fv3model.tarWorkDirectory()
 
-  # Ship to S3
-  if not os.path.exists(os.path.join(fv3model.workDir,fv3model.Ship2S3Done)):
-    fv3model.Ship2S3()
-  else:
-    print(" Ship2S3 already complete \n")
-
-  # All done
-  fv3model.allDone()
-
-exit()
-
-
-
-
-
-
-
-
-exit()
+  # Send tar file to s3
+  fv3model.ship2S3()
