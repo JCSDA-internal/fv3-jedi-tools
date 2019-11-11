@@ -17,7 +17,7 @@ dtformatprnt = '%Y%m%d %Hz'
 
 # --------------------------------------------------------------------------------------------------
 
-def run_bash_command(path,command,tail='tail.txt'):
+def run_bash_command(path,command,tail='tail.txt',verbose='yes'):
 
   fname = os.path.join(path,'bash_command.sh')
 
@@ -33,7 +33,8 @@ def run_bash_command(path,command,tail='tail.txt'):
   os.chmod(fname, 0o755)
 
   # Run
-  print(" Run bash command: "+full_command)
+  if (verbose=='yes'):
+    print(" Run bash command: "+full_command)
   cwd = os.getcwd()
   os.chdir(path)
   subprocess.call(['./bash_command.sh'])

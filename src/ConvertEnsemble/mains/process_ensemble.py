@@ -177,19 +177,14 @@ with open('datetimes_processed.txt', 'w') as fh:
 
 # Loop over cycles and process the ensemble
 # -----------------------------------------
+n = 0
+num_staged = 0
 
-for n in range(1,2): #range(ncycs):
+while num_staged <= 2:
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
   fv3model.setDirectories(workdir,datadir)
-
-  # Check on whether this cycle is done
-  print(fv3model.allDone)
-  if os.path.exists(fv3model.allDone):
-    print(" This cycle is done, skipping ...")
-    os.remove(fv3model.Working)
-    continue
 
   # Get the members for this cycle from archive
   fv3model.getEnsembleMembersFromArchive()
@@ -197,30 +192,24 @@ for n in range(1,2): #range(ncycs):
   # Untar the members
   fv3model.extractEnsembleMembers()
 
+  # Post extract clean up
+  fv3model.postExtractEnsembleMembers()
+
   # Remove ensemble tar files
   fv3model.removeEnsembleArchiveFiles()
 
-  # Prepare for slurm job
-  fv3model.prepare2Convert()
-
-  # Submit slurm job to convert members
-  fv3model.convertMembersSlurm(compt,'3','32','04',jedidir)
-
   # Tar converted members for transfer
-  #fv3model.tarConvertedMembers()
+  fv3model.tarWorkDirectory()
 
-  # Final clean up
-  #fv3model.cleanUp()
-
+  # Finished
   fv3model.finished()
 
-  exit()
+  # Count number of staged
+  if os.path.exists(fv3model.tarFile):
+    num_staged = num_staged + 1
+  print("\n Number staged: "+str(num_staged))
 
+  # Cycle
+  n = n + 1
 
-
-
-
-
-
-
-exit()
+print("Number of staged cycles is 2, no more processing for now.")
