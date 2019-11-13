@@ -2,11 +2,15 @@
 # Configuration for running GFS
 # -----------------------------
 
+# Fixed for the machine
 jedi_dir: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediDev/fv3-bundle-dev/build-intel-19.0.5.281-release-default
 work_dir: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWF/StaticB/wrk
 data_dir: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWF/fv3-jedi-tools/Data
 machine: hera
 model: gfs
+
+# Options for running different phases
 num_nodes: 6
 procs_per_node: 16
 job_hours: 1
+s3path: s3://fv3-jedi/StaticB/gfs_ensemble/fordiscover

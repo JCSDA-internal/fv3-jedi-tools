@@ -57,7 +57,6 @@ sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
 
-
 args    = sargs.parse_args()
 readdts = int(args.readdatetimes)==1
 start   = args.start
@@ -65,7 +64,6 @@ final   = args.end
 freq    = int(args.freq)
 ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
-
 
 # Load configuraiton file
 conffile  = args.config
@@ -80,7 +78,6 @@ workdir = conf['work_dir']
 datadir = conf['data_dir']
 model   = conf['model']
 compt   = conf['machine']
-
 
 if jedidir == '':
   print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
@@ -219,7 +216,7 @@ for n in range(ncycs):
   fv3model.tarWorkDirectory()
 
   # Send tar file to s3
-  fv3model.ship2S3()
+  fv3model.ship2S3(conf[s3path])
 
   # Finished
   fv3model.finished()

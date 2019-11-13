@@ -36,6 +36,7 @@ import os
 import datetime
 import argparse
 import random
+import yaml
 
 import Utils.modules.utils as utils
 import ConvertEnsemble.modules.fv3mod_ens_proc as fv3model
@@ -44,18 +45,17 @@ import ConvertEnsemble.modules.fv3mod_ens_proc as fv3model
 # ----------
 
 sargs=argparse.ArgumentParser()
+
+# Configuration file
+sargs.add_argument( "-c", "--config" )
+
+# Optional datetime configuration
 sargs.add_argument( "-f", "--readdatetimes", default='0')
 sargs.add_argument( "-s", "--start",         default='2019061200')  # yyyymmddHH
 sargs.add_argument( "-e", "--end",           default='2019101506')  # yyyymmddHH
 sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
-sargs.add_argument( "-m", "--model",         default='gfs')
-sargs.add_argument( "-j", "--jedi_dir",      default='')
-sargs.add_argument( "-w", "--work_dir",      default='')
-sargs.add_argument( "-d", "--data_dir",      default='')
-sargs.add_argument( "-c", "--machine",       default='')
-
 
 args    = sargs.parse_args()
 readdts = int(args.readdatetimes)==1
@@ -64,11 +64,20 @@ final   = args.end
 freq    = int(args.freq)
 ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
-model   = args.model
-jedidir = args.jedi_dir
-workdir = args.work_dir
-datadir = args.data_dir
-compt   = args.machine
+
+# Load configuraiton file
+conffile  = args.config
+with open(conffile, 'r') as ystream:
+  try:
+    conf = yaml.safe_load(ystream)
+  except yaml.YAMLError as exc:
+    print(exc)
+
+jedidir = conf['jedi_dir']
+workdir = conf['work_dir']
+datadir = conf['data_dir']
+model   = conf['model']
+compt   = conf['machine']
 
 if jedidir == '':
   print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
@@ -207,6 +216,9 @@ while num_staged < num2stage:
 
   # Tar converted members for transfer
   fv3model.tarWorkDirectory()
+
+  # Send tar file to s3
+  fv3model.ship2S3(conf[s3path])
 
   # Finished
   fv3model.finished()

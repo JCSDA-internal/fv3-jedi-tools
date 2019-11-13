@@ -73,10 +73,6 @@ class GFS:
     # Tar file for finished product
     self.tarFile = ''
 
-    # Path on S3 for GFS
-    self.s3path = 's3://fv3-jedi/StaticB/gfs_ensemble/'
-
-
   # ------------------------------------------------------------------------------------------------
 
   def cycleTime(self,datetime):
@@ -796,16 +792,16 @@ class GFS:
 
   # ------------------------------------------------------------------------------------------------
 
-  def ship2S3(self):
+  def ship2S3(self,s3path):
 
     myname = 'ship2S3'
     if utils.isDone(self.trakDir,myname):
       return
-    utils.depends(self.trakDir,myname,'membersFromHera')
+    utils.depends(self.trakDir,myname,'tarWorkDirectory')
 
-    utils.run_bash_command(self.workDir, "aws s3 cp "+self.rootDir+self.tarFile+" "+self.s3path)
+    utils.run_bash_command(self.workDir, "aws2 s3 cp "+self.rootDir+self.tarFile+" "+s3path)
 
-    # File size on Discover
+    # File size locally
     local_file = os.path.join(self.rootDir,self.tarFile)
     local_file_size = -1
     if (os.path.exists(local_file)):
@@ -814,7 +810,7 @@ class GFS:
 
     # File size on S3
     tailfile = "ls_remote_file.txt"
-    utils.run_bash_command(self.workDir, "aws s3 ls "+os.path.join(self.s3path,self.tarFile), tailfile)
+    utils.run_bash_command(self.workDir, "aws s3 ls "+os.path.join(s3path,self.tarFile), tailfile)
 
     # Search tail for line with file size
     remote_file_size = -1
