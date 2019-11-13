@@ -178,7 +178,7 @@ with open('datetimes_processed.txt', 'w') as fh:
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 n = 0
-num2stage = 3
+num2stage = 4
 num_staged = 0
 
 while num_staged < num2stage:
