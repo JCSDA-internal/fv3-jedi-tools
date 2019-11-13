@@ -3,8 +3,8 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-from ConvertEnsemble.modules.gfs import GFS
-from ConvertEnsemble.modules.geos import GEOS
+from ConvertEnsemble.modules.gfs_ens_proc import GFS
+from ConvertEnsemble.modules.geos_ens_proc import GEOS
 
 
 # Builder class for GFS

@@ -202,7 +202,7 @@ class GFS:
 
       # Run hsi ls command on the current file for expected size
       tailfile = "ls_remote_member.txt"
-      utils.run_bash_command("hsi ls -l "+remote_file,tailfile)
+      utils.run_bash_command(self.workDir, "hsi ls -l "+remote_file,tailfile)
 
       # Search tail for line with file size
       remote_file_size = -1
@@ -245,7 +245,7 @@ class GFS:
       # Copy the file to stage directory
       if (get_member_set):
         print(" Copyng member group")
-        utils.run_bash_command("hsi get "+remote_file)
+        utils.run_bash_command(self.workDir, "hsi get "+remote_file)
 
       # Check that the files are copied properly
       if (not os.path.exists(file)):
@@ -318,7 +318,7 @@ class GFS:
 
       # Extract file
       if (do_untar):
-        utils.run_bash_command("tar -xvf "+file)
+        utils.run_bash_command(self.workDir, "tar -xvf "+file)
       else:
         print("  Extraction already done")
 
@@ -370,15 +370,13 @@ class GFS:
       return
     utils.depends(self.trakDir,myname,'extractEnsembleMembers')
 
+    removes = ['*sfcanl_data*','*fv_srf_wnd*','*phy_data*','*sfc_data*','fv_core.res.nc']
+
     # Remove files not needed again
     for e in range(1,self.nEns+1):
 
-      source_dir = os.path.join(self.convertDir,'mem'+str(e).zfill(3))
-
-      removes = ['*sfcanl_data*','*fv_srf_wnd*','*phy_data*','*sfc_data*','fv_core.res.nc']
-
       for r in range(len(removes)):
-        file_list = glob.glob(source_dir+'/'+removes[r])
+        file_list = glob.glob(os.path.join(self.convertDir,'mem'+str(e).zfill(3),'RESTART',removes[r]))
         for file_path in file_list:
           os.remove(file_path)
 
@@ -577,7 +575,7 @@ class GFS:
 
     # Submit job
     os.chdir(self.convertDir)
-    utils.run_bash_command("sbatch "+fname)
+    utils.run_bash_command(self.convertDir, "sbatch "+fname)
     os.chdir(self.homeDir)
 
     # Wait for finish
@@ -653,13 +651,13 @@ class GFS:
     myname = 'tarWorkDirectory'
     if utils.isDone(self.trakDir,myname):
       return
-    utils.depends(self.trakDir,myname,'postConvertCleanUp')
+    utils.depends(self.trakDir,myname,'removeEnsembleArchiveFiles')
 
     # Avoid absolute paths in tar file
     os.chdir(self.rootDir)
 
     if not os.path.exists(os.path.join(self.tarFile)):
-      utils.run_bash_command("tar -cvf "+self.tarFile+" "+"enswork_"+self.Y+self.m+self.d+self.H)
+      utils.run_bash_command(self.rootDir, "tar -cvf "+self.tarFile+" "+"enswork_"+self.Y+self.m+self.d+self.H)
     else:
       print(" Tar file for converted members already created")
 
@@ -670,7 +668,7 @@ class GFS:
       filesearch = os.path.join('enswork_'+self.Y+self.m+self.d+self.H,self.YmD_HRst,'mem'+str(e).zfill(3),'RESTART',self.YRst+self.mRst+self.dRst+'.'+self.HRst+'0000.fv_core.res.tile1.nc')
 
       tailfile = "tar_check.txt"
-      utils.run_bash_command("tar -tvf "+self.tarFile+" "+filesearch, tailfile, 'no')
+      utils.run_bash_command(self.rootDir, "tar -tvf "+self.tarFile+" "+filesearch, tailfile, 'no')
 
       filesearch_found = ''
       with open(tailfile, "r") as fp:
@@ -704,7 +702,7 @@ class GFS:
 
     hera_path = os.path.join('/scratch1','NCEPDEV','da','Daniel.Holdaway','JediScratch','StaticB','wrk','enswork_'+self.Y+self.m+self.d+self.H)
     tailfile = "ls_hera_tar.txt"
-    utils.run_bash_command("ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+self.tarFile, tailfile)
+    utils.run_bash_command(self.workDir,"ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+self.tarFile, tailfile)
 
     # Search tail for line with file size
     hera_file_size = -1
@@ -724,12 +722,12 @@ class GFS:
     if not hera_file_size == disc_file_size:
       print(' Copying:')
       tailfile = "scp_hera_tar.txt"
-      utils.run_bash_command("scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+self.tarFile+" ./", tailfile)
+      utils.run_bash_command(self.workDir,"scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+self.tarFile+" ./", tailfile)
       os.remove(tailfile)
 
     # Check copy was successful
     disc_file_size = -1
-    if (os.path.exists(self.tarFile))):
+    if (os.path.exists(self.tarFile)):
       proc = subprocess.Popen(['ls', '-l', self.tarFile], stdout=subprocess.PIPE)
       disc_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
@@ -759,7 +757,7 @@ class GFS:
     os.chdir(self.workDir)
 
     tailfile = "untar_converted_members.txt"
-    utils.run_bash_command("tar -xvf "+self.tarFile, tailfile)
+    utils.run_bash_command(self.workDir, "tar -xvf "+self.tarFile, tailfile)
 
     # Move to root directory
     os.chdir(self.homeDir)
@@ -776,7 +774,7 @@ class GFS:
       return
     utils.depends(self.trakDir,myname,'membersFromHera')
 
-    utils.run_bash_command("aws s3 cp "+self.rootDir+self.tarFile+" "+self.s3path)
+    utils.run_bash_command(self.workDir, "aws s3 cp "+self.rootDir+self.tarFile+" "+self.s3path)
 
     # File size on Discover
     local_file = os.path.join(self.rootDir,self.tarFile)
@@ -787,7 +785,7 @@ class GFS:
 
     # File size on S3
     tailfile = "ls_remote_file.txt"
-    utils.run_bash_command("aws s3 ls "+os.path.join(self.s3path,self.tarFile), tailfile)
+    utils.run_bash_command(self.workDir, "aws s3 ls "+os.path.join(self.s3path,self.tarFile), tailfile)
 
     # Search tail for line with file size
     remote_file_size = -1

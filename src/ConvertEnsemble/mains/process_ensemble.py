@@ -37,8 +37,8 @@ import datetime
 import argparse
 import random
 
-import ConvertEnsemble.modules.model_utils as mu
-import ConvertEnsemble.modules.fv3model as fv3model
+import Utils.modules.utils as utils
+import ConvertEnsemble.modules.fv3mod_ens_proc as fv3model
 
 # User input
 # ----------
@@ -100,7 +100,7 @@ else:
 print("  - Model being used is "+model)
 print("  - JEDI build path: "+jedidir)
 print("  - Working directory: "+workdir)
-print("  - Data directory: "+workdir)
+print("  - Data directory: "+datadir)
 
 print("\n")
 
@@ -115,7 +115,7 @@ fv3model = fv3model.factory.create(model.upper())
 
 if (readdts):
 
-  with open('datetimes_to_process.txt', 'r') as fh:
+  with open(os.path.join(workdir,'datetimes_to_process.txt'), 'r') as fh:
     datetimes_str = fh.readlines()
 
   ncycs = len(datetimes_str)
@@ -130,13 +130,13 @@ if (readdts):
 
   for n in range(ncycs):
     tmp = str(datetimes_str[n])
-    datetimes[n] = datetime.datetime.strptime(tmp[0:10], mu.dtformat)
+    datetimes[n] = datetime.datetime.strptime(tmp[0:10], utils.dtformat)
 
 else:
 
   # Set datetime and delta objects based on total range
-  datetime_start = datetime.datetime.strptime(start, mu.dtformat)
-  datetime_final = datetime.datetime.strptime(final, mu.dtformat)
+  datetime_start = datetime.datetime.strptime(start, utils.dtformat)
+  datetime_final = datetime.datetime.strptime(final, utils.dtformat)
   totaldelta = datetime_final-datetime_start
   totalhour = totaldelta.total_seconds()/3600
 
@@ -172,7 +172,7 @@ else:
 # -------------------------------------------
 with open('datetimes_processed.txt', 'w') as fh:
   for item in datetimes:
-    fh.write("%s\n" % item.strftime(mu.dtformat))
+    fh.write("%s\n" % item.strftime(utils.dtformat))
 
 
 # Loop over cycles and process the ensemble
@@ -205,7 +205,7 @@ while num_staged <= 2:
   fv3model.finished()
 
   # Count number of staged
-  if os.path.exists(fv3model.tarFile):
+  if os.path.exists(os.path.join(fv3model.rootDir,fv3model.tarFile)):
     num_staged = num_staged + 1
   print("\n Number staged: "+str(num_staged))
 

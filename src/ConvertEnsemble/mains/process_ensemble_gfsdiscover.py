@@ -37,7 +37,7 @@ import datetime
 import argparse
 import random
 
-import ConvertEnsemble.modules.model_utils as mu
+import Utils.modules.utils as utils
 import ConvertEnsemble.modules.fv3model as fv3model
 
 # User input
@@ -130,13 +130,13 @@ if (readdts):
 
   for n in range(ncycs):
     tmp = str(datetimes_str[n])
-    datetimes[n] = datetime.datetime.strptime(tmp[0:10], mu.dtformat)
+    datetimes[n] = datetime.datetime.strptime(tmp[0:10], utils.dtformat)
 
 else:
 
   # Set datetime and delta objects based on total range
-  datetime_start = datetime.datetime.strptime(start, mu.dtformat)
-  datetime_final = datetime.datetime.strptime(final, mu.dtformat)
+  datetime_start = datetime.datetime.strptime(start, utils.dtformat)
+  datetime_final = datetime.datetime.strptime(final, utils.dtformat)
   totaldelta = datetime_final-datetime_start
   totalhour = totaldelta.total_seconds()/3600
 
@@ -172,7 +172,7 @@ else:
 # -------------------------------------------
 with open('datetimes_processed.txt', 'w') as fh:
   for item in datetimes:
-    fh.write("%s\n" % item.strftime(mu.dtformat))
+    fh.write("%s\n" % item.strftime(utils.dtformat))
 
 
 # Loop over cycles and process the ensemble
