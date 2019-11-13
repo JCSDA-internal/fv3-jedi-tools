@@ -370,7 +370,7 @@ class GFS:
       return
     utils.depends(self.trakDir,myname,'extractEnsembleMembers')
 
-    removes = ['*sfcanl_data*','*fv_srf_wnd*','*phy_data*','*sfc_data*','fv_core.res.nc']
+    removes = ['*sfcanl_data*','*fv_srf_wnd*','*phy_data*','*sfc_data*','*fv_core.res.nc']
 
     # Remove files not needed again
     for e in range(1,self.nEns+1):

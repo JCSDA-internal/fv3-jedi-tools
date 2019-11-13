@@ -178,9 +178,10 @@ with open('datetimes_processed.txt', 'w') as fh:
 # Loop over cycles and process the ensemble
 # -----------------------------------------
 n = 0
+num2stage = 3
 num_staged = 0
 
-while num_staged <= 2:
+while num_staged < num2stage:
 
   # Datetime and directories for this cycle
   fv3model.cycleTime(datetimes[n])
@@ -198,6 +199,12 @@ while num_staged <= 2:
   # Remove ensemble tar files
   fv3model.removeEnsembleArchiveFiles()
 
+  # # Prepare for converting members
+  # fv3model.prepare2Convert()
+
+  # # Convert to psi/chi
+  # fv3model.convertMembersSlurm(compt,6,16,1,jedidir)
+
   # Tar converted members for transfer
   fv3model.tarWorkDirectory()
 
@@ -212,4 +219,4 @@ while num_staged <= 2:
   # Cycle
   n = n + 1
 
-print("Number of staged cycles is 2, no more processing for now.")
+print("Number of staged cycles is "+num2stage+", no more processing for now.")
