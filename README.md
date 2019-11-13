@@ -2,8 +2,9 @@
 
 # Tools for fv3-jedi 
 
-1. Workflows
+1. Workflow scripts
 	- Retrieve GFS ensemble from archive and convert to stream function and velocity potential.
+	- Get GSI diags from hpss and convert to ioda format
 
 2. Diagnostics:
 	- Plotting of Poisson solver convergence
