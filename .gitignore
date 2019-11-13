@@ -102,12 +102,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-# Datetime files
-*.yaml
-*.png
-*.pdf
-src/*.txt
-src/*.tar
-src/enswork_*
-src/tmpnwprd1
