@@ -622,7 +622,7 @@ class GFS:
     # Clean up large files
 
     # Check if done and depends
-    myname = 'cleanUp'
+    myname = 'postConvertCleanUp'
     if utils.isDone(self.trakDir,myname):
       return
     utils.depends(self.trakDir,myname,'convertMembersSlurm')
@@ -639,6 +639,9 @@ class GFS:
 
     # Clean up work directory
     shutil.rmtree(os.path.join(self.workDir,'enkfgdas.'+self.YmD))
+
+    # Need to tar again
+    os.remove(os.path.join(self.trakDir,'tarWorkDirectory'))
 
     # Set as done
     utils.setDone(self.trakDir,myname)
@@ -695,14 +698,14 @@ class GFS:
     # Check if done and depends
     myname = 'membersFromHera'
     if utils.isDone(self.trakDir,myname):
-      return
+      return True
 
     # Move to root directory
     os.chdir(self.rootDir)
 
-    hera_path = os.path.join('/scratch1','NCEPDEV','da','Daniel.Holdaway','JediScratch','StaticB','wrk','enswork_'+self.Y+self.m+self.d+self.H)
-    tailfile = "ls_hera_tar.txt"
-    utils.run_bash_command(self.workDir,"ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path+self.tarFile, tailfile)
+    hera_path = os.path.join('/scratch1','NCEPDEV','da','Daniel.Holdaway','JediWF','StaticB','wrk',self.tarFile)
+    tailfile = os.path.join(self.workDir,"ls_hera_tar.txt")
+    utils.run_bash_command(self.workDir,"ssh Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov ls -l "+hera_path, tailfile)
 
     # Search tail for line with file size
     hera_file_size = -1
@@ -711,6 +714,10 @@ class GFS:
         print(line)
         hera_file_size = line.split()[4]
     os.remove(tailfile)
+
+    if hera_file_size == -1:
+      print(" This date/time not available on Hera yet")
+      return False
 
     # Check if copy already attempted
     disc_file_size = -1
@@ -721,8 +728,8 @@ class GFS:
     # If not matching in file size copy
     if not hera_file_size == disc_file_size:
       print(' Copying:')
-      tailfile = "scp_hera_tar.txt"
-      utils.run_bash_command(self.workDir,"scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+self.tarFile+" ./", tailfile)
+      tailfile = os.path.join(self.workDir,"scp_hera_tar.txt")
+      utils.run_bash_command(self.workDir,"scp Daniel.Holdaway@dtn-hera.fairmont.rdhpcs.noaa.gov:"+hera_path+" ./", tailfile)
       os.remove(tailfile)
 
     # Check copy was successful
@@ -739,6 +746,8 @@ class GFS:
 
     os.chdir(self.homeDir)
 
+    return True
+
   # ------------------------------------------------------------------------------------------------
 
   # Untar the converted members
@@ -750,8 +759,28 @@ class GFS:
       return
     utils.depends(self.trakDir,myname,'membersFromHera')
 
+    # Move to work directory
+    os.chdir(self.workDir)
+
+    tailfile = "untar_converted_members.txt"
+    utils.run_bash_command(self.workDir, "tar -xvf "+self.tarFile, tailfile)
+
     # Move to root directory
-    os.chdir(self.rootDir)
+    os.chdir(self.homeDir)
+
+    # Set as done
+    utils.setDone(self.trakDir,myname)
+
+  # ------------------------------------------------------------------------------------------------
+
+  # Untar the converted members
+
+  def extractWorkDirectoryDisco(self):
+
+    myname = 'extractWorkDirectoryDisco'
+    if utils.isDone(self.trakDir,myname):
+      return
+    utils.depends(self.trakDir,myname,'membersFromHera')
 
     # Move to work directory
     os.chdir(self.workDir)

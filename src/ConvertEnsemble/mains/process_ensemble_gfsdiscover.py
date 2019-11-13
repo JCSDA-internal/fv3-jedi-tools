@@ -36,25 +36,26 @@ import os
 import datetime
 import argparse
 import random
+import yaml
 
 import Utils.modules.utils as utils
-import ConvertEnsemble.modules.fv3model as fv3model
+import ConvertEnsemble.modules.fv3mod_ens_proc as fv3model
 
 # User input
 # ----------
 
 sargs=argparse.ArgumentParser()
+
+# Configuration file
+sargs.add_argument( "-c", "--config" )
+
+# Optional datetime configuration
 sargs.add_argument( "-f", "--readdatetimes", default='0')
 sargs.add_argument( "-s", "--start",         default='2019061200')  # yyyymmddHH
 sargs.add_argument( "-e", "--end",           default='2019101506')  # yyyymmddHH
 sargs.add_argument( "-q", "--freq",          default='6')           # Hours
 sargs.add_argument( "-n", "--ncycs",         default='100')
 sargs.add_argument( "-r", "--rseed",         default='1')
-sargs.add_argument( "-m", "--model",         default='gfs')
-sargs.add_argument( "-j", "--jedi_dir",      default='')
-sargs.add_argument( "-w", "--work_dir",      default='')
-sargs.add_argument( "-d", "--data_dir",      default='')
-sargs.add_argument( "-c", "--machine",       default='')
 
 
 args    = sargs.parse_args()
@@ -64,11 +65,22 @@ final   = args.end
 freq    = int(args.freq)
 ncycs   = int(args.ncycs)
 rseed   = int(args.rseed)
-model   = args.model
-jedidir = args.jedi_dir
-workdir = args.work_dir
-datadir = args.data_dir
-compt   = args.machine
+
+
+# Load configuraiton file
+conffile  = args.config
+with open(conffile, 'r') as ystream:
+  try:
+    conf = yaml.safe_load(ystream)
+  except yaml.YAMLError as exc:
+    print(exc)
+
+jedidir = conf['jedi_dir']
+workdir = conf['work_dir']
+datadir = conf['data_dir']
+model   = conf['model']
+compt   = conf['machine']
+
 
 if jedidir == '':
   print("ABORT: please provide path to JEDI build with -j or --jedi_dir")
@@ -186,9 +198,10 @@ for n in range(ncycs):
 
   # Copy members from Hera
   available = fv3model.membersFromHera()
+
+  # Continue if not available
   if not available:
-    print("This date not reached on Hera")
-    break
+    utils.abort("This date not reached on Hera")
 
   # Extract tar file members
   fv3model.extractWorkDirectory()
@@ -197,7 +210,7 @@ for n in range(ncycs):
   fv3model.prepare2Convert()
 
   # Convert to psi/chi
-  fv3model.convertMembersSlurm()
+  fv3model.convertMembersSlurm(compt,conf['num_nodes'],conf['procs_per_node'],conf['job_hours'],jedidir)
 
   # Clean up post conversion
   fv3model.postConvertCleanUp()
@@ -207,3 +220,6 @@ for n in range(ncycs):
 
   # Send tar file to s3
   fv3model.ship2S3()
+
+  # Finished
+  fv3model.finished()
