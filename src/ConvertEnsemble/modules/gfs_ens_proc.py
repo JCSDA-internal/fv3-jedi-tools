@@ -799,29 +799,44 @@ class GFS:
       return
     utils.depends(self.trakDir,myname,'tarWorkDirectory')
 
-    utils.run_bash_command(self.workDir, "aws2 s3 cp "+self.rootDir+self.tarFile+" "+s3path)
+    file2ship = os.path.join(self.rootDir,self.tarFile)
+
+    s3file = os.path.join(s3path,self.tarFile)
 
     # File size locally
-    local_file = os.path.join(self.rootDir,self.tarFile)
     local_file_size = -1
-    if (os.path.exists(local_file)):
-      proc = subprocess.Popen(['ls', '-l', local_file], stdout=subprocess.PIPE)
+    if (os.path.exists(file2ship)):
+      proc = subprocess.Popen(['ls', '-l', file2ship], stdout=subprocess.PIPE)
       local_file_size = proc.stdout.readline().decode('utf-8').split()[4]
 
     # File size on S3
-    tailfile = "ls_remote_file.txt"
-    utils.run_bash_command(self.workDir, "aws s3 ls "+os.path.join(s3path,self.tarFile), tailfile)
+    tailfile = os.path.join(self.workDir,"ls_remote_file.txt")
+    utils.run_bash_command(self.workDir, "aws2 s3 ls "+s3file, tailfile)
 
-    # Search tail for line with file size
     remote_file_size = -1
     with open(tailfile, "r") as fp:
-      for line in utils.lines_that_contain("rstprod", fp):
-        remote_file_size = line.split()[4]
+      for line in utils.lines_that_contain(self.tarFile, fp):
+        remote_file_size = line.split()[2]
     os.remove(tailfile)
 
-    # Fail if not matching
     if local_file_size != remote_file_size:
-      self.abort("Local size does not match S3 size")
+
+      # Copy file to S3
+      utils.run_bash_command(self.workDir, "aws2 s3 cp "+file2ship+" "+s3file)
+
+      # Recheck File size on S3
+      tailfile = os.path.join(self.workDir,"ls_remote_file.txt")
+      utils.run_bash_command(self.workDir, "aws2 s3 ls "+s3file, tailfile)
+
+      remote_file_size = -1
+      with open(tailfile, "r") as fp:
+        for line in utils.lines_that_contain(self.tarFile, fp):
+          remote_file_size = line.split()[2]
+      os.remove(tailfile)
+
+      # Fail if not matching
+      if local_file_size != remote_file_size:
+        self.abort("Local size does not match S3 size")
 
     # Set as done
     utils.setDone(self.trakDir,myname)

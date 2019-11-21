@@ -218,7 +218,7 @@ while num_staged < num2stage:
   fv3model.tarWorkDirectory()
 
   # Send tar file to s3
-  fv3model.ship2S3(conf[s3path])
+  fv3model.ship2S3(conf['s3path'])
 
   # Finished
   fv3model.finished()
@@ -231,4 +231,4 @@ while num_staged < num2stage:
   # Cycle
   n = n + 1
 
-print("Number of staged cycles is "+num2stage+", no more processing for now.")
+print("Number of staged cycles is "+str(num2stage)+", no more processing for now.")

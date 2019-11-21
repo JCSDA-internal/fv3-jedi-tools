@@ -14,8 +14,10 @@ import gzip
 import glob
 import sys
 import pathlib
+import time
 
 import ObsProcessing.modules.gsid2ioda_driver as gsid2ioda_driver
+#import ObsProcessing.modules.gsi_ncdiag as gsi_ncdiag
 import Utils.modules.utils as utils
 
 sargs=argparse.ArgumentParser()
@@ -57,6 +59,27 @@ tdatetimes = np.array([datetime_start + datetime.timedelta(hours=6*i) for i in r
 if not os.path.exists(workdir):
   os.makedirs(workdir)
 
+working_flag = os.path.join(workdir,'working')
+
+if os.path.exists(working_flag):
+  if (time.time()-os.path.getmtime(working_flag))/(60*60) > 3.0:
+    print("Working flag exists but is over 3 hours old. Deleting and running again")
+    os.remove(working_flag)
+  else:
+    print(working_flag+" exists. Already running or failed last time")
+    exit()
+
+pathlib.Path(working_flag).touch()
+
+# Files that converters can't handle
+skip_files = ['diag_conv_sst_ges',       # Conventional
+              'diag_gome_metop-a_ges',   # Ozone
+              'diag_sbuv2_n19_ges',
+              'diag_omi_aura_ges',
+              'diag_gome_metop-b_ges',
+              'diag_ompstc8_npp_ges',
+              'diag_ompsnp_npp_ges']
+
 for n in range(ntcycs):
 
   print('Processing: ',tdatetimes[n])
@@ -73,15 +96,23 @@ for n in range(ntcycs):
   workdirdate = os.path.join(workdir,YmdH)
   workdirgsid = os.path.join(workdirdate,'gsid')
   workdirioda = os.path.join(workdirdate,'ioda')
+  workdiriodatmp = os.path.join(workdirioda,'tmp')
 
   if not os.path.exists(workdirdate):
     os.makedirs(workdirdate)
+  if not os.path.exists(workdirgsid):
     os.makedirs(workdirgsid)
+  if not os.path.exists(workdirioda):
     os.makedirs(workdirioda)
+  if not os.path.exists(workdiriodatmp):
+    os.makedirs(workdiriodatmp)
 
+  lastdate = False
   if os.path.exists(os.path.join(workdirdate,'done')):
     print('Date complete, skipping')
     continue
+  else:
+    lastdate = True
 
   remote_path = os.path.join(hpssroot,YmdH)
   remote_file = os.path.join(remote_path,'gdas.tar')
@@ -100,49 +131,39 @@ for n in range(ntcycs):
 
     os.chdir(dirs[t])
 
-    path_in_file = os.path.join('./gdas.'+Y+m+d,H,'gdas.t'+H+'z.'+types[t]+'stat')
-    utils.run_bash_command(dirs[t], "hpsstar get "+remote_file+" "+path_in_file)
-    utils.run_bash_command(dirs[t], 'tar -xvf '+path_in_file)
+    if not os.path.exists(os.path.join(dirs[t],'extractdone')):
 
-    # Remove the tar files
-    shutil.rmtree(os.path.join(dirs[t],'gdas.'+Y+m+d))
+      path_in_file = os.path.join('./gdas.'+Y+m+d,H,'gdas.t'+H+'z.'+types[t]+'stat')
+      utils.run_bash_command(dirs[t], "/apps/hpss/htar -xvf "+remote_file+" "+path_in_file)
+      utils.run_bash_command(dirs[t], 'tar -xvf '+path_in_file)
 
-    # Unzip each observation file
-    for item in os.listdir(dirs[t]): # loop through items in dir
-      if item.endswith('gz'):
-        gzfilename = os.path.join(dirs[t],item)
-        with gzip.open(gzfilename, 'rb') as file_gz:
-          base_name = os.path.basename(gzfilename)
-          new_name = os.path.splitext(base_name)[0]
-          with open(os.path.join(dirs[t],new_name), 'wb') as f_out:
-            shutil.copyfileobj(file_gz, f_out)
-            os.remove(gzfilename)
+      # Remove the tar files
+      shutil.rmtree(os.path.join(dirs[t],'gdas.'+Y+m+d))
 
-    # Keep only ges
-    fileList = glob.glob(os.path.join(dirs[t],'*anl*'))
-    for filePath in fileList:
-      os.remove(filePath)
+      # Unzip each observation file
+      for item in os.listdir(dirs[t]): # loop through items in dir
+        if item.endswith('gz'):
+          gzfilename = os.path.join(dirs[t],item)
+          with gzip.open(gzfilename, 'rb') as file_gz:
+            base_name = os.path.basename(gzfilename)
+            new_name = os.path.splitext(base_name)[0]
+            with open(os.path.join(dirs[t],new_name), 'wb') as f_out:
+              shutil.copyfileobj(file_gz, f_out)
+              os.remove(gzfilename)
 
-    skip_files = ['diag_ahi_himawari8_ges', # Radiances
-                 'diag_avhrr_n19_ges',
-                 'diag_avhrr_metop-b_ges',
-                 'diag_avhrr_metop-a_ges',
-                 'diag_avhrr_n18_ges',
-                 'diag_saphir_meghat_ges',
-                 'diag_conv_sst_ges',       # Conventional
-                 'diag_gome_metop-a_ges',   # Ozone
-                 'diag_sbuv2_n19_ges',
-                 'diag_omi_aura_ges',
-                 'diag_gome_metop-b_ges',
-                 'diag_ompstc8_npp_ges',
-                 'diag_ompsnp_npp_ges']
+      # Keep only ges
+      fileList = glob.glob(os.path.join(dirs[t],'*anl*'))
+      for filePath in fileList:
+        os.remove(filePath)
 
-    # Tag files to skip
-    fileList = glob.glob(os.path.join('diag_*'))
-    for filePath in fileList:
-      for f in range(len(skip_files)):
-        if skip_files[f] in filePath:
-          os.rename(filePath,'_'+filePath)
+      # Tag files to skip
+      fileList = glob.glob(os.path.join('diag_*'))
+      for filePath in fileList:
+        for f in range(len(skip_files)):
+          if skip_files[f] in filePath:
+            os.rename(filePath,'_'+filePath)
+
+      pathlib.Path(os.path.join(dirs[t],'extractdone')).touch()
 
     # Call converters for all files
     platform = ''
@@ -183,10 +204,21 @@ for n in range(ntcycs):
         file_done = doneallplat
 
       if not file_done:
-        gsid2ioda_driver.gsid_to_ioda_driver(ioda_con_path,filePath,workdirioda,types[t],platform)
+        gsid2ioda_driver.gsid_to_ioda_driver(ioda_con_path,filePath,workdiriodatmp,types[t],platform)
+        #Move file to normal ioda directory
+        files = os.listdir(workdiriodatmp)
+        for f in files:
+          shutil.move(os.path.join(workdiriodatmp,f), os.path.join(workdirioda,f))
       else:
         print(" Already converted")
 
     os.chdir(workdirdate)
 
-    pathlib.Path(os.path.join(workdirdate,'done')).touch()
+
+  print(os.path.join(workdirdate,'done'))
+  pathlib.Path(os.path.join(workdirdate,'done')).touch()
+
+  if lastdate:
+    print("One date at a time, all done")
+    os.remove(os.path.join(workdir,'working'))
+    exit()

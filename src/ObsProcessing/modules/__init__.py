@@ -1,1 +1,1 @@
-__all__ = ['gsid2ioda_driver']
+__all__ = ['gsid2ioda_driver','gsi_ncdiag']

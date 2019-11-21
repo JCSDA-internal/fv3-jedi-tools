@@ -17,11 +17,14 @@ dtformatprnt = '%Y%m%d %Hz'
 
 # --------------------------------------------------------------------------------------------------
 
-def run_bash_command(path,command,tail='tail.txt',verbose='yes'):
+def run_bash_command(path,command,tail='',verbose='yes'):
 
   fname = os.path.join(path,'bash_command.sh')
 
-  full_command = command+' > '+tail+' 2>&1'
+  if tail=='':
+    full_command = command
+  else:
+    full_command = command+' > '+tail+' 2>&1'
 
   # Create file with bash command
   fh = open(fname, "w")
@@ -44,8 +47,8 @@ def run_bash_command(path,command,tail='tail.txt',verbose='yes'):
   os.remove(fname)
 
   # User didn't request any output
-  if (tail=='tail.txt'):
-    os.remove(os.path.join(path,'tail.txt'))
+  #if (tail=='tail.txt'):
+    #os.remove(os.path.join(path,'tail.txt'))
 
 # --------------------------------------------------------------------------------------------------
 
