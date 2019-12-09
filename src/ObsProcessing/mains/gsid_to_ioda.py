@@ -80,9 +80,9 @@ skip_files = ['diag_conv_sst_ges',       # Conventional
               'diag_ompstc8_npp_ges',
               'diag_ompsnp_npp_ges']
 
-for n in range(ntcycs):
+cnv_types = ['aircraft','sfcship','sfc','sondes']
 
-  print('Processing: ',tdatetimes[n])
+for n in range(ntcycs):
 
   hpssroot = '/NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16rt2'
 
@@ -96,7 +96,6 @@ for n in range(ntcycs):
   workdirdate = os.path.join(workdir,YmdH)
   workdirgsid = os.path.join(workdirdate,'gsid')
   workdirioda = os.path.join(workdirdate,'ioda')
-  workdiriodatmp = os.path.join(workdirioda,'tmp')
 
   if not os.path.exists(workdirdate):
     os.makedirs(workdirdate)
@@ -104,14 +103,13 @@ for n in range(ntcycs):
     os.makedirs(workdirgsid)
   if not os.path.exists(workdirioda):
     os.makedirs(workdirioda)
-  if not os.path.exists(workdiriodatmp):
-    os.makedirs(workdiriodatmp)
 
   lastdate = False
   if os.path.exists(os.path.join(workdirdate,'done')):
-    print('Date complete, skipping')
+    #print('Date complete, skipping')
     continue
   else:
+    print('Processing: ',tdatetimes[n],'\n')
     lastdate = True
 
   remote_path = os.path.join(hpssroot,YmdH)
@@ -128,6 +126,10 @@ for n in range(ntcycs):
 
   # Loop over obs types and retrieve from archive
   for t in range(len(types)):
+
+    workdiriodatmp = os.path.join(workdirioda,types[t])
+    if not os.path.exists(workdiriodatmp):
+      os.makedirs(workdiriodatmp)
 
     os.chdir(dirs[t])
 
@@ -196,23 +198,74 @@ for n in range(ntcycs):
           platform = gsi_ncdiag.conv_platforms['conv_uv']
           file_tmp = 'uv'
 
-        doneallplat = True
-        for p in range(len(platform)):
-          out_file = platform[p]+'_'+file_tmp+'_obs_'+YmdH+'.nc4'
-          if not os.path.exists(os.path.join(workdirioda,out_file)):
-            doneallplat = False
-        file_done = doneallplat
+        donecombine = True
+        for ctype in cnv_types:
+          filecombined = ctype+'_obs_'+YmdH+'.nc4'
+          if not os.path.exists(os.path.join(workdirioda,filecombined)):
+            donecombine = False
+        file_done = donecombine
+
+        if not file_done:
+          doneallplat = True
+          for p in range(len(platform)):
+            out_file = platform[p]+'_'+file_tmp+'_obs_'+YmdH+'.nc4'
+            if not os.path.exists(os.path.join(workdiriodatmp,out_file)):
+              doneallplat = False
+          file_done = doneallplat
 
       if not file_done:
+
         gsid2ioda_driver.gsid_to_ioda_driver(ioda_con_path,filePath,workdiriodatmp,types[t],platform)
+
         #Move file to normal ioda directory
-        files = os.listdir(workdiriodatmp)
-        for f in files:
-          shutil.move(os.path.join(workdiriodatmp,f), os.path.join(workdirioda,f))
+        if types[t] != 'cnv':
+          files = os.listdir(workdiriodatmp)
+          for f in files:
+            shutil.move(os.path.join(workdiriodatmp,f), os.path.join(workdirioda,f))
       else:
         print(" Already converted")
 
+    # Remove tmp directory
+    if types[t] == 'cnv':
+
+      # Combine conventional observations
+      os.chdir(workdiriodatmp)
+      for ctype in cnv_types:
+        filecombined = ctype+'_obs_'+YmdH+'.nc4'
+        if not os.path.exists(os.path.join(workdirioda,filecombined)):
+          combinelist = glob.glob(os.path.join(workdiriodatmp,ctype+'_*_obs_*'))
+          combinestrg = ' '.join(combinelist)
+          print('Combining conventional files: ', combinestrg)
+          os.system(ioda_con_path+'/bin/combine_conv.py -i '+combinestrg+' -o '+os.path.join(workdiriodatmp,filecombined))
+          shutil.move(os.path.join(workdiriodatmp,filecombined), os.path.join(workdirioda,filecombined))
+          for file in combinelist:
+            os.remove(file)
+
+      # Move remaining conventional data
+      files = os.listdir(workdiriodatmp)
+      for f in files:
+        shutil.move(os.path.join(workdiriodatmp,f), os.path.join(workdirioda,f))
+
+    shutil.rmtree(workdiriodatmp)
+
     os.chdir(workdirdate)
+
+  # End loop over types
+
+  # Tar up the ioda observations
+  # ----------------------------
+  obsfile = 'obs.'+YmdH+'.tar'
+  os.chdir(workdirioda)
+  tarlist = glob.glob('*.nc4')
+  tarliststr = ' '.join(tarlist)
+  print(tarliststr)
+  utils.run_bash_command(workdirioda, 'tar -cvf '+os.path.join(workdirdate,obsfile)+' '+tarliststr)
+
+
+  # Copy to S3
+  # ----------
+  s3path = 's3://fv3-jedi/Observations/GFS-16_gsi_diags/'
+  utils.ship2S3(workdirdate,obsfile,s3path)
 
 
   print(os.path.join(workdirdate,'done'))
