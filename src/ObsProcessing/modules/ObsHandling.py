@@ -48,6 +48,18 @@ class ObservationHandling:
 
 # --------------------------------------------------------------------------------------------------
 
+  def downloadObsArchive(self):
+
+    # Environment variables and config
+    self.setup()
+
+    # Retrieve from archive
+    remote_path_file = os.path.join(self.config['obs_targetpath'],self.obstarfile)
+    if os.path.exists(remote_path_file):
+      copyfile(remote_path_file, self.config['obs_targetpath'])
+
+# --------------------------------------------------------------------------------------------------
+
   def extractObs(self):
 
     # Environment variables and config
@@ -61,6 +73,18 @@ class ObservationHandling:
 # --------------------------------------------------------------------------------------------------
 
   def removeObsTar(self):
+
+    # Environment variables and config
+    self.setup()
+
+    # Remove tar file
+    local_path_file = os.path.join(self.config['obs_targetpath'],self.obstarfile)
+    if os.path.exists(local_path_file):
+      os.remove(local_path_file)
+
+# --------------------------------------------------------------------------------------------------
+
+  def removeObsFiles(self):
 
     # Environment variables and config
     self.setup()
