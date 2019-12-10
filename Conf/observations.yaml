@@ -1,0 +1,8 @@
+# (C) Copyright 2019 UCAR
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+obs_sourcepath: 's3://fv3-jedi/Observations/GFS-16_gsi_diags/'
+obs_targetpath: '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/Data/Observations'
+obs_fileformat: 'obs.%Y%m%d%H.tar'
