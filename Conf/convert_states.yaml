@@ -1,0 +1,36 @@
+# (C) Copyright 2019 UCAR
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+# Number of states to convert
+nstates: 32
+
+# Config file to output
+yamlout: '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/JediRuns/Config/convert_ens_D2A.yaml'
+
+# Model levels
+levels: '72'
+
+# Input and output vars
+invars:  ["U" ,"V" ]
+outvars: ["ua","va"]
+
+# Files for input
+input_path: Data/Ensemble/f522_dh.atmens_erst.%Y%m%d_%Hz/mem$STATE
+
+input_filename_bkgd: ''
+input_filename_crtm: ''
+input_filename_core: 'f522_dh.fvcore_internal_rst.%Y%m%d_%Hz.nc4'
+input_filename_mois: ''
+input_filename_surf: ''
+
+
+# Files for output
+output_path: Data/Ensemble/f522_dh.atmens_erst.%Y%m%d_%Hz/mem$STATE
+
+output_filename_bkgd: 'f522_dh.geos.bkg.%Y%m%d_%Hz.nc4'
+output_filename_crtm: ''
+output_filename_core: ''
+output_filename_mois: ''
+output_filename_surf: ''

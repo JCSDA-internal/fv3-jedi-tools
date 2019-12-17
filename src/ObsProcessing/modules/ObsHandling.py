@@ -5,6 +5,7 @@
 
 import datetime as dt
 import os
+import shutil
 import tarfile
 import yaml
 
@@ -43,6 +44,9 @@ class ObservationHandling:
     # Environment variables and config
     self.setup()
 
+    # Create path
+    utils.createdir(self.config['obs_targetpath'])
+
     # Retrieve from S3
     utils.recvS3(self.config['obs_targetpath'],self.obstarfile,self.config['obs_sourcepath'])
 
@@ -56,7 +60,7 @@ class ObservationHandling:
     # Retrieve from archive
     remote_path_file = os.path.join(self.config['obs_targetpath'],self.obstarfile)
     if os.path.exists(remote_path_file):
-      copyfile(remote_path_file, self.config['obs_targetpath'])
+      shutil.copyfile(remote_path_file, self.config['obs_targetpath'])
 
 # --------------------------------------------------------------------------------------------------
 

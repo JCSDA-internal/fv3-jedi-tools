@@ -7,6 +7,19 @@ import datetime
 
 # --------------------------------------------------------------------------------------------------
 
+def varcha_d2a_dict(invars,outvars):
 
+  varchadict = {
+    "varchange": "D2AWinds",
+    "doinverse": "0",
+    "inputVariables": {
+    "variables": invars,
+    },
+    "outputVariables": {
+    "variables": outvars,
+    },
+  }
+
+  return varchadict
 
 # --------------------------------------------------------------------------------------------------

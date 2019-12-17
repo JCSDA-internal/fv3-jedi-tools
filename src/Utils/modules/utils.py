@@ -7,9 +7,11 @@
 
 import subprocess
 import os
-import pathlib
 import datetime as dt
 import numpy as np
+import shlex
+import subprocess
+import sys
 
 # --------------------------------------------------------------------------------------------------
 
@@ -29,13 +31,98 @@ def getDateTimes(start,final,freq,dtform=dtformat):
     datetime_final = dt.datetime.now()
 
   totaldelta = datetime_final-datetime_start
-  totalhour = totaldelta.total_seconds()/3600
+  totalseconds = totaldelta.total_seconds()
 
   # List of dates to process
-  ntcycs = int(totalhour / freq) + 1
-  dts = np.array([datetime_start + dt.timedelta(hours=6*i) for i in range(ntcycs)])
+  ntcycs = int(totalseconds / float(freq)) + 1
+
+  # Check for proper freuqncey
+  resi = totalseconds/freq - float(int(totalseconds/freq))
+  if (resi != 0.0):
+    abort("utils.getDateTimes: (final-start)/freq is not a whole number")
+
+  # Array of date times
+  dts = np.array([datetime_start + dt.timedelta(seconds=freq*i) for i in range(ntcycs)])
 
   return dts
+
+# --------------------------------------------------------------------------------------------------
+
+def createPath(dirpath):
+
+  if not os.path.exists(dirpath):
+    os.makedirs(dirpath)
+
+# --------------------------------------------------------------------------------------------------
+
+def getFileSize(path_file):
+
+  file_size = -1
+  if os.path.exists(path_file):
+    file_size = int(os.path.getsize(path_file))
+
+  return file_size
+
+# --------------------------------------------------------------------------------------------------
+
+def run_shell_command(command_line):
+
+  command_line_args = shlex.split(command_line)
+
+  print('utils.run_shell_command: Running command '+command_line)
+
+  try:
+
+    # Submit the job
+    shell_job = subprocess.Popen(command_line_args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+
+    # Wait for completion
+    shell_job.wait()
+
+  except (OSError, subprocess.CalledProcessError) as exception:
+
+    # Abort if failure detected
+    abort("utils.run_shell_command subprocess failed")
+
+  else:
+
+    # All done
+    print('utils.run_shell_command: subprocess finished')
+
+
+# --------------------------------------------------------------------------------------------------
+
+def run_csh_command(path,command,tail='',verbose='yes'):
+
+  fname = os.path.join(path,'csh_command.sh')
+
+  print(fname)
+
+  if tail=='':
+    full_command = command
+  else:
+    full_command = command+' >& '+tail
+
+  # Create file with bash command
+  fh = open(fname, "w")
+  fh.write("#!/bin/csh -fx \n")
+  fh.write("\n")
+  fh.write(full_command)
+  fh.close()
+
+  # Make executable
+  os.chmod(fname, 0o755)
+
+  # Run
+  if (verbose=='yes'):
+    print(" Run csh command: "+full_command)
+  cwd = os.getcwd()
+  os.chdir(path)
+  subprocess.call(['./csh_command.sh'])
+  os.chdir(cwd)
+
+  # Remove file
+  #os.remove(fname)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -103,7 +190,7 @@ def setDone(path,funcname):
 
   print(" Function: "+funcname+" is complete")
   filename = os.path.join(path,funcname)
-  pathlib.Path(filename).touch()
+  open(filename, 'a').close()
 
 # --------------------------------------------------------------------------------------------------
 
