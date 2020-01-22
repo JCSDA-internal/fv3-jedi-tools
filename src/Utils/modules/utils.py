@@ -12,12 +12,36 @@ import numpy as np
 import shlex
 import subprocess
 import sys
+import time
 
 # --------------------------------------------------------------------------------------------------
 
 # Datetime formats
 dtformat = '%Y%m%d%H'
 dtformatprnt = '%Y%m%d %Hz'
+
+# ------------------------------------------------------------------------------------------------
+
+def setDateConfigFile(date, config_in, config_out, prefix=''):
+
+  datetime = dt.datetime.strptime(date, '%Y%m%d%H')
+
+  yyyy = datetime.strftime("%Y")
+  mm   = datetime.strftime("%m")
+  dd   = datetime.strftime("%d")
+  hh   = datetime.strftime("%H")
+
+  # Read template and set datetime
+  conf_in = open(config_in).read()
+  conf_in = conf_in.replace('%Y'+prefix, yyyy)
+  conf_in = conf_in.replace('%m'+prefix, mm)
+  conf_in = conf_in.replace('%d'+prefix, dd)
+  conf_in = conf_in.replace('%H'+prefix, hh)
+
+  # Write the new conf file
+  conf_out = open(config_out, 'w')
+  conf_out.write(conf_in)
+  conf_out.close()
 
 # ------------------------------------------------------------------------------------------------
 
@@ -65,7 +89,7 @@ def getFileSize(path_file):
 
 # --------------------------------------------------------------------------------------------------
 
-def run_shell_command(command_line):
+def run_shell_command(command_line,wait=True):
 
   command_line_args = shlex.split(command_line)
 
@@ -77,7 +101,8 @@ def run_shell_command(command_line):
     shell_job = subprocess.Popen(command_line_args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
     # Wait for completion
-    shell_job.wait()
+    if wait:
+      shell_job.wait()
 
   except (OSError, subprocess.CalledProcessError) as exception:
 
@@ -89,6 +114,35 @@ def run_shell_command(command_line):
     # All done
     print('utils.run_shell_command: subprocess finished')
 
+# --------------------------------------------------------------------------------------------------
+
+def wait_for_batch_job(username,jobname):
+
+  job_finished = False
+  print_job = True
+
+  # Wait incase job has not registered yet
+  time.sleep(5)
+
+  # Wait for job to finish
+  while not job_finished:
+
+    proc = subprocess.Popen(['squeue', '-l', '-h', '-n', jobname, '-u', username], stdout=subprocess.PIPE)
+    squeue_result = proc.stdout.readline().decode('utf-8')
+
+    if print_job:
+      print(" Waiting for the following job to complete/fail: ")
+      print(" Slurm job info: ")
+      print(squeue_result)
+      print_job = False
+
+    if squeue_result is '':
+      job_finished = True
+      print(' Slurm job is finished')
+      break
+
+    # If not finished wait another minute
+    time.sleep(60)
 
 # --------------------------------------------------------------------------------------------------
 

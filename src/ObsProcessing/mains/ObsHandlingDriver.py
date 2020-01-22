@@ -12,8 +12,8 @@ import ObsProcessing.modules.ObsHandling as ObsHandling
 import Utils.modules.utils as utils
 
 sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--start_date",    default='2019010000')
-sargs.add_argument( "-f", "--final_date",    default='2020123100')
+sargs.add_argument( "-s", "--start_date",    default='2019111812')
+sargs.add_argument( "-f", "--final_date",    default='2019111812')
 sargs.add_argument( "-q", "--freq",          default='6')
 sargs.add_argument( "-c", "--config",        default='config.yaml')
 
@@ -27,7 +27,7 @@ conf    = args.config
 
 dtformat = '%Y%m%d%H'
 
-dts = utils.getDateTimes(start,final,freq,dtformat)
+dts = utils.getDateTimes(start,final,3600*freq,dtformat)
 
 for dt in dts:
 
@@ -41,6 +41,9 @@ for dt in dts:
   oh.downloadObsS3()
   oh.extractObs()
   oh.removeObsTar()
+
+  # Convert pressures to Pa
+  oh.convertPressures()
 
 exit()
 

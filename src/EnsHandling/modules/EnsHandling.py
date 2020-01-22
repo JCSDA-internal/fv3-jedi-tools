@@ -24,7 +24,7 @@ class EnsembleHandling:
   def setup(self):
 
     # Date/time
-    self.process_date_str = os.getenv('PDATE')
+    self.process_date_str = os.getenv('WINMID')
 
     # Configuration
     configfile = os.getenv('CFILE')

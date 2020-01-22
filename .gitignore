@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Plotted files
+*.png
+*.pdf
+
 # Distribution / packaging
 .Python
 build/

@@ -4,5 +4,18 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 obs_sourcepath: 's3://fv3-jedi/Observations/GFS-16_gsi_diags/'
-obs_targetpath: '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/JediRuns/Data/Observations'
+#obs_targetpath: '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/JediRuns/Data/Observations'
+obs_targetpath: '/gpfsm/dnb31/drholdaw/NeilDemo/Data/Observations'
 obs_fileformat: 'obs.%Y%m%d%H.tar'
+
+convert_pressures:
+  - aircraft_obs_%Y%m%d%H.nc4
+  - gps_bend_obs_%Y%m%d%H.nc4
+  - rass_tv_obs_%Y%m%d%H.nc4
+  - satwind_uv_obs_%Y%m%d%H.nc4
+  - scatwind_uv_obs_%Y%m%d%H.nc4
+  - sondes_obs_%Y%m%d%H.nc4
+  - sfc_obs_%Y%m%d%H.nc4
+  - sfcship_obs_%Y%m%d%H.nc4
+  - vadwind_uv_obs_%Y%m%d%H.nc4
+  - windprof_uv_obs_%Y%m%d%H.nc4

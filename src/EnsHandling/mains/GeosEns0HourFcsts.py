@@ -126,10 +126,10 @@ for dt in dts:
 
   # Extract tar file with all ens members
   # -------------------------------------
-  #print('Extracting ensemble tar file')
-  #tf = tarfile.open(os.path.join(enstarpath,enstarfile+'.tar'))
-  #tf.extractall(geosrundir)
-  #tf.close()
+  print('Extracting ensemble tar file')
+  tf = tarfile.open(os.path.join(enstarpath,enstarfile+'.tar'))
+  tf.extractall(geosrundir)
+  tf.close()
 
 
   # Call driver script
@@ -140,8 +140,20 @@ for dt in dts:
   command = 'qsub -W block=true '+driverscript+' '+process_date
 
   os.chdir(geosrundir)
-  utils.run_shell_command(command)
+  utils.run_shell_command(command,False)
   os.chdir(cwd)
+
+  # Wait for job to complete
+  username = 'drholdaw'
+  jobname = 'ensfcst0h'
+  utils.wait_for_batch_job(username,jobname)
+
+  # Check for success
+  # -----------------
+  check_file = os.path.join(geosrundir,newtarfile,'mem032','f522_dh.fvcore_internal_rst.'+process_date+'z.nc4')
+  if not os.path.exists(check_file):
+    os.remove(working)
+    utils.abort(check_file+" does not exist")
 
 
   # Tar up netcdf restarts

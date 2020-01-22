@@ -21,7 +21,7 @@ import ObsProcessing.modules.gsid2ioda_driver as gsid2ioda_driver
 import Utils.modules.utils as utils
 
 sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--start_date",    default='2019101706')
+sargs.add_argument( "-s", "--start_date",    default='2019111812')
 sargs.add_argument( "-f", "--final_date",    default='')
 sargs.add_argument( "-q", "--freq",          default='6')
 sargs.add_argument( "-i", "--ioda_con_path")

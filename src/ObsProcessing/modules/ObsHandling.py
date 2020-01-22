@@ -4,10 +4,13 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import datetime as dt
+import numpy as np
 import os
 import shutil
 import tarfile
 import yaml
+
+from netCDF4 import Dataset
 
 import Utils.modules.utils as utils
 
@@ -24,7 +27,7 @@ class ObservationHandling:
   def setup(self):
 
     # Date/time
-    self.process_date_str = os.getenv('PDATE')
+    self.process_date_str = os.getenv('WINMID')
 
     # Configuration
     configfile = os.getenv('CFILE')
@@ -32,10 +35,10 @@ class ObservationHandling:
       self.config = yaml.load(file, Loader=yaml.FullLoader)
 
     # Process date datetime structure
-    process_date = dt.datetime.strptime(self.process_date_str, '%Y%m%d%H')
+    self.process_date = dt.datetime.strptime(self.process_date_str, '%Y%m%d%H')
 
     # Observation file
-    self.obstarfile = process_date.strftime(self.config['obs_fileformat'])
+    self.obstarfile = self.process_date.strftime(self.config['obs_fileformat'])
 
 # --------------------------------------------------------------------------------------------------
 
@@ -45,7 +48,7 @@ class ObservationHandling:
     self.setup()
 
     # Create path
-    utils.createdir(self.config['obs_targetpath'])
+    utils.createPath(self.config['obs_targetpath'])
 
     # Retrieve from S3
     utils.recvS3(self.config['obs_targetpath'],self.obstarfile,self.config['obs_sourcepath'])
@@ -97,5 +100,32 @@ class ObservationHandling:
     local_path_file = os.path.join(self.config['obs_targetpath'],self.obstarfile)
     if os.path.exists(local_path_file):
       os.remove(local_path_file)
+
+# --------------------------------------------------------------------------------------------------
+
+  def convertPressures(self):
+
+    # Environment variables and config
+    self.setup()
+
+    convert_files = self.config['convert_pressures']
+
+    for obsfile_ in convert_files:
+
+      obsfile = self.process_date.strftime(obsfile_)
+
+      file = os.path.join(self.config['obs_targetpath'],obsfile)
+
+      fh = Dataset(file, mode='a')
+
+      pressure = fh.variables['air_pressure@MetaData']
+
+      print('Converting file: '+obsfile+' from hPa to Pa')
+
+      # Convert to Pa
+      pressure[:] = pressure[:].data*100.0
+
+      # Close
+      fh.close()
 
 # --------------------------------------------------------------------------------------------------
