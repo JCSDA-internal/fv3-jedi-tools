@@ -20,10 +20,10 @@ from scipy.interpolate import UnivariateSpline
 
 #files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofx/abi_g17_obs_2019112818_NPROC.nc4'
 #files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofxams/satwind_uv_hofxana_2019112818_NPROC.nc4'
-files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofx/fgat/amsua_n19_hofx_2019112818_NPROC.nc4'
+files = '/discover/nobackup/drholdaw/JediScratch/RealTime4DVarGeos/Archive/2019111915/hofx/aircraft_hofx_2019111918_NPROC.nc4'
 
-variable = 'brightness_temperature_9'
-nprocs = 1535
+variable = 'air_temperature'
+nprocs = 864
 
 win_beg = dt.datetime.strptime('2019112815', '%Y%m%d%H')
 

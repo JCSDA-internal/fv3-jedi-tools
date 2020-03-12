@@ -144,6 +144,7 @@ for dt in dts:
 
   # Run the jobs
   # ------------
+
   print('Calling Cycle Jobs')
 
   driverscript = os.path.join(jediworkdir,'runs.csh')
@@ -158,6 +159,9 @@ for dt in dts:
   jobname = 'jedicycle'
   utils.wait_for_batch_job(username,jobname)
 
+
+  print('STOPPING')
+  exit()
 
   # Pre clean up success check
   # --------------------------
