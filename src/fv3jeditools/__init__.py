@@ -1,1 +1,8 @@
-__all__ = ['Config', 'ConvertEnsemble', 'Diagnostics', 'ObsProcessing', 'Utils']
+__all__ = ['BkgHandling',
+           'Config',
+           'ConvertEnsemble',
+           'DaRuns',
+           'Diagnostics',
+           'EnsHandling',
+           'ObsProcessing',
+           'Utils']
