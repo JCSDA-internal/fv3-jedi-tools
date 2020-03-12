@@ -4,7 +4,7 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import sys
-#import ObsProcessing.modules.gsi_ncdiag as gsi_ncdiag
+#import fv3jeditools.ObsProcessing.gsi_ncdiag as gsi_ncdiag
 
 def gsid_to_ioda_driver(ioda_con_path,infile,outdir,type,platform=''):
 

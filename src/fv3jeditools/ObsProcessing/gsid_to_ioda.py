@@ -16,9 +16,9 @@ import sys
 import pathlib
 import time
 
-import ObsProcessing.modules.gsid2ioda_driver as gsid2ioda_driver
-#import ObsProcessing.modules.gsi_ncdiag as gsi_ncdiag
-import Utils.modules.utils as utils
+import fv3jeditools.ObsProcessing.gsid2ioda_driver as gsid2ioda_driver
+#import fv3jeditools.ObsProcessing.gsi_ncdiag as gsi_ncdiag
+import fv3jeditools.Utils.utils as utils
 
 sargs=argparse.ArgumentParser()
 sargs.add_argument( "-s", "--start_date",    default='2019111812')

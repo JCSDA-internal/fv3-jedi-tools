@@ -1,4 +1,5 @@
 '''
 BkgHandling
 '''
-__all__ = ['BkgHandlingDriver', 'BkgHandling']
+__all__ = ['BkgHandlingDriver',
+           'BkgHandling']

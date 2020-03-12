@@ -12,7 +12,7 @@ import yaml
 
 from netCDF4 import Dataset
 
-import Utils.modules.utils as utils
+import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@ import shutil
 import tarfile
 import yaml
 
-import Utils.modules.utils as utils
+import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 

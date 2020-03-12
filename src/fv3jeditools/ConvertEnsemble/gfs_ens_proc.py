@@ -17,8 +17,8 @@ import inspect
 import re
 import glob
 
-import Config.modules.gfs_conf as modconf
-import Utils.modules.utils as utils
+import fv3jeditools.Config.gfs_conf as modconf
+import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 

@@ -38,8 +38,8 @@ import argparse
 import random
 import yaml
 
-import Utils.modules.utils as utils
-import ConvertEnsemble.modules.fv3mod_ens_proc as fv3model
+import fv3jeditools.Utils.utils as utils
+import fv3jeditools.ConvertEnsemble.fv3mod_ens_proc as fv3model
 
 # User input
 # ----------

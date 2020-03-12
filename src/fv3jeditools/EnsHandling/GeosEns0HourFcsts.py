@@ -13,7 +13,7 @@ import subprocess
 import tarfile
 import sys
 
-import Utils.modules.utils as utils
+import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 

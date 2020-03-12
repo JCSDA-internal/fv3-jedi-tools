@@ -8,8 +8,8 @@
 import argparse
 import os
 
-import BkgHandling.modules.BkgHandling as BkgHandling
-import Utils.modules.utils as utils
+import fv3jeditools.BkgHandling.BkgHandling as BkgHandling
+import fv3jeditools.Utils.utils as utils
 
 sargs=argparse.ArgumentParser()
 sargs.add_argument( "-s", "--start_date",    default='2019010000')

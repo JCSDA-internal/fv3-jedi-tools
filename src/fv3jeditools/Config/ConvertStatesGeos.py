@@ -9,10 +9,9 @@ import argparse
 import os
 import yaml
 
-import Config.modules.geos_conf as geosconf
-import Config.modules.common_conf as commconf
-
-import Utils.modules.utils as utils
+import fv3jeditools.Config.geos_conf as geosconf
+import fv3jeditools.Config.common_conf as commconf
+import fv3jeditools.Utils.utils as utils
 
 sargs=argparse.ArgumentParser()
 sargs.add_argument( "-s", "--start_date",    default='2019111809')

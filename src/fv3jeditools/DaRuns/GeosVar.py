@@ -11,11 +11,10 @@ import os
 import shutil
 import yaml
 
-import BkgHandling.modules.BkgHandling as BkgHandling
-import EnsHandling.modules.EnsHandling as EnsHandling
-import ObsProcessing.modules.ObsHandling as ObsHandling
-
-import Utils.modules.utils as utils
+import fv3jeditools.BkgHandling.BkgHandling as BkgHandling
+import fv3jeditools.EnsHandling.EnsHandling as EnsHandling
+import fv3jeditools.ObsProcessing.ObsHandling as ObsHandling
+import fv3jeditools.Utils.utils as utils
 
 sargs=argparse.ArgumentParser()
 sargs.add_argument( "-s", "--start_date",    default='2019111809')

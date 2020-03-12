@@ -8,8 +8,8 @@
 import argparse
 import os
 
-import ObsProcessing.modules.ObsHandling as ObsHandling
-import Utils.modules.utils as utils
+import fv3jeditools.ObsProcessing.ObsHandling as ObsHandling
+import fv3jeditools.Utils.utils as utils
 
 sargs=argparse.ArgumentParser()
 sargs.add_argument( "-s", "--start_date",    default='2019111812')
