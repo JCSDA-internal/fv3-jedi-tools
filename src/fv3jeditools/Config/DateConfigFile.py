@@ -8,24 +8,24 @@
 import argparse
 import datetime as dt
 
-sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--date"     ,  default='20200101')
-sargs.add_argument( "-p", "--config_in",  default='/path/config_in.yaml')
-sargs.add_argument( "-p", "--config_out", default='/path/config_out.yaml')
+sargs = argparse.ArgumentParser()
+sargs.add_argument("-s", "--date",  default='20200101')
+sargs.add_argument("-p", "--config_in",  default='/path/config_in.yaml')
+sargs.add_argument("-p", "--config_out", default='/path/config_out.yaml')
 
 # --------------------------------------------------------------------------------------------------
 
 args = sargs.parse_args()
 date = args.date
-config_in  = args.config_in
+config_in = args.config_in
 config_out = args.config_out
 
 datetime = dt.datetime.strptime(date, '%Y%m%d%H')
 
 yyyy = datetime.strftime("%Y")
-mm   = datetime.strftime("%m")
-dd   = datetime.strftime("%d")
-hh   = datetime.strftime("%H")
+mm = datetime.strftime("%m")
+dd = datetime.strftime("%d")
+hh = datetime.strftime("%H")
 
 # Read template and set datetime
 conf_in = open(config_in).read()

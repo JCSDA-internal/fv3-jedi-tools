@@ -16,17 +16,17 @@ import fv3jeditools.EnsHandling.EnsHandling as EnsHandling
 import fv3jeditools.ObsProcessing.ObsHandling as ObsHandling
 import fv3jeditools.Utils.utils as utils
 
-sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--start_date",    default='2019111809')
-sargs.add_argument( "-f", "--final_date",    default='2020123121')
-sargs.add_argument( "-q", "--freq",          default='6')
-sargs.add_argument( "-c", "--config",        default='config.yaml')
+sargs = argparse.ArgumentParser()
+sargs.add_argument("-s", "--start_date",    default='2019111809')
+sargs.add_argument("-f", "--final_date",    default='2020123121')
+sargs.add_argument("-q", "--freq",          default='6')
+sargs.add_argument("-c", "--config",        default='config.yaml')
 
-args    = sargs.parse_args()
-start   = args.start_date
-final   = args.final_date
-freq    = int(args.freq)
-conf    = args.config
+args = sargs.parse_args()
+start = args.start_date
+final = args.final_date
+freq = int(args.freq)
+conf = args.config
 
 # --------------------------------------------------------------------------------------------------
 
@@ -38,21 +38,22 @@ jediworkdir = '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/JediRuns/'
 
 # Keep track of whether file is running
 # -------------------------------------
-working = os.path.join(workflowdir,'working')
+working = os.path.join(workflowdir, 'working')
 
 # This directory
 # --------------
 cwd = os.getcwd()
 
 if (os.path.exists(working)):
-  utils.abort('GeosEns0HourFcsts, '+working+' exists. Already running or previous fail ...')
+    utils.abort('GeosEns0HourFcsts, '+working +
+                ' exists. Already running or previous fail ...')
 
 open(working, 'a').close()
 
 
 dtformat = '%Y%m%d%H'
 
-dts = utils.getDateTimes(start,final,3600*freq,dtformat)
+dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
 
 # Create objects of needed modules
 # --------------------------------
@@ -65,140 +66,139 @@ oh = ObsHandling.ObservationHandling()
 
 for dt in dts:
 
-  # Dates to pass to scripts
-  # ------------------------
-  window_beg = dt.strftime(dtformat)
-  window_mid = (dt + datetime.timedelta(seconds=10800)).strftime(dtformat)
-  window_end = (dt + datetime.timedelta(seconds=21600)).strftime(dtformat)
+    # Dates to pass to scripts
+    # ------------------------
+    window_beg = dt.strftime(dtformat)
+    window_mid = (dt + datetime.timedelta(seconds=10800)).strftime(dtformat)
+    window_end = (dt + datetime.timedelta(seconds=21600)).strftime(dtformat)
 
-  window_net = (dt + datetime.timedelta(seconds=43200)).strftime(dtformat)
+    window_net = (dt + datetime.timedelta(seconds=43200)).strftime(dtformat)
 
-  window_prv = (dt + datetime.timedelta(seconds=-21600)).strftime(dtformat)
+    window_prv = (dt + datetime.timedelta(seconds=-21600)).strftime(dtformat)
 
-  window_beg_ = dt.strftime('%Y%m%d_%H')
-  window_net_ = (dt + datetime.timedelta(seconds=43200)).strftime('%Y%m%d_%H')
+    window_beg_ = dt.strftime('%Y%m%d_%H')
+    window_net_ = (dt + datetime.timedelta(seconds=43200)
+                   ).strftime('%Y%m%d_%H')
 
+    # Track of times completed
+    # ------------------------
+    donefile = os.path.join(workflowdir, 'done_'+window_beg)
 
-  # Track of times completed
-  # ------------------------
-  donefile = os.path.join(workflowdir,'done_'+window_beg)
+    print('GeosVar: process date: '+window_beg)
 
-  print('GeosVar: process date: '+window_beg)
+    if (os.path.exists(donefile)):
+        print(' '+window_beg+' marked comlete, skipping')
+        continue
 
-  if (os.path.exists(donefile)):
-    print(' '+window_beg+' marked comlete, skipping')
-    continue
+    # Set environment variables
+    # -------------------------
+    os.environ['PDATE'] = window_beg
+    os.environ['WINBEG'] = window_beg
+    os.environ['WINMID'] = window_mid
+    os.environ['WINEND'] = window_end
+    os.environ['CFILE'] = conf
 
+    # Set the configuration scripts
+    # -----------------------------
+    configfile = os.getenv('CFILE')
+    with open(configfile) as file:
+        cf = yaml.load(file, Loader=yaml.FullLoader)
 
+    config_files_in = cf['config_files_in'].split()
+    config_files_out = cf['config_files_out'].split()
 
+    for n in range(len(config_files_in)):
 
-  # Set environment variables
-  # -------------------------
-  os.environ['PDATE'] = window_beg
-  os.environ['WINBEG'] = window_beg
-  os.environ['WINMID'] = window_mid
-  os.environ['WINEND'] = window_end
-  os.environ['CFILE'] = conf
+        utils.setDateConfigFile(
+            window_beg, config_files_in[n], config_files_out[n], 'WBEG')
+        utils.setDateConfigFile(
+            window_mid, config_files_out[n], config_files_out[n], 'WMID')
+        utils.setDateConfigFile(
+            window_end, config_files_out[n], config_files_out[n], 'WEND')
+        utils.setDateConfigFile(
+            window_prv, config_files_out[n], config_files_out[n], 'WPRV')
+        utils.setDateConfigFile(
+            window_net, config_files_out[n], config_files_out[n], 'WENT')
 
+    # Prepare the observations
+    # ------------------------
 
-  # Set the configuration scripts
-  # -----------------------------
-  configfile = os.getenv('CFILE')
-  with open(configfile) as file:
-    cf = yaml.load(file, Loader=yaml.FullLoader)
+    filecheck = os.path.join(
+        jediworkdir, 'Data', 'Observations', 'windprof_uv_obs_'+window_mid+'.nc4')
+    if not os.path.exists(filecheck):
+        oh.downloadObsS3()
+        oh.extractObs()
+        oh.removeObsTar()
+        oh.convertPressures()
+    else:
+        print("Observations already downloaded")
 
-  config_files_in  = cf['config_files_in'].split()
-  config_files_out = cf['config_files_out'].split()
+    # Prepare the ensemble
+    # --------------------
+    filecheck = os.path.join(jediworkdir, 'Data', 'Ensemble', 'f522_dh.atmens_erst.' +
+                             window_beg+'z', 'mem032', 'f522_dh.fvcore_internal_rst.'+window_beg+'z.nc4')
+    if not os.path.exists(filecheck):
+        eh.downloadGeosEnsRestartArchive()
+    else:
+        print("Ensemble already downloaded")
 
-  for n in range(len(config_files_in)):
+    # Run the jobs
+    # ------------
 
-    utils.setDateConfigFile(window_beg,config_files_in [n],config_files_out[n],'WBEG')
-    utils.setDateConfigFile(window_mid,config_files_out[n],config_files_out[n],'WMID')
-    utils.setDateConfigFile(window_end,config_files_out[n],config_files_out[n],'WEND')
-    utils.setDateConfigFile(window_prv,config_files_out[n],config_files_out[n],'WPRV')
-    utils.setDateConfigFile(window_net,config_files_out[n],config_files_out[n],'WENT')
+    print('Calling Cycle Jobs')
 
+    driverscript = os.path.join(jediworkdir, 'runs.csh')
+    command = 'qsub -W block=true '+driverscript
 
-  # Prepare the observations
-  # ------------------------
+    os.chdir(jediworkdir)
+    utils.run_shell_command(command, False)
+    os.chdir(cwd)
 
-  filecheck = os.path.join(jediworkdir,'Data','Observations','windprof_uv_obs_'+window_mid+'.nc4')
-  if not os.path.exists(filecheck):
-    oh.downloadObsS3()
-    oh.extractObs()
-    oh.removeObsTar()
-    oh.convertPressures()
-  else:
-    print("Observations already downloaded")
+    # Wait for job to complete
+    username = 'drholdaw'
+    jobname = 'jedicycle'
+    utils.wait_for_batch_job(username, jobname)
 
+    print('STOPPING')
+    exit()
 
-  # Prepare the ensemble
-  # --------------------
-  filecheck = os.path.join(jediworkdir,'Data','Ensemble','f522_dh.atmens_erst.'+window_beg+'z','mem032','f522_dh.fvcore_internal_rst.'+window_beg+'z.nc4')
-  if not os.path.exists(filecheck):
-    eh.downloadGeosEnsRestartArchive()
-  else:
-    print("Ensemble already downloaded")
+    # Pre clean up success check
+    # --------------------------
+    filecheck = os.path.join(
+        workdir, 'Archive', window_beg, 'RestartAnalysis', 'fvcore_internal_rst')
+    if not os.path.exists(filecheck):
+        utils.abort("Aborting, jobs do not seem to have completed properly")
 
+    # Clean up
+    # --------
+    print("All done, cleaning up")
+    obsdir = os.path.join(jediworkdir, 'Data', 'Observations')
+    bkgdir = os.path.join(jediworkdir, 'Data', 'Background')
+    anadir = os.path.join(jediworkdir, 'Data', 'Analysis')
+    incdir = os.path.join(jediworkdir, 'Data', 'Increment')
+    bmpdir = os.path.join(jediworkdir, 'Data', 'Bump', '864_ens')
+    rnedir = os.path.join(jediworkdir, 'Data', 'RestartNew')
+    ensdir = os.path.join(jediworkdir, 'Data', 'Ensemble',
+                          'f522_dh.atmens_erst.'+window_beg_+'z')
 
-  # Run the jobs
-  # ------------
+    shutil.rmtree(obsdir)
+    shutil.rmtree(bkgdir)
+    shutil.rmtree(anadir)
+    shutil.rmtree(incdir)
+    shutil.rmtree(bmpdir)
+    shutil.rmtree(rnedir)
+    shutil.rmtree(ensdir)
 
-  print('Calling Cycle Jobs')
+    os.mkdir(obsdir)
+    os.mkdir(bkgdir)
+    os.mkdir(anadir)
+    os.mkdir(incdir)
+    os.mkdir(bmpdir)
+    os.mkdir(rnedir)
 
-  driverscript = os.path.join(jediworkdir,'runs.csh')
-  command = 'qsub -W block=true '+driverscript
+    # Done
+    # ----
+    open(donefile, 'a').close()
+    os.remove(working)
 
-  os.chdir(jediworkdir)
-  utils.run_shell_command(command,False)
-  os.chdir(cwd)
-
-  # Wait for job to complete
-  username = 'drholdaw'
-  jobname = 'jedicycle'
-  utils.wait_for_batch_job(username,jobname)
-
-
-  print('STOPPING')
-  exit()
-
-  # Pre clean up success check
-  # --------------------------
-  filecheck = os.path.join(workdir,'Archive',window_beg,'RestartAnalysis','fvcore_internal_rst')
-  if not os.path.exists(filecheck):
-    utils.abort("Aborting, jobs do not seem to have completed properly")
-
-
-  # Clean up
-  # --------
-  print("All done, cleaning up")
-  obsdir = os.path.join(jediworkdir,'Data','Observations')
-  bkgdir = os.path.join(jediworkdir,'Data','Background')
-  anadir = os.path.join(jediworkdir,'Data','Analysis')
-  incdir = os.path.join(jediworkdir,'Data','Increment')
-  bmpdir = os.path.join(jediworkdir,'Data','Bump','864_ens')
-  rnedir = os.path.join(jediworkdir,'Data','RestartNew')
-  ensdir = os.path.join(jediworkdir,'Data','Ensemble','f522_dh.atmens_erst.'+window_beg_+'z')
-
-  shutil.rmtree(obsdir)
-  shutil.rmtree(bkgdir)
-  shutil.rmtree(anadir)
-  shutil.rmtree(incdir)
-  shutil.rmtree(bmpdir)
-  shutil.rmtree(rnedir)
-  shutil.rmtree(ensdir)
-
-  os.mkdir(obsdir)
-  os.mkdir(bkgdir)
-  os.mkdir(anadir)
-  os.mkdir(incdir)
-  os.mkdir(bmpdir)
-  os.mkdir(rnedir)
-
-
-  # Done
-  # ----
-  open(donefile, 'a').close()
-  os.remove(working)
-
-  exit()
+    exit()

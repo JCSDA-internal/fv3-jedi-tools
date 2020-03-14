@@ -11,25 +11,26 @@ import os
 import fv3jeditools.ObsProcessing.ObsHandling as ObsHandling
 import fv3jeditools.Utils.utils as utils
 
+
 def main():
 
-    sargs=argparse.ArgumentParser()
-    sargs.add_argument( "-s", "--start_date",    default='2019111812')
-    sargs.add_argument( "-f", "--final_date",    default='2019111812')
-    sargs.add_argument( "-q", "--freq",          default='6')
-    sargs.add_argument( "-c", "--config",        default='config.yaml')
+    sargs = argparse.ArgumentParser()
+    sargs.add_argument("-s", "--start_date",    default='2019111812')
+    sargs.add_argument("-f", "--final_date",    default='2019111812')
+    sargs.add_argument("-q", "--freq",          default='6')
+    sargs.add_argument("-c", "--config",        default='config.yaml')
 
-    args    = sargs.parse_args()
-    start   = args.start_date
-    final   = args.final_date
-    freq    = int(args.freq)
-    conf    = args.config
+    args = sargs.parse_args()
+    start = args.start_date
+    final = args.final_date
+    freq = int(args.freq)
+    conf = args.config
 
 # --------------------------------------------------------------------------------------------------
 
     dtformat = '%Y%m%d%H'
 
-    dts = utils.getDateTimes(start,final,3600*freq,dtformat)
+    dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
 
     for dt in dts:
 
@@ -50,6 +51,7 @@ def main():
     exit()
 
 # --------------------------------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     main()

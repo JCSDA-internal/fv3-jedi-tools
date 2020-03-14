@@ -10,26 +10,28 @@ __all__ = ['GFSBuilder', 'GEOSBuilder', 'ObjectFactory', 'factory']
 
 # Builder class for GFS
 # ---------------------
-class GFSBuilder:
-  def __init__(self):
-    self._instance = None
 
-  def __call__(self):
-    if not self._instance:
-      self._instance = GFS()
-    return self._instance
+
+class GFSBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self):
+        if not self._instance:
+            self._instance = GFS()
+        return self._instance
 
 
 # Builder class for GEOS
 # ----------------------
 class GEOSBuilder:
-  def __init__(self):
-    self._instance = None
+    def __init__(self):
+        self._instance = None
 
-  def __call__(self):
-    if not self._instance:
-      self._instance = GEOS()
-    return self._instance
+    def __call__(self):
+        if not self._instance:
+            self._instance = GEOS()
+        return self._instance
 
 
 # Generic factory

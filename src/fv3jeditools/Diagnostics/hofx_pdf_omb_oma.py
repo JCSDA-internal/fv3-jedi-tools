@@ -5,18 +5,18 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
+from scipy.interpolate import UnivariateSpline
+import matplotlib.ticker as mticker
+import os
+import datetime as dt
+import cartopy.crs as ccrs
+from netCDF4 import Dataset
+import numpy as np
+import re
+import argparse
+import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import argparse
-import re
-import numpy as np
-from netCDF4 import Dataset
-import cartopy.crs as ccrs
-import datetime as dt
-import os
-import matplotlib.ticker as mticker
-from scipy.interpolate import UnivariateSpline
 
 #files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofx/abi_g17_obs_2019112818_NPROC.nc4'
 #files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofxams/satwind_uv_hofxana_2019112818_NPROC.nc4'
@@ -28,15 +28,14 @@ nprocs = 864
 win_beg = dt.datetime.strptime('2019112815', '%Y%m%d%H')
 
 
-
 # Variable name and units
 # -----------------------
 variable_name = variable.split('@')[0]
 units = ''
 if variable_name[0:22] == 'brightness_temperature':
-  units = 'K'
+    units = 'K'
 elif variable_name == 'eastward_wind':
-  units = 'ms-1'
+    units = 'ms-1'
 
 # Filename
 # --------
@@ -52,23 +51,26 @@ omba2 = []
 omba3 = []
 
 for n in range(nprocs+1):
-#for n in range(3):
+    # for n in range(3):
 
-  file = files.replace('NPROC', str(n).zfill(4))
-  print(" Reading "+file)
+    file = files.replace('NPROC', str(n).zfill(4))
+    print(" Reading "+file)
 
-  fh = Dataset(file)
+    fh = Dataset(file)
 
-  omba1_proc = fh.variables[variable+'@ObsValue'][:] - fh.variables[variable+'@hofx0'][:]
-  omba2_proc = fh.variables[variable+'@ObsValue'][:] - fh.variables[variable+'@hofx1'][:]
-  omba3_proc = fh.variables[variable+'@ObsValue'][:] - fh.variables[variable+'@hofx2'][:]
+    omba1_proc = fh.variables[variable+'@ObsValue'][:] - \
+        fh.variables[variable+'@hofx0'][:]
+    omba2_proc = fh.variables[variable+'@ObsValue'][:] - \
+        fh.variables[variable+'@hofx1'][:]
+    omba3_proc = fh.variables[variable+'@ObsValue'][:] - \
+        fh.variables[variable+'@hofx2'][:]
 
-  for m in range(len(omba1_proc)):
-    omba1.append(omba1_proc[m])
-    omba2.append(omba2_proc[m])
-    omba3.append(omba3_proc[m])
+    for m in range(len(omba1_proc)):
+        omba1.append(omba1_proc[m])
+        omba2.append(omba2_proc[m])
+        omba3.append(omba3_proc[m])
 
-  fh.close()
+    fh.close()
 
 
 p1, x1 = np.histogram(omba1, bins=50)

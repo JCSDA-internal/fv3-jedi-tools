@@ -5,12 +5,13 @@
 
 __all__ = ['GEOS']
 
+
 class GEOS:
-  def __init__(self):
-    self.myName = 'geos'
+    def __init__(self):
+        self.myName = 'geos'
 
-  def function1(self):
-    print('function1', self.myName)
+    def function1(self):
+        print('function1', self.myName)
 
-  def function2(self):
-    print('function2', self.myName)
+    def function2(self):
+        print('function2', self.myName)

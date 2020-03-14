@@ -17,13 +17,13 @@ import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 
-sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--start_date",    default='2019111809')
-sargs.add_argument( "-q", "--freq",          default='6')
+sargs = argparse.ArgumentParser()
+sargs.add_argument("-s", "--start_date",    default='2019111809')
+sargs.add_argument("-q", "--freq",          default='6')
 
-args    = sargs.parse_args()
-start   = args.start_date
-freq    = int(args.freq)
+args = sargs.parse_args()
+start = args.start_date
+freq = int(args.freq)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -36,10 +36,11 @@ workflowdir = '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/WorkflowTrack
 
 # Keep track of whether file is running
 # -------------------------------------
-working = os.path.join(workflowdir,'working')
+working = os.path.join(workflowdir, 'working')
 
 if (os.path.exists(working)):
-  utils.abort('GeosEns0HourFcsts, '+working+' exists. Already running or previous fail ...')
+    utils.abort('GeosEns0HourFcsts, '+working +
+                ' exists. Already running or previous fail ...')
 
 open(working, 'a').close()
 
@@ -66,123 +67,121 @@ rstlcvfile_ = 'f522_fp.rst.lcv.%Y%m%d_%Hz.bin'
 
 # Date formats
 # ------------
-yyyymmdd    = '%Y%m%d'
-yyyymmddhh  = '%Y%m%d%H'
+yyyymmdd = '%Y%m%d'
+yyyymmddhh = '%Y%m%d%H'
 yyyymmdd_hh = '%Y%m%d_%H'
 
 
 # Set final to be now - 5 days - 3hours (need to stay behind operations a bit)
 # ----------------------------------------------------------------------------
 today_str = datetime.datetime.today().strftime(yyyymmdd)
-datetime_final = datetime.datetime.strptime(today_str, yyyymmdd) - datetime.timedelta(hours=123)
+datetime_final = datetime.datetime.strptime(
+    today_str, yyyymmdd) - datetime.timedelta(hours=123)
 final = datetime_final.strftime(yyyymmddhh)
 
 
 # Loop over date times
 # --------------------
-dts = utils.getDateTimes(start,final,3600*freq,yyyymmddhh)
+dts = utils.getDateTimes(start, final, 3600*freq, yyyymmddhh)
 
 for dt in dts:
 
-  # Date to pass to script
-  # ----------------------
-  process_date = dt.strftime(yyyymmdd_hh)
+    # Date to pass to script
+    # ----------------------
+    process_date = dt.strftime(yyyymmdd_hh)
 
+    # Track of times completed
+    # ------------------------
+    donefile = os.path.join(workflowdir, 'done_'+process_date)
 
-  # Track of times completed
-  # ------------------------
-  donefile = os.path.join(workflowdir,'done_'+process_date)
+    print('GeosEns0HourFcsts: process date: '+process_date)
 
-  print('GeosEns0HourFcsts: process date: '+process_date)
+    if (os.path.exists(donefile)):
+        print(' '+process_date+' marked comlete, skipping')
+        continue
 
-  if (os.path.exists(donefile)):
-    print(' '+process_date+' marked comlete, skipping')
-    continue
+    # Fill date specific templates
+    # ----------------------------
+    rstlcvfile = dt.strftime(rstlcvfile_)
+    centarfile = dt.strftime(centarfile_)
+    enstarpath = dt.strftime(enstarpath_)
+    enstarfile = dt.strftime(enstarfile_)
+    newtarpath = dt.strftime(newtarpath_)
+    newtarfile = dt.strftime(newtarfile_)
 
-  # Fill date specific templates
-  # ----------------------------
-  rstlcvfile = dt.strftime(rstlcvfile_)
-  centarfile = dt.strftime(centarfile_)
-  enstarpath = dt.strftime(enstarpath_)
-  enstarfile = dt.strftime(enstarfile_)
-  newtarpath = dt.strftime(newtarpath_)
-  newtarfile = dt.strftime(newtarfile_)
+    # Get the d_rst file from central
+    # -------------------------------
+    print('Getting d_rst from file')
+    tf = tarfile.open(centarfile)
+    cenmembers = tf.getmembers()
 
+    for n in range(len(cenmembers)):
+        if cenmembers[n].name == rstlcvfile:
+            break
+    tf.extractall(geosrundir, members=cenmembers[n:n+1])
+    tf.close()
 
-  # Get the d_rst file from central
-  # -------------------------------
-  print('Getting d_rst from file')
-  tf = tarfile.open(centarfile)
-  cenmembers = tf.getmembers()
+    os.rename(os.path.join(geosrundir, rstlcvfile),
+              os.path.join(geosrundir, 'd_rst'))
 
-  for n in range(len(cenmembers)):
-    if cenmembers[n].name == rstlcvfile:
-      break
-  tf.extractall(geosrundir,members=cenmembers[n:n+1])
-  tf.close()
+    # Extract tar file with all ens members
+    # -------------------------------------
+    print('Extracting ensemble tar file')
+    tf = tarfile.open(os.path.join(enstarpath, enstarfile+'.tar'))
+    tf.extractall(geosrundir)
+    tf.close()
 
-  os.rename(os.path.join(geosrundir,rstlcvfile),os.path.join(geosrundir,'d_rst'))
+    # Call driver script
+    # ------------------
+    print('Calling GEOS model for members')
 
+    driverscript = os.path.join(geosrundir, 'driver.csh')
+    command = 'qsub -W block=true '+driverscript+' '+process_date
 
-  # Extract tar file with all ens members
-  # -------------------------------------
-  print('Extracting ensemble tar file')
-  tf = tarfile.open(os.path.join(enstarpath,enstarfile+'.tar'))
-  tf.extractall(geosrundir)
-  tf.close()
+    os.chdir(geosrundir)
+    utils.run_shell_command(command, False)
+    os.chdir(cwd)
 
+    # Wait for job to complete
+    username = 'drholdaw'
+    jobname = 'ensfcst0h'
+    utils.wait_for_batch_job(username, jobname)
 
-  # Call driver script
-  # ------------------
-  print('Calling GEOS model for members')
+    # Check for success
+    # -----------------
+    check_file = os.path.join(geosrundir, newtarfile, 'mem032',
+                              'f522_dh.fvcore_internal_rst.'+process_date+'z.nc4')
+    if not os.path.exists(check_file):
+        os.remove(working)
+        utils.abort(check_file+" does not exist")
 
-  driverscript = os.path.join(geosrundir,'driver.csh')
-  command = 'qsub -W block=true '+driverscript+' '+process_date
+    # Tar up netcdf restarts
+    # ----------------------
+    print('Tarring up the netCDF members')
+    if not os.path.exists(newtarpath):
+        os.makedirs(newtarpath)
+    newtarpathfile = os.path.join(newtarpath, newtarfile+'.tar')
 
-  os.chdir(geosrundir)
-  utils.run_shell_command(command,False)
-  os.chdir(cwd)
+    os.chdir(geosrundir)
+    with tarfile.open(newtarpathfile, "w") as tf:
+        tf.add(newtarfile)
+    os.chdir(cwd)
 
-  # Wait for job to complete
-  username = 'drholdaw'
-  jobname = 'ensfcst0h'
-  utils.wait_for_batch_job(username,jobname)
+    # Clean up
+    # --------
+    print('Cleaning up')
+    os.remove(os.path.join(geosrundir, 'd_rst'))
+    shutil.rmtree(os.path.join(geosrundir, newtarfile))
+    shutil.rmtree(os.path.join(geosrundir, enstarfile))
 
-  # Check for success
-  # -----------------
-  check_file = os.path.join(geosrundir,newtarfile,'mem032','f522_dh.fvcore_internal_rst.'+process_date+'z.nc4')
-  if not os.path.exists(check_file):
+    # Done
+    # ----
+    open(donefile, 'a').close()
+
+    # One at a time and resubmit via cron
+    # -----------------------------------
     os.remove(working)
-    utils.abort(check_file+" does not exist")
 
+    print("All done, resubmit job for next time")
 
-  # Tar up netcdf restarts
-  # ----------------------
-  print('Tarring up the netCDF members')
-  if not os.path.exists(newtarpath):
-    os.makedirs(newtarpath)
-  newtarpathfile = os.path.join(newtarpath,newtarfile+'.tar')
-
-  os.chdir(geosrundir)
-  with tarfile.open(newtarpathfile, "w") as tf:
-    tf.add(newtarfile)
-  os.chdir(cwd)
-
-  # Clean up
-  # --------
-  print('Cleaning up')
-  os.remove(os.path.join(geosrundir,'d_rst'))
-  shutil.rmtree(os.path.join(geosrundir,newtarfile))
-  shutil.rmtree(os.path.join(geosrundir,enstarfile))
-
-  # Done
-  # ----
-  open(donefile, 'a').close()
-
-  # One at a time and resubmit via cron
-  # -----------------------------------
-  os.remove(working)
-
-  print("All done, resubmit job for next time")
-
-  exit()
+    exit()
