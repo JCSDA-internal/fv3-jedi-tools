@@ -11,13 +11,15 @@ import yaml
 
 import fv3jeditools.Utils.utils as utils
 
+__all__ = ['BackgroundHandling']
+
 # --------------------------------------------------------------------------------------------------
 
 class BackgroundHandling:
 
   def __init__(self):
 
-    self.myName = 'ObservationHandling'
+    self.myName = 'BackgroundHandling'
 
 # --------------------------------------------------------------------------------------------------
 

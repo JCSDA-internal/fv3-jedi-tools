@@ -11,33 +11,37 @@ import os
 import fv3jeditools.BkgHandling.BkgHandling as BkgHandling
 import fv3jeditools.Utils.utils as utils
 
-sargs=argparse.ArgumentParser()
-sargs.add_argument( "-s", "--start_date",    default='2019010000')
-sargs.add_argument( "-f", "--final_date",    default='2020123100')
-sargs.add_argument( "-q", "--freq",          default='6')
-sargs.add_argument( "-c", "--config",        default='config.yaml')
+def main():
+    sargs=argparse.ArgumentParser()
+    sargs.add_argument( "-s", "--start_date",    default='2019010000')
+    sargs.add_argument( "-f", "--final_date",    default='2020123100')
+    sargs.add_argument( "-q", "--freq",          default='6')
+    sargs.add_argument( "-c", "--config",        default='config.yaml')
 
-args    = sargs.parse_args()
-start   = args.start_date
-final   = args.final_date
-freq    = int(args.freq)
-conf    = args.config
+    args    = sargs.parse_args()
+    start   = args.start_date
+    final   = args.final_date
+    freq    = int(args.freq)
+    conf    = args.config
 
-# --------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------
 
-dtformat = '%Y%m%d%H'
+    dtformat = '%Y%m%d%H'
 
-dts = utils.getDateTimes(start,final,3600*freq,dtformat)
+    dts = utils.getDateTimes(start,final,3600*freq,dtformat)
 
-for dt in dts:
+    for dt in dts:
 
-  process_date = dt.strftime(dtformat)
+    process_date = dt.strftime(dtformat)
 
-  os.environ['PDATE'] = process_date
-  os.environ['CFILE'] = conf
+    os.environ['PDATE'] = process_date
+    os.environ['CFILE'] = conf
 
-  bh = BkgHandling.BackgroundHandling()
+    bh = BkgHandling.BackgroundHandling()
 
-  bh.getGeosBackgrounds()
+    bh.getGeosBackgrounds()
 
-exit()
+    exit()
+
+if __name__ == "__main__":
+    main()

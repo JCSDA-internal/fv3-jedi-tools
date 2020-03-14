@@ -4,14 +4,13 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import sys
+sys.path.append(ioda_con_path+'/lib/pyiodaconv')
+import gsi_ncdiag as gsi_ncdiag
 #import fv3jeditools.ObsProcessing.gsi_ncdiag as gsi_ncdiag
 
+__all__ = ['gsid_to_ioda_driver']
+
 def gsid_to_ioda_driver(ioda_con_path,infile,outdir,type,platform=''):
-
-  # Import from ioda converters
-  sys.path.append(ioda_con_path+'/lib/pyiodaconv')
-  import gsi_ncdiag as gsi_ncdiag
-
 
   # Constructor
   if (type == 'cnv'):

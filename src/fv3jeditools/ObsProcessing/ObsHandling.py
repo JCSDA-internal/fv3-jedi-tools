@@ -14,6 +14,8 @@ from netCDF4 import Dataset
 
 import fv3jeditools.Utils.utils as utils
 
+__all__ = ['ObservationHandling']
+
 # --------------------------------------------------------------------------------------------------
 
 class ObservationHandling:

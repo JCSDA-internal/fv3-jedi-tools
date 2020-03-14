@@ -20,6 +20,8 @@ import glob
 import fv3jeditools.Config.gfs_conf as modconf
 import fv3jeditools.Utils.utils as utils
 
+__all__ = ['GFS']
+
 # --------------------------------------------------------------------------------------------------
 
 class GFS:

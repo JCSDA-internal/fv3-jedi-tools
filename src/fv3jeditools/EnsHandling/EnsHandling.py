@@ -11,6 +11,8 @@ import yaml
 
 import fv3jeditools.Utils.utils as utils
 
+__all__ = ['EnsembleHandling']
+
 # --------------------------------------------------------------------------------------------------
 
 class EnsembleHandling:
