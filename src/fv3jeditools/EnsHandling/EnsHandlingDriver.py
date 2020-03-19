@@ -11,33 +11,39 @@ import os
 import fv3jeditools.EnsHandling.EnsHandling as EnsHandling
 import fv3jeditools.Utils.utils as utils
 
-sargs = argparse.ArgumentParser()
-sargs.add_argument("-s", "--start_date",    default='2019010000')
-sargs.add_argument("-f", "--final_date",    default='2020123100')
-sargs.add_argument("-q", "--freq",          default='6')
-sargs.add_argument("-c", "--config",        default='config.yaml')
+def main():
 
-args = sargs.parse_args()
-start = args.start_date
-final = args.final_date
-freq = int(args.freq)
-conf = args.config
+    sargs = argparse.ArgumentParser()
+    sargs.add_argument("-s", "--start_date",    default='2019010000')
+    sargs.add_argument("-f", "--final_date",    default='2020123100')
+    sargs.add_argument("-q", "--freq",          default='6')
+    sargs.add_argument("-c", "--config",        default='config.yaml')
 
-# --------------------------------------------------------------------------------------------------
+    args = sargs.parse_args()
+    start = args.start_date
+    final = args.final_date
+    freq = int(args.freq)
+    conf = args.config
 
-dtformat = '%Y%m%d%H'
+    # --------------------------------------------------------------------------------------------------
 
-dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
+    dtformat = '%Y%m%d%H'
 
-for dt in dts:
+    dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
 
-    process_date = dt.strftime(dtformat)
+    for dt in dts:
 
-    os.environ['PDATE'] = process_date
-    os.environ['CFILE'] = conf
+        process_date = dt.strftime(dtformat)
 
-    eh = EnsHandling.EnsembleHandling()
+        os.environ['PDATE'] = process_date
+        os.environ['CFILE'] = conf
 
-    eh.downloadGeosEnsRestartArchive()
+        eh = EnsHandling.EnsembleHandling()
 
-exit()
+        eh.downloadGeosEnsRestartArchive()
+
+    exit()
+
+
+if __name__ == "__main__":
+    main()

@@ -13,83 +13,90 @@ import fv3jeditools.Config.geos_conf as geosconf
 import fv3jeditools.Config.common_conf as commconf
 import fv3jeditools.Utils.utils as utils
 
-sargs = argparse.ArgumentParser()
-sargs.add_argument("-s", "--start_date",    default='2019111809')
-sargs.add_argument("-f", "--final_date",    default='2019111809')
-sargs.add_argument("-q", "--freq",          default='6')
-sargs.add_argument("-c", "--config",        default='config.yaml')
 
-args = sargs.parse_args()
-start = args.start_date
-final = args.final_date
-freq = int(args.freq)
-conf = args.config
 
-# --------------------------------------------------------------------------------------------------
+def main():
 
-dtformat = '%Y%m%d%H'
+    sargs = argparse.ArgumentParser()
+    sargs.add_argument("-s", "--start_date",    default='2019111809')
+    sargs.add_argument("-f", "--final_date",    default='2019111809')
+    sargs.add_argument("-q", "--freq",          default='6')
+    sargs.add_argument("-c", "--config",        default='config.yaml')
 
-dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
+    args = sargs.parse_args()
+    start = args.start_date
+    final = args.final_date
+    freq = int(args.freq)
+    conf = args.config
 
-# Configuration
-with open(conf) as file:
-    cf = yaml.load(file, Loader=yaml.FullLoader)
+    # --------------------------------------------------------------------------------------------------
 
-for dt in dts:
+    dtformat = '%Y%m%d%H'
 
-    # Geometry
-    inputresolution = geosconf.geometry_dict(
-        'inputresolution', 'Data/fv3files', cf['levels'])
-    outputresolution = geosconf.geometry_dict(
-        'outputresolution', 'Data/fv3files', cf['levels'])
+    dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
 
-    # Variable change
-    invars = cf['invars']
-    outvars = cf['outvars']
+    # Configuration
+    with open(conf) as file:
+        cf = yaml.load(file, Loader=yaml.FullLoader)
 
-    varcha = commconf.varcha_d2a_dict(invars, outvars)
+    for dt in dts:
 
-    # Path / filesname input
-    input_path_ = dt.strftime(cf['input_path'])
-    input_filename_bkgd = dt.strftime(cf['input_filename_bkgd'])
-    input_filename_crtm = dt.strftime(cf['input_filename_crtm'])
-    input_filename_core = dt.strftime(cf['input_filename_core'])
-    input_filename_mois = dt.strftime(cf['input_filename_mois'])
-    input_filename_surf = dt.strftime(cf['input_filename_surf'])
+        # Geometry
+        inputresolution = geosconf.geometry_dict(
+            'inputresolution', 'Data/fv3files', cf['levels'])
+        outputresolution = geosconf.geometry_dict(
+            'outputresolution', 'Data/fv3files', cf['levels'])
 
-    # Path / filesname output
-    output_path_ = dt.strftime(cf['input_path'])
-    output_filename_bkgd = dt.strftime(cf['output_filename_bkgd'])
-    output_filename_crtm = dt.strftime(cf['output_filename_crtm'])
-    output_filename_core = dt.strftime(cf['output_filename_core'])
-    output_filename_mois = dt.strftime(cf['output_filename_mois'])
-    output_filename_surf = dt.strftime(cf['output_filename_surf'])
+        # Variable change
+        invars = cf['invars']
+        outvars = cf['outvars']
 
-    input = {}
-    output = {}
+        varcha = commconf.varcha_d2a_dict(invars, outvars)
 
-    dict_states = {}
-    dict_states["states"] = []
+        # Path / filesname input
+        input_path_ = dt.strftime(cf['input_path'])
+        input_filename_bkgd = dt.strftime(cf['input_filename_bkgd'])
+        input_filename_crtm = dt.strftime(cf['input_filename_crtm'])
+        input_filename_core = dt.strftime(cf['input_filename_core'])
+        input_filename_mois = dt.strftime(cf['input_filename_mois'])
+        input_filename_surf = dt.strftime(cf['input_filename_surf'])
 
-    for e in range(1, cf['nstates']+1):
+        # Path / filesname output
+        output_path_ = dt.strftime(cf['input_path'])
+        output_filename_bkgd = dt.strftime(cf['output_filename_bkgd'])
+        output_filename_crtm = dt.strftime(cf['output_filename_crtm'])
+        output_filename_core = dt.strftime(cf['output_filename_core'])
+        output_filename_mois = dt.strftime(cf['output_filename_mois'])
+        output_filename_surf = dt.strftime(cf['output_filename_surf'])
 
-        input_path = input_path_.replace('$STATE', str(e).zfill(3))
-        output_path = output_path_.replace('$STATE', str(e).zfill(3))
+        input = {}
+        output = {}
 
-        # Input/output for member
-        input = geosconf.state_dict('input', input_path, input_filename_bkgd, input_filename_crtm, input_filename_core,
-                                    input_filename_mois, input_filename_surf, variables=invars)
-        output = geosconf.output_dict('output', output_path, output_filename_bkgd, output_filename_crtm, output_filename_core,
-                                      output_filename_mois, output_filename_surf)
+        dict_states = {}
+        dict_states["states"] = []
 
-        inputout = {**input, **output}
+        for e in range(1, cf['nstates']+1):
 
-        dict_states["states"].append(inputout)
+            input_path = input_path_.replace('$STATE', str(e).zfill(3))
+            output_path = output_path_.replace('$STATE', str(e).zfill(3))
 
-    dict = {**inputresolution, **outputresolution, **varcha, **dict_states}
+            # Input/output for member
+            input = geosconf.state_dict('input', input_path, input_filename_bkgd, input_filename_crtm, input_filename_core,
+                                        input_filename_mois, input_filename_surf, variables=invars)
+            output = geosconf.output_dict('output', output_path, output_filename_bkgd, output_filename_crtm, output_filename_core,
+                                        output_filename_mois, output_filename_surf)
 
-    # Write to yaml file
-    with open(cf['yamlout'], 'w') as outfile:
-        yaml.dump(dict, outfile, default_flow_style=False)
+            inputout = {**input, **output}
 
-exit()
+            dict_states["states"].append(inputout)
+
+        dict = {**inputresolution, **outputresolution, **varcha, **dict_states}
+
+        # Write to yaml file
+        with open(cf['yamlout'], 'w') as outfile:
+            yaml.dump(dict, outfile, default_flow_style=False)
+
+    exit()
+
+if __name__ == "__main__":
+    main()

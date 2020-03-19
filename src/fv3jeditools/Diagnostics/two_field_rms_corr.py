@@ -12,94 +12,100 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 
+def main():
 
-# User input
-# ----------
 
-sargs = argparse.ArgumentParser()
-sargs.add_argument("-r", "--file_ref")
-sargs.add_argument("-f1", "--file1")
-sargs.add_argument("-f2", "--file2")
-sargs.add_argument("-f", "--field")
+    # User input
+    # ----------
 
-args = sargs.parse_args()
+    sargs = argparse.ArgumentParser()
+    sargs.add_argument("-r", "--file_ref")
+    sargs.add_argument("-f1", "--file1")
+    sargs.add_argument("-f2", "--file2")
+    sargs.add_argument("-f", "--field")
 
-file_ref = args.file_ref
-file1 = args.file1
-file2 = args.file2
-fieldname = args.field
+    args = sargs.parse_args()
 
-# --------------------------------------------------------------------------------------------------
+    file_ref = args.file_ref
+    file1 = args.file1
+    file2 = args.file2
+    fieldname = args.field
 
-fh_r = Dataset(file_ref)
-fh_1 = Dataset(file1)
-fh_2 = Dataset(file2)
+    # --------------------------------------------------------------------------------------------------
 
-Xdim = len(fh_r.dimensions['Xdim'])
-Ydim = len(fh_r.dimensions['Ydim'])
-nf = len(fh_r.dimensions['nf'])
-lev = len(fh_r.dimensions['lev'])
+    fh_r = Dataset(file_ref)
+    fh_1 = Dataset(file1)
+    fh_2 = Dataset(file2)
 
-Xdim1 = len(fh_r.dimensions['Xdim'])
-Ydim1 = len(fh_r.dimensions['Ydim'])
-nf1 = len(fh_r.dimensions['nf'])
-lev1 = len(fh_r.dimensions['lev'])
+    Xdim = len(fh_r.dimensions['Xdim'])
+    Ydim = len(fh_r.dimensions['Ydim'])
+    nf = len(fh_r.dimensions['nf'])
+    lev = len(fh_r.dimensions['lev'])
 
-Xdim2 = len(fh_r.dimensions['Xdim'])
-Ydim2 = len(fh_r.dimensions['Ydim'])
-nf2 = len(fh_r.dimensions['nf'])
-lev2 = len(fh_r.dimensions['lev'])
+    Xdim1 = len(fh_r.dimensions['Xdim'])
+    Ydim1 = len(fh_r.dimensions['Ydim'])
+    nf1 = len(fh_r.dimensions['nf'])
+    lev1 = len(fh_r.dimensions['lev'])
 
-if (Xdim1-Xdim != 0 or Xdim2-Xdim != 0 or Ydim1-Ydim != 0 or Ydim2-Ydim != 0):
-    print("Dimension mismatch between input files")
-    exit()
+    Xdim2 = len(fh_r.dimensions['Xdim'])
+    Ydim2 = len(fh_r.dimensions['Ydim'])
+    nf2 = len(fh_r.dimensions['nf'])
+    lev2 = len(fh_r.dimensions['lev'])
 
-fieldr = np.zeros([lev, nf, Ydim, Xdim])
-field1 = np.zeros([lev, nf, Ydim, Xdim])
-field2 = np.zeros([lev, nf, Ydim, Xdim])
+    if (Xdim1-Xdim != 0 or Xdim2-Xdim != 0 or Ydim1-Ydim != 0 or Ydim2-Ydim != 0):
+        print("Dimension mismatch between input files")
+        exit()
 
-print('Reading field: '+fieldname)
-fieldr[:, :, :] = fh_r.variables[fieldname][:, :, :, :]
-field1[:, :, :] = fh_1.variables[fieldname][:, :, :, :]
-field2[:, :, :] = fh_2.variables[fieldname][:, :, :, :]
+    fieldr = np.zeros([lev, nf, Ydim, Xdim])
+    field1 = np.zeros([lev, nf, Ydim, Xdim])
+    field2 = np.zeros([lev, nf, Ydim, Xdim])
 
-fieldrrs = np.reshape(fieldr, (lev, nf*Ydim*Xdim))
-field1rs = np.reshape(field1, (lev, nf*Ydim*Xdim))
-field2rs = np.reshape(field2, (lev, nf*Ydim*Xdim))
+    print('Reading field: '+fieldname)
+    fieldr[:, :, :] = fh_r.variables[fieldname][:, :, :, :]
+    field1[:, :, :] = fh_1.variables[fieldname][:, :, :, :]
+    field2[:, :, :] = fh_2.variables[fieldname][:, :, :, :]
 
-rmse1 = np.zeros([lev])
-corr1 = np.zeros([lev])
-rmse2 = np.zeros([lev])
-corr2 = np.zeros([lev])
+    fieldrrs = np.reshape(fieldr, (lev, nf*Ydim*Xdim))
+    field1rs = np.reshape(field1, (lev, nf*Ydim*Xdim))
+    field2rs = np.reshape(field2, (lev, nf*Ydim*Xdim))
 
-# Compute RMS and Correlation
-for l in range(lev):
+    rmse1 = np.zeros([lev])
+    corr1 = np.zeros([lev])
+    rmse2 = np.zeros([lev])
+    corr2 = np.zeros([lev])
 
-    print('Computing RMS and correlation at level ', +l)
+    # Compute RMS and Correlation
+    for l in range(lev):
 
-    rmse1[l] = np.sqrt(np.mean((field1rs[l, :] - fieldrrs[l, :])**2))
-    rmse2[l] = np.sqrt(np.mean((field2rs[l, :] - fieldrrs[l, :])**2))
+        print('Computing RMS and correlation at level ', +l)
 
-    ccm = np.corrcoef(field1rs[l, :], fieldrrs[l, :])
-    corr1[l] = ccm[0, 1]
+        rmse1[l] = np.sqrt(np.mean((field1rs[l, :] - fieldrrs[l, :])**2))
+        rmse2[l] = np.sqrt(np.mean((field2rs[l, :] - fieldrrs[l, :])**2))
 
-    ccm = np.corrcoef(field2rs[l, :], fieldrrs[l, :])
-    corr2[l] = ccm[0, 1]
+        ccm = np.corrcoef(field1rs[l, :], fieldrrs[l, :])
+        corr1[l] = ccm[0, 1]
 
-print('Create plots')
+        ccm = np.corrcoef(field2rs[l, :], fieldrrs[l, :])
+        corr2[l] = ccm[0, 1]
 
-fig, axs = plt.subplots(1, 2, figsize=(6, 8))
-axs[0].plot(rmse1, np.arange(1, lev+1))
-axs[1].plot(corr1, np.arange(1, lev+1))
-axs[0].plot(rmse2, np.arange(1, lev+1), 'r--')
-axs[1].plot(corr2, np.arange(1, lev+1), 'r--')
+    print('Create plots')
 
-axs[0].set_ylim(1, lev)
-axs[0].invert_yaxis()
-axs[0].set_title('RMSE')
-axs[1].set_ylim(1, lev)
-axs[1].invert_yaxis()
-axs[1].set_title('Correlation')
-axs[1].set_xlim(0.99, 1.0)
+    fig, axs = plt.subplots(1, 2, figsize=(6, 8))
+    axs[0].plot(rmse1, np.arange(1, lev+1))
+    axs[1].plot(corr1, np.arange(1, lev+1))
+    axs[0].plot(rmse2, np.arange(1, lev+1), 'r--')
+    axs[1].plot(corr2, np.arange(1, lev+1), 'r--')
 
-fig.savefig("twofieldstats.png")
+    axs[0].set_ylim(1, lev)
+    axs[0].invert_yaxis()
+    axs[0].set_title('RMSE')
+    axs[1].set_ylim(1, lev)
+    axs[1].invert_yaxis()
+    axs[1].set_title('Correlation')
+    axs[1].set_xlim(0.99, 1.0)
+
+    fig.savefig("twofieldstats.png")
+
+
+if __name__ == "__main__":
+    main()
