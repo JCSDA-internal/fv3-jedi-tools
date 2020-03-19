@@ -14,7 +14,6 @@ import fv3jeditools.Config.common_conf as commconf
 import fv3jeditools.Utils.utils as utils
 
 
-
 def main():
 
     sargs = argparse.ArgumentParser()
@@ -84,7 +83,7 @@ def main():
             input = geosconf.state_dict('input', input_path, input_filename_bkgd, input_filename_crtm, input_filename_core,
                                         input_filename_mois, input_filename_surf, variables=invars)
             output = geosconf.output_dict('output', output_path, output_filename_bkgd, output_filename_crtm, output_filename_core,
-                                        output_filename_mois, output_filename_surf)
+                                          output_filename_mois, output_filename_surf)
 
             inputout = {**input, **output}
 
@@ -97,6 +96,7 @@ def main():
             yaml.dump(dict, outfile, default_flow_style=False)
 
     exit()
+
 
 if __name__ == "__main__":
     main()

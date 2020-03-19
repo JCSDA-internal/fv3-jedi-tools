@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")
 
+
 def main():
 
     #files = '/gpfsm/dnb31/drholdaw/NeilDemo/Data/hofx/abi_g17_obs_2019112818_NPROC.nc4'
@@ -28,7 +29,6 @@ def main():
     nprocs = 864
 
     win_beg = dt.datetime.strptime('2019112815', '%Y%m%d%H')
-
 
     # Variable name and units
     # -----------------------
@@ -74,7 +74,6 @@ def main():
 
         fh.close()
 
-
     p1, x1 = np.histogram(omba1, bins=50)
     p2, x2 = np.histogram(omba2, bins=50)
     p3, x3 = np.histogram(omba3, bins=50)
@@ -94,10 +93,10 @@ def main():
     plt.ylabel('Probability')
     plt.xlabel('Observation minus H(x)')
 
-    plt.legend((plt1[0], plt2[0], plt3[0]), ('O-B', 'O-A (first)', 'O-A (second)'))
+    plt.legend((plt1[0], plt2[0], plt3[0]),
+               ('O-B', 'O-A (first)', 'O-A (second)'))
 
     plt.savefig('stats.png')
-
 
     exit()
 

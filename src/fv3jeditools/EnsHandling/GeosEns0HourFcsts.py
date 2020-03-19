@@ -17,8 +17,8 @@ import fv3jeditools.Utils.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 
-def main():
 
+def main():
 
     sargs = argparse.ArgumentParser()
     sargs.add_argument("-s", "--start_date",    default='2019111809')
@@ -36,7 +36,6 @@ def main():
     # -------------------------
     workflowdir = '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/WorkflowTracking/GeosEns0HourFcsts'
 
-
     # Keep track of whether file is running
     # -------------------------------------
     working = os.path.join(workflowdir, 'working')
@@ -47,11 +46,9 @@ def main():
 
     open(working, 'a').close()
 
-
     # This directory
     # --------------
     cwd = os.getcwd()
-
 
     # Directory to run GEOS
     # ---------------------
@@ -74,14 +71,12 @@ def main():
     yyyymmddhh = '%Y%m%d%H'
     yyyymmdd_hh = '%Y%m%d_%H'
 
-
     # Set final to be now - 5 days - 3hours (need to stay behind operations a bit)
     # ----------------------------------------------------------------------------
     today_str = datetime.datetime.today().strftime(yyyymmdd)
     datetime_final = datetime.datetime.strptime(
         today_str, yyyymmdd) - datetime.timedelta(hours=123)
     final = datetime_final.strftime(yyyymmddhh)
-
 
     # Loop over date times
     # --------------------
@@ -125,7 +120,7 @@ def main():
         tf.close()
 
         os.rename(os.path.join(geosrundir, rstlcvfile),
-                os.path.join(geosrundir, 'd_rst'))
+                  os.path.join(geosrundir, 'd_rst'))
 
         # Extract tar file with all ens members
         # -------------------------------------
@@ -153,7 +148,7 @@ def main():
         # Check for success
         # -----------------
         check_file = os.path.join(geosrundir, newtarfile, 'mem032',
-                                'f522_dh.fvcore_internal_rst.'+process_date+'z.nc4')
+                                  'f522_dh.fvcore_internal_rst.'+process_date+'z.nc4')
         if not os.path.exists(check_file):
             os.remove(working)
             utils.abort(check_file+" does not exist")

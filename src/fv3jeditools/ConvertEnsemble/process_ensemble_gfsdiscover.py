@@ -41,8 +41,8 @@ import yaml
 import fv3jeditools.Utils.utils as utils
 import fv3jeditools.ConvertEnsemble.fv3mod_ens_proc as fv3model
 
-def main():
 
+def main():
 
     # User input
     # ----------
@@ -54,8 +54,10 @@ def main():
 
     # Optional datetime configuration
     sargs.add_argument("-f", "--readdatetimes", default='0')
-    sargs.add_argument("-s", "--start",         default='2019061200')  # yyyymmddHH
-    sargs.add_argument("-e", "--end",           default='2019101506')  # yyyymmddHH
+    sargs.add_argument("-s", "--start",
+                       default='2019061200')  # yyyymmddHH
+    sargs.add_argument("-e", "--end",
+                       default='2019101506')  # yyyymmddHH
     sargs.add_argument("-q", "--freq",          default='6')           # Hours
     sargs.add_argument("-n", "--ncycs",         default='100')
     sargs.add_argument("-r", "--rseed",         default='1')
@@ -116,11 +118,9 @@ def main():
 
     print("\n")
 
-
     # Construct class with model specific methods
     # -------------------------------------------
     fv3model = fv3model.factory.create(model.upper())
-
 
     # Set up list of dates to process
     # -------------------------------
@@ -142,7 +142,8 @@ def main():
 
         for n in range(ncycs):
             tmp = str(datetimes_str[n])
-            datetimes[n] = datetime.datetime.strptime(tmp[0:10], utils.dtformat)
+            datetimes[n] = datetime.datetime.strptime(
+                tmp[0:10], utils.dtformat)
 
     else:
 
@@ -168,7 +169,7 @@ def main():
         # Check that number of cycles user wants is compatible with provided range
         if (ntcycs < ncycs):
             print(" WARNING: total date range does not contain enough cycles for input choice, "
-                "reducing to every datetime in the range.")
+                  "reducing to every datetime in the range.")
             ncycs = ntcycs
 
         # Non replacement random sample of size ncycs
@@ -180,13 +181,11 @@ def main():
         for n in range(ncycs):
             datetimes[n] = tdatetimes[datetimes_index[n]]
 
-
     # Write the datetimes being processed to file
     # -------------------------------------------
     with open('datetimes_processed.txt', 'w') as fh:
         for item in datetimes:
             fh.write("%s\n" % item.strftime(utils.dtformat))
-
 
     # Loop over cycles and process the ensemble
     # -----------------------------------------

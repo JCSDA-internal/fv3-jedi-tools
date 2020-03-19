@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")
 
+
 def main():
 
     # User input
@@ -51,7 +52,6 @@ def main():
         print("Invalid jnorm argument provided, J, Jb or JoJc")
         exit()
 
-
     print(search_pattern)
 
     jnorm = []
@@ -63,7 +63,6 @@ def main():
             if (line[0:5] != 'GMRES'):
                 print(line)
                 jnorm.append(line.split()[pos])
-
 
     # Convert to numpy arrays
     jnorma = np.asarray(jnorm, dtype=np.float32)
@@ -82,6 +81,7 @@ def main():
     plt.savefig('jnorm.png')
 
     exit()
+
 
 if __name__ == "__main__":
     main()

@@ -29,7 +29,6 @@ def main():
 
     win_beg = dt.datetime.strptime('2019112815', '%Y%m%d%H')
 
-
     # Variable name and units
     # -----------------------
     variable_name = variable.split('@')[0]
@@ -74,7 +73,7 @@ def main():
             for l in range(20):
                 time_proc_str = time_proc_str + time_proc_[l].decode('UTF-8')
             time.append((dt.datetime.strptime(time_proc_str,
-                                            '%Y-%m-%dT%H:%M:%SZ') - win_beg).total_seconds())
+                                              '%Y-%m-%dT%H:%M:%SZ') - win_beg).total_seconds())
 
         fh.close()
 
@@ -87,7 +86,6 @@ def main():
     obarray[:, 2] = lats
     obarray[:, 3] = time
 
-
     # Create figure
     # -------------
 
@@ -98,7 +96,7 @@ def main():
 
     # plot grid lines
     gl = ax.gridlines(crs=ccrs.PlateCarree(central_longitude=0), draw_labels=True,
-                    linewidth=1, color='gray', alpha=0.5, linestyle='-')
+                      linewidth=1, color='gray', alpha=0.5, linestyle='-')
     gl.xlabels_top = False
     gl.ylabels_left = True
     gl.xlabel_style = {'size': 10, 'color': 'black'}
@@ -134,6 +132,7 @@ def main():
     plt.savefig(savename)
 
     exit()
+
 
 if __name__ == "__main__":
     main()

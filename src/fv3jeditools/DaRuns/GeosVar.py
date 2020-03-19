@@ -53,7 +53,6 @@ def main():
 
     open(working, 'a').close()
 
-
     dtformat = '%Y%m%d%H'
 
     dts = utils.getDateTimes(start, final, 3600*freq, dtformat)
@@ -72,16 +71,20 @@ def main():
         # Dates to pass to scripts
         # ------------------------
         window_beg = dt.strftime(dtformat)
-        window_mid = (dt + datetime.timedelta(seconds=10800)).strftime(dtformat)
-        window_end = (dt + datetime.timedelta(seconds=21600)).strftime(dtformat)
+        window_mid = (dt + datetime.timedelta(seconds=10800)
+                      ).strftime(dtformat)
+        window_end = (dt + datetime.timedelta(seconds=21600)
+                      ).strftime(dtformat)
 
-        window_net = (dt + datetime.timedelta(seconds=43200)).strftime(dtformat)
+        window_net = (dt + datetime.timedelta(seconds=43200)
+                      ).strftime(dtformat)
 
-        window_prv = (dt + datetime.timedelta(seconds=-21600)).strftime(dtformat)
+        window_prv = (dt + datetime.timedelta(seconds=-21600)
+                      ).strftime(dtformat)
 
         window_beg_ = dt.strftime('%Y%m%d_%H')
         window_net_ = (dt + datetime.timedelta(seconds=43200)
-                    ).strftime('%Y%m%d_%H')
+                       ).strftime('%Y%m%d_%H')
 
         # Track of times completed
         # ------------------------
@@ -139,7 +142,7 @@ def main():
         # Prepare the ensemble
         # --------------------
         filecheck = os.path.join(jediworkdir, 'Data', 'Ensemble', 'f522_dh.atmens_erst.' +
-                                window_beg+'z', 'mem032', 'f522_dh.fvcore_internal_rst.'+window_beg+'z.nc4')
+                                 window_beg+'z', 'mem032', 'f522_dh.fvcore_internal_rst.'+window_beg+'z.nc4')
         if not os.path.exists(filecheck):
             eh.downloadGeosEnsRestartArchive()
         else:
@@ -170,7 +173,8 @@ def main():
         filecheck = os.path.join(
             workdir, 'Archive', window_beg, 'RestartAnalysis', 'fvcore_internal_rst')
         if not os.path.exists(filecheck):
-            utils.abort("Aborting, jobs do not seem to have completed properly")
+            utils.abort(
+                "Aborting, jobs do not seem to have completed properly")
 
         # Clean up
         # --------
@@ -182,7 +186,7 @@ def main():
         bmpdir = os.path.join(jediworkdir, 'Data', 'Bump', '864_ens')
         rnedir = os.path.join(jediworkdir, 'Data', 'RestartNew')
         ensdir = os.path.join(jediworkdir, 'Data', 'Ensemble',
-                            'f522_dh.atmens_erst.'+window_beg_+'z')
+                              'f522_dh.atmens_erst.'+window_beg_+'z')
 
         shutil.rmtree(obsdir)
         shutil.rmtree(bkgdir)

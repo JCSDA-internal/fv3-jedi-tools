@@ -11,8 +11,10 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 
+
 def lines_that_contain(string, fh):
     return [line for line in fh if string in line]
+
 
 def main():
 
@@ -45,7 +47,6 @@ def main():
     print("\n")
 
     # Search log for matching string
-
 
     if __name__ == "__main__":
         main()

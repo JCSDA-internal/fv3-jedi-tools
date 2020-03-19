@@ -21,6 +21,7 @@ import fv3jeditools.ObsProcessing.gsid2ioda_driver as gsid2ioda_driver
 #import fv3jeditools.ObsProcessing.gsi_ncdiag as gsi_ncdiag
 import fv3jeditools.Utils.utils as utils
 
+
 def main():
 
     sargs = argparse.ArgumentParser()
@@ -66,7 +67,8 @@ def main():
 
     if os.path.exists(working_flag):
         if (time.time()-os.path.getmtime(working_flag))/(60*60) > 3.0:
-            print("Working flag exists but is over 3 hours old. Deleting and running again")
+            print(
+                "Working flag exists but is over 3 hours old. Deleting and running again")
             os.remove(working_flag)
         else:
             print(working_flag+" exists. Already running or failed last time")
@@ -76,12 +78,12 @@ def main():
 
     # Files that converters can't handle
     skip_files = ['diag_conv_sst_ges',       # Conventional
-                'diag_gome_metop-a_ges',   # Ozone
-                'diag_sbuv2_n19_ges',
-                'diag_omi_aura_ges',
-                'diag_gome_metop-b_ges',
-                'diag_ompstc8_npp_ges',
-                'diag_ompsnp_npp_ges']
+                  'diag_gome_metop-a_ges',   # Ozone
+                  'diag_sbuv2_n19_ges',
+                  'diag_omi_aura_ges',
+                  'diag_gome_metop-b_ges',
+                  'diag_ompstc8_npp_ges',
+                  'diag_ompsnp_npp_ges']
 
     cnv_types = ['aircraft', 'sfcship', 'sfc', 'sondes']
 
@@ -214,7 +216,8 @@ def main():
                     if not file_done:
                         doneallplat = True
                         for p in range(len(platform)):
-                            out_file = platform[p]+'_'+file_tmp+'_obs_'+YmdH+'.nc4'
+                            out_file = platform[p]+'_' + \
+                                file_tmp+'_obs_'+YmdH+'.nc4'
                             if not os.path.exists(os.path.join(workdiriodatmp, out_file)):
                                 doneallplat = False
                         file_done = doneallplat
@@ -246,7 +249,7 @@ def main():
                         combinestrg = ' '.join(combinelist)
                         print('Combining conventional files: ', combinestrg)
                         os.system(ioda_con_path+'/bin/combine_conv.py -i '+combinestrg +
-                                ' -o '+os.path.join(workdiriodatmp, filecombined))
+                                  ' -o '+os.path.join(workdiriodatmp, filecombined))
                         shutil.move(os.path.join(workdiriodatmp, filecombined),
                                     os.path.join(workdirioda, filecombined))
                         for file in combinelist:
@@ -272,7 +275,7 @@ def main():
         tarliststr = ' '.join(tarlist)
         print(tarliststr)
         utils.run_bash_command(workdirioda, 'tar -cvf ' +
-                            os.path.join(workdirdate, obsfile)+' '+tarliststr)
+                               os.path.join(workdirdate, obsfile)+' '+tarliststr)
 
         # Copy to S3
         # ----------
