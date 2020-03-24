@@ -1,0 +1,43 @@
+varchange: GeosRst2Bkg
+doinverse: '1'
+do_wind: false
+do_temperature: true
+do_pressure: true
+do_clouds: false
+pres_var: ps
+inputVariables:
+  variables: ["u","v","t","ps","q"]
+inputresolution:
+  nml_file: Data/fv3files/input.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+outputVariables:
+  variables: ["U","V","PE","PKZ","PT","Q"]
+outputresolution:
+  nml_file: Data/fv3files/input.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+states:
+- input:
+    filetype: geos
+    datapath: /gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/GeosRunDir
+    filename_bkgd: f522_dh.geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+    tiledim: false
+    variables: ["u","v","t","ps","q"]
+  output:
+    filetype: geos
+    datapath: Data/Background
+    filename_core: geos.bkg.fvcore_internal_rst.%yyyy%mm%dd_%hhz.nc4
+    filename_mois: geos.bkg.moist_internal_rst.%yyyy%mm%dd_%hhz.nc4
+- input:
+    filetype: geos
+    datapath: Data/Analysis
+    filename_bkgd: geos.ana.%YWBEG%mWBEG%dWBEG_%HWBEG0000z.nc4
+    variables: ["u","v","t","ps","q"]
+  output:
+    filetype: geos
+    datapath: Data/Analysis
+    filename_core: geos.ana.fvcore_internal_rst.%yyyy%mm%dd_%hhz.nc4
+    filename_mois: geos.ana.moist_internal_rst.%yyyy%mm%dd_%hhz.nc4

@@ -1,0 +1,118 @@
+Geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  nml_file: Data/fv3files/input.nml
+  trc_file: Data/fv3files/field_table
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+Variables:
+  variables:  &incvars ["ua","va","t","ps","q","qi","ql"]
+date:
+  date: '%YWBEG-%mWBEG-%dWBEGT%HWBEG:00:00Z'
+Background:
+  filetype: geos
+  datapath: /gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/GeosRunDir
+  filename_bkgd: f522_dh.geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+  tiledim: false
+  variables: ["ua","va","t","ps","q","qi","ql"]
+VarianceOut:
+  filetype: geos
+  datapath: Data/
+  filename_bkgd: geos.ensemblevariance.%yyyy%mm%dd_%hh%MM%ssz.nc4
+Ensemble:
+  variables: *incvars
+  members:
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem001
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem002
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem003
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem004
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem005
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem006
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem007
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem008
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem009
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem010
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem011
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem012
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem013
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem014
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem015
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem016
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem017
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem018
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem019
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem020
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem021
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem022
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem023
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem024
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem025
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem026
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem027
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem028
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem029
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem030
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem031
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  - filetype: geos
+    datapath: Data/Ensemble/f522_dh.atmens_erst.%YWBEG%mWBEG%dWBEG_%HWBEGz/mem032
+    filename_bkgd: geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4

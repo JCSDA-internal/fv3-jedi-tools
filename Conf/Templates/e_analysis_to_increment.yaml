@@ -1,0 +1,27 @@
+stateResol:
+  nml_file: Data/fv3files/input.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+incrementResol:
+  nml_file: Data/fv3files/input_c720.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+state1:
+  filetype: geos
+  datapath: Data/Analysis
+  filename_core: geos.ana.fvcore_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  filename_mois: geos.ana.moist_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  variables: ["U","V","PE","PKZ","PT","Q"]
+state2:
+  filetype: geos
+  datapath: Data/Background
+  filename_core: geos.bkg.fvcore_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  filename_mois: geos.bkg.moist_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  variables: ["U","V","PE","PKZ","PT","Q"]
+output:
+  filetype: geos
+  datapath: Data/Increment/
+  filename_core: geos.inc.fvcore_internal_rst.%yyyy%mm%dd_%hhz.nc4
+  filename_mois: geos.inc.moist_internal_rst.%yyyy%mm%dd_%hhz.nc4

@@ -1,0 +1,28 @@
+stateResol:
+  nml_file: Data/fv3files/input_c720.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+incrementResol:
+  nml_file: Data/fv3files/input_c720.nml
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+  trc_file: Data/fv3files/field_table
+state:
+  filetype: geos
+  datapath: Data/RestartNew
+  filename_core: fvcore_internal_checkpoint.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+  filename_mois: moist_internal_checkpoint.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+  variables: ["U","V","PE","PKZ","PT","Q"]
+increment:
+  filetype: geos
+  datapath: Data/Increment
+  filename_core: geos.inc.fvcore_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  filename_mois: geos.inc.moist_internal_rst.%YWBEG%mWBEG%dWBEG_%HWBEGz.nc4
+  variables: ["U","V","PE","PKZ","PT","Q"]
+output:
+  filetype: geos
+  clobber: false
+  datapath: Data/RestartNew
+  filename_core: fvcore_internal_checkpoint.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+  filename_mois: moist_internal_checkpoint.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4

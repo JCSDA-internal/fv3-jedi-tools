@@ -1,0 +1,61 @@
+Assimilation Window:
+  Begin: '%YWBEG-%mWBEG-%dWBEGT%HWBEG:00:00Z'
+  Length: PT6H
+Geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  nml_file: Data/fv3files/input.nml
+  trc_file: Data/fv3files/field_table
+  pathfile_akbk: Data/fv3files/akbk72.nc4
+Initial Condition:
+  filetype: geos
+  datapath: /gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/GeosRunDir
+  filename_bkgd: f522_dh.geos.bkg.%YWBEG%mWBEG%dWBEG_%HWBEG00z.nc4
+  tiledim: false
+  variables: ["u","v","ua","va","t","ps","q","qi","ql"]
+Model:
+  name: 'PSEUDO'
+  pseudo_type: 'geos'
+  pseudo_path: '/gpfsm/dnb31/drholdaw/JediScratch/RealTime4DVarGeos/GeosRunDir'
+  tiledim_bkgd: false
+  filename_bkgd: f522_dh.geos.bkg.%yyyy%mm%dd_%hh%MMz.nc4
+  tiledim_crtm: true
+  RunStageCheck: 1
+  tstep: PT1H
+  variables: ["u","v","ua","va","t","ps","q","qi","ql"]
+  #variables: ["u","v","ua","va","t","delp","q","qi","ql","phis",
+  #            "qls","qcn","cfcn","frocean","frland","varflt","ustar","bstar",
+  #            "zpbl","cm","ct","cq","kcbl","tsm","khl","khu"]
+Observations:
+  ObsTypes:
+  - ObsSpace:
+      name: Aircraft
+      ObsDataIn:
+        obsfile: Data/Observations/aircraft_obs_%YWMID%mWMID%dWMID%HWMID.nc4
+      ObsDataOut:
+        obsfile: Data/hofx/aircraft_hofxana_%YWMID%mWMID%dWMID%HWMID.nc4
+      simulate:
+        variables: [eastward_wind, northward_wind, air_temperature]
+    ObsOperator:
+      name: VertInterp
+  - ObsSpace:
+      name: Radiosonde
+      ObsDataIn:
+        obsfile: Data/Observations/sondes_obs_%YWMID%mWMID%dWMID%HWMID.nc4
+      ObsDataOut:
+        obsfile: Data/hofx/sondes_hofxana_%YWMID%mWMID%dWMID%HWMID.nc4
+      simulate:
+        variables: [eastward_wind, northward_wind, air_temperature]
+    ObsOperator:
+      name: VertInterp
+  - ObsSpace:
+      name: SatWinds
+      ObsDataIn:
+        obsfile: Data/Observations/satwind_uv_obs_%YWMID%mWMID%dWMID%HWMID.nc4
+      ObsDataOut:
+        obsfile: Data/hofx/satwind_uv_hofxana_%YWMID%mWMID%dWMID%HWMID.nc4
+      simulate:
+        variables: [eastward_wind, northward_wind]
+    ObsOperator:
+      name: VertInterp
+Prints:
+  frequency: PT1H
