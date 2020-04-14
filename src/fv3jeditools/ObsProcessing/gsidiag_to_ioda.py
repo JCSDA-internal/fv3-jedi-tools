@@ -6,25 +6,26 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import datetime
+import glob
 import os
 import sys
 import yaml
-#print(sys.path)
+print(sys.path)
 
 # --------------------------------------------------------------------------------------------------
 
 def main():
 
-    # Get the CYLC Environment
-    # ========================
+    # Get the environment
+    # ===================
 
-    cylc_run_path = '/gpfsm/dnb31/drholdaw/JediWF/GMAOGsiDiag2Ioda'  #os.environ['CYLC_SUITE_RUN_DIR']
-    cylc_def_path = '/gpfsm/dnb31/drholdaw/JediWF/GMAOGsiDiag2Ioda'  #os.environ['CYLC_SUITE_DEF_PATH']
-    cylc_cycle_point = '2020040100' #os.environ['CYLC_TASK_CYCLE_POINT']
+    cnf_path = '/gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools/Conf/GMAO/CylcSuiteConf'  #os.environ['CONFIG_PATH']
+    cycle_point = '2020040100' #os.environ['CYCLE_POINT']
 
-    date = cylc_cycle_point[0:8]
-    time = cylc_cycle_point[9:11]
-    cfg_file = os.path.join(cylc_def_path,'config.yml')
+    date = cycle_point[0:8]
+    time = cycle_point[8:11]
+
+    cfg_file = os.path.join(cnf_path,'gsidiag_to_ioda.yml')
 
 
     # Parse the configuration
@@ -137,8 +138,7 @@ def main():
     # Loop over all files and run conversion
     # ======================================
 
-    #all_files = conv_files + radiance_files + ozone_files + aod_files + radar_files
-    all_files = radiance_files
+    all_files = conv_files + radiance_files + ozone_files + aod_files + radar_files
 
     for file in all_files:
 
@@ -180,6 +180,22 @@ def main():
 
         diag.close()
 
+
+    # Combine the conventional data
+    # =============================
+    for type in conv_types:
+
+      print("Combining ", type)
+
+      # Create list of files to combine
+      infiles_list = glob.glob(os.path.join(odir, type+'_*_obs_*'))
+      infiles = ' '.join(infiles_list)
+
+      # Ouput file
+      outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
+
+      # Perform combine
+      os.system(icpath+'/bin/combine_conv.py -i ' + infiles + ' -o ' + outfile)
 
 
 # --------------------------------------------------------------------------------------------------

@@ -22,8 +22,8 @@ gsi-diag:
 
 gsi-diag2ioda:
 
-  IDIR: /gpfsm/dnb31/drholdaw/gsi-diag/Y%Y/M%m/D%d/H%H # Different date formatting
-  ODIR: /gpfsm/dnb31/drholdaw/ioda/Y%Y/M%m/D%d/H%H # Different date formatting
+  IDIR: /gpfsm/dnb31/drholdaw/JediObs/obs/gsi-diag/Y%Y/M%m/D%d/H%H # Different date formatting
+  ODIR: /gpfsm/dnb31/drholdaw/JediObs/obs/ioda/Y%Y/M%m/D%d/H%H # Different date formatting
 
   ioda_converters_build_path: /gpfsm/dnb31/drholdaw/JediObs/ioda-converters-install
 
@@ -33,28 +33,31 @@ gsi-diag2ioda:
   #  - ozone
 
   conventional_files:
-    #- $IDIR/$EXPID.diag_conv_gps_ges.%Y%m%d_%Hz.nc4
+# COMMENTED UNTIL ISSUES FIXED    #- $IDIR/$EXPID.diag_conv_gps_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_conv_q_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_conv_t_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_conv_ps_ges.%Y%m%d_%Hz.nc4
-    #- $IDIR/$EXPID.diag_conv_sst_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_conv_uv_ges.%Y%m%d_%Hz.nc4
+
+    # Missing at the moment:
+    #- $IDIR/$EXPID.diag_conv_sst_ges.%Y%m%d_%Hz.nc4
 
   conventional_types:
     - aircraft
-    - sfcship
     - sfc
+    - sfcship
     - sondes
 
   radiance_files:
-    - $IDIR/$EXPID.diag_atms_n20_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_avhrr_metop-a_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_avhrr_metop-b_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_avhrr_n18_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_avhrr_n19_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_cris-fsr_n20_ges.20200401_00z.nc4
-    - $IDIR/$EXPID.diag_gmi_gpm_ges.20200401_00z.nc4
-    # NOAA list:
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_atms_n20_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_avhrr_metop-a_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_avhrr_metop-b_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_avhrr_n18_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_avhrr_n19_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_cris-fsr_n20_ges.20200401_00z.nc4
+# COMMENTED UNTIL ISSUES FIXED    - $IDIR/$EXPID.diag_gmi_gpm_ges.20200401_00z.nc4
+
+    # Missing at the moment:
     #- $IDIR/$EXPID.diag_abi_g16_ges.%Y%m%d_%Hz.nc4
     #- $IDIR/$EXPID.diag_amsua_n15_ges.%Y%m%d_%Hz.nc4
     #- $IDIR/$EXPID.diag_avhrr_n19_ges.%Y%m%d_%Hz.nc4
