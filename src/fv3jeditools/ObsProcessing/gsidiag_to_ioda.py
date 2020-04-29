@@ -6,27 +6,35 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import datetime
+import argparse
 import glob
 import os
 import sys
 import yaml
-print(sys.path)
+import gsi_ncdiag as gsi_ncdiag
 
 # --------------------------------------------------------------------------------------------------
 
 def main():
 
+    # Retrieve command-line arguments
+    # ===============================
+
+    parser = argparse.ArgumentParser(description='Convert GSI Diag files to IODA format.')
+    parser.add_argument('datetime', metavar='datetime', type=str,
+                    help='ISO datetime as ccyy-mm-ddThh:mm:ss')
+    parser.add_argument('config', metavar='config', type=str,
+                    help='configuration file (.yml)')
+
+    args = parser.parse_args()
+
     # Get the environment
     # ===================
 
-    cnf_path = '/gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools/Conf/GMAO/CylcSuiteConf'  #os.environ['CONFIG_PATH']
-    cycle_point = '2020040100' #os.environ['CYCLE_POINT']
+    date = args.datetime[0:10].replace('-','')
+    time = args.datetime[11:13]
 
-    date = cycle_point[0:8]
-    time = cycle_point[8:11]
-
-    cfg_file = os.path.join(cnf_path,'gsidiag_to_ioda.yml')
-
+    cfg_file = args.config
 
     # Parse the configuration
     # =======================
@@ -41,7 +49,6 @@ def main():
     odir_ = mycfg['ODIR']
     expid = envcfg['EXPID']
 
-    icpath = mycfg['ioda_converters_build_path']
 
     # Observation types to process
     obsv_types = mycfg['types']
@@ -75,13 +82,6 @@ def main():
 
     # Observing systems to skip over
     skip_type = mycfg['observing_systems_to_skip']
-
-
-    # Import gsi diag converter from ioda-converters
-    # ==============================================
-    sys.path.append(icpath+'/lib/pyiodaconv')
-    import gsi_ncdiag as gsi_ncdiag
-
 
     # Replace date time in files
     # ==========================
@@ -195,7 +195,7 @@ def main():
       outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
 
       # Perform combine
-      os.system(icpath+'/bin/combine_conv.py -i ' + infiles + ' -o ' + outfile)
+      os.system('combine_conv.py -i ' + infiles + ' -o ' + outfile)
 
 
 # --------------------------------------------------------------------------------------------------
