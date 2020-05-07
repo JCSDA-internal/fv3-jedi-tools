@@ -1,0 +1,85 @@
+environment:
+
+  IDIR: /home/dao_ops/$EXPID/run/.../scratch/obs/Y%y4/M%m2/D%d2/H%h2
+  ODIR: $NOBACKUP/gsi-diag/Y%y4/M%m2/D%d2/H%h2
+  EXPID: f525_fp
+
+gsi-diag:
+
+  conventional_files:
+
+    - $IDIR/$EXPID.diag_conv_ges.%y4%m2%d2_%h2z.bin
+
+  radiance_files:
+
+    - $IDIR/$EXPID.diag_atms_n20_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_avhrr_metop-a_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_avhrr_metop-b_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_avhrr_n18_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_avhrr_n19_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_cris-fsr_n20_ges.%y4%m2%d2_%h2z.bin
+    - $IDIR/$EXPID.diag_gmi_gpm_ges.%y4%m2%d2_%h2z.bin
+
+gsi-diag2ioda:
+
+  IDIR: /gpfsm/dnb31/drholdaw/JediObs/obs/gsi-diag/Y%Y/M%m/D%d/H%H
+  ODIR: /gpfsm/dnb31/drholdaw/JediObs/obs/ioda/Y%Y/M%m/D%d/H%H
+
+  conventional_files:
+    - $IDIR/$EXPID.diag_conv_gps_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_conv_ps_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_conv_q_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_conv_t_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_conv_uv_ges.%Y%m%d_%Hz.nc4
+
+    # IODA converters cannot handle:
+    #- $IDIR/$EXPID.diag_conv_pw_ges.%Y%m%d_%Hz.nc4   # Precipitable water, not assimilated in GEOS
+    #- $IDIR/$EXPID.diag_conv_tcp_ges.%Y%m%d_%Hz.nc4  # TC central pressue, is assimilation in GEOS
+
+    # IODA converters can handle but not in diags:
+    #- $IDIR/$EXPID.diag_conv_sst_ges.%Y%m%d_%Hz.nc4  # Conventional SST not used in GEOS
+
+  conventional_types: # These are the kinds that need to be combined
+    - aircraft
+    - sfc
+    - sfcship
+    - sondes
+    - rass
+
+  radiance_files:
+    - $IDIR/$EXPID.diag_airs_aqua_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_aqua_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_metop-a_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_metop-b_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_n15_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_n18_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_amsua_n19_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_atms_n20_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_atms_npp_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_avhrr_metop-a_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_avhrr_metop-b_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_avhrr_n18_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_avhrr_n19_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_cris-fsr_n20_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_cris_npp_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_gmi_gpm_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_hirs4_metop-a_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_hirs4_metop-b_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_hirs4_n18_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_hirs4_n19_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_iasi_metop-a_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_iasi_metop-b_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_mhs_metop-a_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_mhs_metop-b_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_mhs_n19_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_seviri_m08_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_ssmis_f17_ges.%Y%m%d_%Hz.nc4
+    - $IDIR/$EXPID.diag_ssmis_f18_ges.%Y%m%d_%Hz.nc4
+
+  ozone_files: # GSI diag not ready for Ozone yet
+    #- $IDIR/f525_fp.diag_mls55_aura_ges.%Y%m%d_%Hz.nc4
+    #- $IDIR/f525_fp.diag_omi_aura_ges.%Y%m%d_%Hz.nc4
+    #- $IDIR/f525_fp.diag_ompsnm_npp_ges.%Y%m%d_%Hz.nc4
+
+  aod_files:
+  radar_files:

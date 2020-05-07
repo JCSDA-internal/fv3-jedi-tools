@@ -50,9 +50,6 @@ def main():
     expid = envcfg['EXPID']
 
 
-    # Observation types to process
-    obsv_types = mycfg['types']
-
     # Conventional
     conv_types = mycfg['conventional_types']
 
@@ -80,8 +77,6 @@ def main():
     if not mycfg['radar_files']==None:
         radar_files = mycfg['radar_files']
 
-    # Observing systems to skip over
-    skip_type = mycfg['observing_systems_to_skip']
 
     # Replace date time in files
     # ==========================
@@ -144,7 +139,7 @@ def main():
 
         filename = os.path.split(file)[1]
 
-        print("Converting: ", file)
+        print("\nConverting: ", file)
 
         # Constructor depends on observation type
         type = ''
@@ -180,12 +175,11 @@ def main():
 
         diag.close()
 
-
     # Combine the conventional data
     # =============================
     for type in conv_types:
 
-      print("Combining ", type)
+      print("\nCombining ", type)
 
       # Create list of files to combine
       infiles_list = glob.glob(os.path.join(odir, type+'_*_obs_*'))
