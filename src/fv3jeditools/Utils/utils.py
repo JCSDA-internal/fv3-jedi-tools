@@ -9,9 +9,11 @@ import subprocess
 import os
 import datetime as dt
 import numpy as np
+import random
 import shlex
 import subprocess
 import sys
+import tarfile
 import time
 
 __all__ = ['dtformat', 'dtformatprnt',
@@ -53,6 +55,42 @@ def setDateConfigFile(date, config_in, config_out, prefix=''):
 
 # ------------------------------------------------------------------------------------------------
 
+def randomDateTimes(start, final, freq, rseed, num_random):
+
+    totaldelta = final - start
+    totalhour = totaldelta.total_seconds()/3600
+
+    # Check user provided sensible frequency
+    resi = totalhour/freq - float(int(totalhour/freq))
+    if (resi != 0.0):
+        abort("utils.getDateTimes: (final-start)/freq is not a whole number")
+
+    # Total number of cyles
+    ntcycs = int(totalhour / freq) + 1
+
+    # Build array of datetimes
+    tdatetimes = np.array([start + dt.timedelta(hours=freq*i) for i in range(ntcycs)])
+
+    # Check that number of cycles user wants is compatible with provided range
+    ncycs = num_random
+    if (ntcycs < ncycs):
+        print(" WARNING: total date range does not contain enough cycles for input choice, "
+              "reducing to every datetime in the range.")
+        ncycs = ntcycs
+
+    # Non replacement random sample of size ncycs
+    random.seed(rseed)
+    datetimes_index = np.sort(random.sample(range(ntcycs), ncycs))
+
+    # Fill up array of datetimes using random selection
+    datetimes = np.empty([ncycs], dtype=dt.datetime)
+    for n in range(ncycs):
+        datetimes[n] = tdatetimes[datetimes_index[n]]
+
+    return datetimes
+
+# ------------------------------------------------------------------------------------------------
+
 
 def getDateTimes(start, final, freq, dtform=dtformat):
 
@@ -82,6 +120,30 @@ def getDateTimes(start, final, freq, dtform=dtformat):
 
 # --------------------------------------------------------------------------------------------------
 
+def tarExtract(filename, extract_files=None, extract_path='.'):
+
+    print("utils.tarExtract: Opening file: "+filename)
+
+    # Searches for everything matching extract_files and extracts from filename to extract path.
+
+    # Open file
+    tar = tarfile.open(filename)
+
+    # Build list of members that match input strings
+    all_members = tar.getmembers()
+    ext_members = []
+    for mem in all_members:
+      for file in extract_files:
+        if (file in mem.name):
+          ext_members.append(mem)
+
+    # Extract from tar file
+    tar.extractall(path=extract_path, members=ext_members)
+
+    # Close the tar file
+    tar.close()
+
+# --------------------------------------------------------------------------------------------------
 
 def createPath(dirpath):
 
