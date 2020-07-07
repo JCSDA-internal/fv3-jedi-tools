@@ -48,9 +48,6 @@ def main():
 
     # Search log for matching string
 
-    if __name__ == "__main__":
-        main()
-
     convergence_all = []
     # Open and get lines that match
     with open(log_file, 'r') as fh:

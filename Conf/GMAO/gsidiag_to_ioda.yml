@@ -2,7 +2,7 @@ environment:
 
   IDIR: /home/dao_ops/$EXPID/run/.../scratch/obs/Y%y4/M%m2/D%d2/H%h2
   ODIR: $NOBACKUP/gsi-diag/Y%y4/M%m2/D%d2/H%h2
-  EXPID: f525_fp
+  EXPID: prePP_rt
 
 gsi-diag:
 
@@ -61,7 +61,7 @@ gsi-diag2ioda:
     - $IDIR/$EXPID.diag_avhrr_n18_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_avhrr_n19_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_cris-fsr_n20_ges.%Y%m%d_%Hz.nc4
-    - $IDIR/$EXPID.diag_cris_npp_ges.%Y%m%d_%Hz.nc4
+    #- $IDIR/$EXPID.diag_cris_npp_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_gmi_gpm_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_hirs4_metop-a_ges.%Y%m%d_%Hz.nc4
     - $IDIR/$EXPID.diag_hirs4_metop-b_ges.%Y%m%d_%Hz.nc4

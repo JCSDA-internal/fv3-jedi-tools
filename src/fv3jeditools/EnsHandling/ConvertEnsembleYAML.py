@@ -17,10 +17,7 @@ import fv3jeditools.Utils.utils as utils
 def main():
 
     sargs = argparse.ArgumentParser()
-    sargs.add_argument("-s", "--start_date",    default='2019111809')
-    sargs.add_argument("-f", "--final_date",    default='2019111809')
-    sargs.add_argument("-q", "--freq",          default='6')
-    sargs.add_argument("-c", "--config",        default='config.yaml')
+    sargs.add_argument("-c", "--config",  default='convert_ensemble_yaml.yaml')
 
     args = sargs.parse_args()
     start = args.start_date
