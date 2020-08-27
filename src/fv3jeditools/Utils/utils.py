@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# (C) Copyright 2019 UCAR
+# (C) Copyright 2019-2020 UCAR
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -17,7 +17,7 @@ import tarfile
 import time
 
 __all__ = ['dtformat', 'dtformatprnt',
-           'setDateConfigFile', 'setDone', 'isDone',
+           'stringReplaceDatetimeTemplate','setDateConfigFile', 'setDone', 'isDone',
            'getDateTimes', 'createPath',
            'run_csh_command', 'run_bash_command', 'run_shell_command',
            'getFileSize', 'wait_for_batch_job', 'abort',
@@ -29,8 +29,19 @@ __all__ = ['dtformat', 'dtformatprnt',
 dtformat = '%Y%m%d%H'
 dtformatprnt = '%Y%m%d %Hz'
 
-# ------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 
+def stringReplaceDatetimeTemplate(isodate, string_in):
+
+    # isodate input datetime string as yyyy-mm-ddThh:MM:dd
+    # string_in in will be with %Y%M%D embedded somewhere
+    # string_out is returned with actual datetimes
+
+    isodatetime = dt.datetime.strptime(isodate, '%Y-%m-%dT%H:%M:%S')
+    string_out = isodatetime.strftime(string_in)
+    return string_out
+
+# --------------------------------------------------------------------------------------------------
 
 def setDateConfigFile(date, config_in, config_out, prefix=''):
 
@@ -168,7 +179,7 @@ def run_shell_command(command_line, wait=True):
 
     command_line_args = shlex.split(command_line)
 
-    print('utils.run_shell_command: Running command '+command_line)
+    print('utils.run_shell_command: Running command \''+command_line+'\'')
 
     try:
 
