@@ -7,8 +7,10 @@
 
 import argparse
 import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib
+import numpy as np
+import os
+
 matplotlib.use("Agg")
 
 
@@ -22,13 +24,13 @@ def main():
     # ----------
 
     sargs = argparse.ArgumentParser()
-    sargs.add_argument("-p", "--plot_proc", default='0')
-    sargs.add_argument("-f", "--field",     default='psi')
-    sargs.add_argument("-l", "--log_file",  default='femps_rmse.txt')
+    sargs.add_argument("-p", "--plot_level", default='50')
+    sargs.add_argument("-f", "--field",      default='psi')
+    sargs.add_argument("-l", "--log_file",   default='femps_rmse.txt')
 
     args = sargs.parse_args()
 
-    proc = args.plot_proc
+    levelstr = args.plot_level
     field = args.field
     if field == 'psi':
         psi_or_chi = 0
@@ -41,10 +43,12 @@ def main():
     log_file = args.log_file
 
     print("\n FEMPS convergence analysis tool")
-    print(" - Processor to plot "+proc)
+    print(" - Level to plot "+levelstr)
     print(" - Field to plot: "+field)
     print(" - File to read: "+log_file)
     print("\n")
+
+    level = float(levelstr)-1
 
     # Search log for matching string
 
@@ -56,7 +60,7 @@ def main():
 
     nsize = len(convergence_all)
 
-    ind_proc = 0
+    ind_levl = 0
     ind_iter = 1
     ind_rmse = 2
 
@@ -68,12 +72,12 @@ def main():
 
     niter = int(np.max(convergence[:, ind_iter]))
 
-    convergence_proc = np.empty((2*niter, 3))
-    convergence_proc[:, :] = convergence[np.where(
-        convergence[:, ind_proc] == float(proc)), :]
+    convergence_levl = np.empty((2*niter, 3))
+    convergence_levl[:, :] = convergence[np.where(
+        convergence[:, ind_levl] == level), :]
 
     convergence_var = np.empty((niter, 3))
-    convergence_var[:, :] = convergence_proc[psi_or_chi*niter:niter, :]
+    convergence_var[:, :] = convergence_levl[psi_or_chi*niter:psi_or_chi*niter+niter, :]
 
     iter_array = np.empty((niter))
     iter_array[:] = convergence_var[:, ind_iter]
@@ -81,7 +85,7 @@ def main():
     rmse_array = np.empty((niter))
     rmse_array[:] = convergence_var[:, ind_rmse]
 
-    figfile = 'femps_convergence_field-'+field+'.png'
+    figfile = 'fempsconv-'+os.path.splitext(os.path.split(log_file)[1])[0]+'-level'+levelstr.zfill(2)+'-'+field+'.png'
 
     plt.figure(figsize=(15, 7.5))
     plt.plot(iter_array, rmse_array, linestyle='-', marker='x')
