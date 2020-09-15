@@ -6,49 +6,28 @@
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import datetime
-import argparse
 import glob
 import os
 import sys
-import yaml
-import gsi_ncdiag as gsi_ncdiag
 
 # --------------------------------------------------------------------------------------------------
 
-def main():
+def gsidiag_to_ioda(datetime, conf):
 
-    # Retrieve command-line arguments
-    # ===============================
+    # Import from ioda-converters in program to avoid needing by default
+    import gsi_ncdiag as gsi_ncdiag
 
-    parser = argparse.ArgumentParser(description='Convert GSI Diag files to IODA format.')
-    parser.add_argument('datetime', metavar='datetime', type=str,
-                    help='ISO datetime as ccyy-mm-ddThh:mm:ss')
-    parser.add_argument('config', metavar='config', type=str,
-                    help='configuration file (.yml)')
-
-    args = parser.parse_args()
-
-    # Get the environment
-    # ===================
-
-    date = args.datetime[0:10].replace('-','')
-    time = args.datetime[11:13]
-
-    cfg_file = args.config
+    # Get the datetime
+    date = datetime[0:10].replace('-','')
+    time = datetime[11:13]
 
     # Parse the configuration
-    # =======================
-
-    with open(cfg_file) as file:
-        cfg = yaml.load(file)
-
-    envcfg = cfg['environment']
-    mycfg = cfg['gsi-diag2ioda']
+    envcfg = conf['environment']
+    mycfg = conf['gsi-diag2ioda']
 
     idir_ = mycfg['IDIR']
     odir_ = mycfg['ODIR']
     expid = envcfg['EXPID']
-
 
     # Conventional
     conv_types = mycfg['conventional_types']

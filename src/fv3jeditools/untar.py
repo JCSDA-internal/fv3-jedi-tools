@@ -3,10 +3,8 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-import click
-from ruamel.yaml import YAML
 import os
-import fv3jeditools.Utils.utils as utils
+import fv3jeditools.utils as utils
 
 # --------------------------------------------------------------------------------------------------
 ## @package hpss_untar
@@ -15,21 +13,10 @@ import fv3jeditools.Utils.utils as utils
 #  More details.
 # --------------------------------------------------------------------------------------------------
 
-@click.command()
-@click.option('--datetime', required=True, help='Datetime in ISO format yyyy-mm-ddThh:MM:dd')
-@click.option('--config',  required=True, help='Configuration yaml file, e.g. untar.yaml')
-def main(datetime, config):
+def untar(datetime, conf):
 
     # Get starting directory
     home_dir = os.getcwd()
-
-    # Configure the yaml object
-    yaml = YAML(typ='safe')
-    yaml.default_flow_style = False
-
-    # Read the configuration yaml file
-    with open(config) as full_conf:
-        conf = yaml.load(full_conf)['untar']
 
     # Output path to use
     try:
@@ -71,10 +58,5 @@ def main(datetime, config):
 
     # Change back to starting directory
     os.chdir(home_dir)
-
-# --------------------------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    main()
 
 # --------------------------------------------------------------------------------------------------
