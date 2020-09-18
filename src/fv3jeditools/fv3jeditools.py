@@ -13,15 +13,15 @@ from ruamel.yaml import YAML
 #  This is the driver for stand-alone driving of all other applications in fv3jeditools
 #
 #  Positional arguments:
-#   - Datetime in ISO format yyyy-mm-ddThh:MM:dd
+#   - Datetime in ISO format, allowable formats listed in fv3jeditools.utils_datetime
 #   - Configuration yaml file, e.g. application.yaml
 #
 # --------------------------------------------------------------------------------------------------
 
 @click.command()
-@click.argument('datetime')
+@click.argument('isodatetime')
 @click.argument('config')
-def main(datetime, config):
+def main(isodatetime, config):
 
     # Configure the yaml object
     yaml = YAML(typ='safe')
@@ -30,6 +30,9 @@ def main(datetime, config):
     # Read the configuration yaml file
     with open(config) as full_conf:
         conf = yaml.load(full_conf)
+
+    # Convert string datetime to datetime object
+    datetime = fv3jeditools.utils_datetime.stringToDateTime(isodatetime)
 
     # Get configuration for the application
     try:

@@ -42,16 +42,19 @@ def untar(datetime, conf):
     tar_files = conf['tar files']
 
     # List of internal files to untar
-    internal_files = ' '.join(conf['internal files'])
+    try:
+        internal_files = ' '.join(conf['internal files'])
+    except:
+        internal_files = ''
 
-    # Loop over tar files and untar the
+    # Loop over tar files and untar the selected internal files
     for tar_file in tar_files:
 
         # Create issue-command, but with potential datetime template
         issue_command_template = tar_command + ' -xvf ' + tar_file + ' ' + internal_files
 
         # Create issue-command with actual datetime
-        issue_command = utils.stringReplaceDatetimeTemplate(datetime, issue_command_template)
+        issue_command = datetime.strftime(issue_command_template)
 
         # Do untar
         utils.run_shell_command(issue_command)

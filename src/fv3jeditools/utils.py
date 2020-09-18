@@ -315,8 +315,7 @@ def lines_that_contain(string, fp):
 
 def abort(message):
 
-    print('ABORT: '+message)
-    raise(SystemExit)
+    sys.exit('ABORT: '+message)
 
 # --------------------------------------------------------------------------------------------------
 

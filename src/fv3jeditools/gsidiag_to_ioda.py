@@ -5,7 +5,6 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-import datetime
 import glob
 import os
 import sys
@@ -16,10 +15,6 @@ def gsidiag_to_ioda(datetime, conf):
 
     # Import from ioda-converters in program to avoid needing by default
     import gsi_ncdiag as gsi_ncdiag
-
-    # Get the datetime
-    date = datetime[0:10].replace('-','')
-    time = datetime[11:13]
 
     # Parse the configuration
     envcfg = conf['environment']
@@ -58,29 +53,27 @@ def gsidiag_to_ioda(datetime, conf):
 
 
     # Replace date time in files
-    # ==========================
-    obs_datetime = datetime.datetime.strptime(date+time, '%Y%m%d%H')
-
-    idir = obs_datetime.strftime(idir_)
-    odir = obs_datetime.strftime(odir_)
+    # --------------------------
+    idir = datetime.strftime(idir_)
+    odir = datetime.strftime(odir_)
 
     for i in range(len(conv_files)):
-        conv_files[i] = obs_datetime.strftime(conv_files[i])
+        conv_files[i] = datetime.strftime(conv_files[i])
 
     for i in range(len(radiance_files)):
-        radiance_files[i] = obs_datetime.strftime(radiance_files[i])
+        radiance_files[i] = datetime.strftime(radiance_files[i])
 
     for i in range(len(ozone_files)):
-        ozone_files[i] = obs_datetime.strftime(ozone_files[i])
+        ozone_files[i] = datetime.strftime(ozone_files[i])
 
     for i in range(len(aod_files)):
-        aod_files[i] = obs_datetime.strftime(aod_files[i])
+        aod_files[i] = datetime.strftime(aod_files[i])
 
     for i in range(len(radar_files)):
-        radar_files[i] = obs_datetime.strftime(radar_files[i])
+        radar_files[i] = datetime.strftime(radar_files[i])
 
     # Replace experiment specifics
-    # ============================
+    # ----------------------------
 
     for i in range(len(conv_files)):
         conv_files[i] = conv_files[i].replace("$IDIR", idir)
@@ -103,14 +96,14 @@ def gsidiag_to_ioda(datetime, conf):
         radar_files[i] = radar_files[i].replace("$EXPID", expid)
 
     # Create output directory
-    # =======================
+    # -----------------------
 
     if not os.path.exists(odir):
       os.makedirs(odir)
 
 
     # Loop over all files and run conversion
-    # ======================================
+    # --------------------------------------
 
     all_files = conv_files + radiance_files + ozone_files + aod_files + radar_files
 
@@ -155,7 +148,7 @@ def gsidiag_to_ioda(datetime, conf):
         diag.close()
 
     # Combine the conventional data
-    # =============================
+    # -----------------------------
     for type in conv_types:
 
       print("\nCombining ", type)
@@ -165,6 +158,8 @@ def gsidiag_to_ioda(datetime, conf):
       infiles = ' '.join(infiles_list)
 
       # Ouput file
+      date = datetime.strftime("%Y%m%d")
+      time = datetime.strftime("%H%M%S")
       outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
 
       # Perform combine

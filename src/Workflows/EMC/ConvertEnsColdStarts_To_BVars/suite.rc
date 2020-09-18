@@ -1,0 +1,40 @@
+[cylc]
+    UTC mode = True
+
+[scheduling]
+    initial cycle point = 20200102T0000Z
+    final cycle point = 20200102T0000Z
+    max active cycle points = 1
+    [[dependencies]]
+        [[[T00]]]
+        graph = "convert_members"
+
+[runtime]
+
+    [[root]] # suite defaults
+        [[[environment]]]
+            HOMEDIR = $CYLC_SUITE_DEF_PATH
+            WORKDIR = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Work
+            JEDIBLD = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/fv3-bundle/build-intel-release
+#        [[[events]]]
+#            mail to = holdaway@ucar.edu
+#            mail events = failed
+
+#    [[get_ensemble]]
+#        pre-script = "source setup_environment.sh"
+#        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/get_ensemble.yaml"
+#        [[[events]]]
+
+    [[convert_members]]
+        script = convert_ensemble.sh
+        [[[job]]]
+            batch system = slurm
+            execution time limit = PT30M    # For testing
+            #execution time limit = PT8H    # Regular
+            [[[directives]]]
+                --account = da-cpu
+                --constraint = hasw
+                --nodes = 9
+                --tasks-per-node = 20
+                --job-name = ens_to_psichi
+                --qos = debug               # For testing

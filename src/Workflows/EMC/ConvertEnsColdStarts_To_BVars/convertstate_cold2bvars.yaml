@@ -1,0 +1,1269 @@
+input geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  trc_file: &trc_file Data/fv3files/field_table_cold_starts
+  akbk: &akbk Data/fv3files/akbk127.nc4
+  layout: &layout [5,6]
+  io_layout: &io_layout [1,1]
+  npx: &npx 385
+  npy: &npy 385
+  npz: &npz 127
+  ntiles: &ntiles 6
+  fieldsets:
+    - fieldset: Data/fieldsets/cold_start_127.yaml
+    - fieldset: Data/fieldsets/dynamics.yaml
+    - fieldset: Data/fieldsets/oro_data.yaml
+
+output geometry:
+  trc_file: *trc_file
+  akbk: *akbk
+  layout: *layout
+  io_layout: *io_layout
+  npx: *npx
+  npy: *npy
+  npz: *npz
+  ntiles: *ntiles
+  fieldsets:
+    - fieldset: Data/fieldsets/cold_start_127.yaml
+    - fieldset: Data/fieldsets/dynamics.yaml
+    - fieldset: Data/fieldsets/oro_data.yaml
+
+variable changes:
+
+  # Convert to cubed-sphere D-Grid winds
+  - variable change: ColdStartWinds
+    input variables: &input1 [ps_cold,w_cold,zh_cold,t_cold,delp_cold,sphum_cold,liq_wat_cold,o3mr_cold,
+                      ice_wat_cold,rainwat_cold,snowwat_cold,graupel_cold,u_w_cold,v_w_cold,
+                      u_s_cold,v_s_cold,orog_filt]
+    output variables: &output1 [ps_cold,w_cold,zh_cold,t_cold,delp_cold,sphum_cold,liq_wat_cold,o3mr_cold,
+                      ice_wat_cold,rainwat_cold,snowwat_cold,graupel_cold,ud_cold,vd_cold,orog_filt]
+
+  # Remap to proper Lagrangian coordinate
+  - variable change: VertRemap
+    input is cold starts: true
+    trc_file: Data/fv3files/field_table_cold_starts
+    layout: *layout
+    io_layout: *io_layout
+    npx: *npx
+    npy: *npy
+    npz: *npz
+    ntiles: *ntiles
+    hydrostatic: false
+    nwat: 6
+    source of inputs: FV3GFS GAUSSIAN NETCDF FILE
+    input variables: *output1
+    output variables: &output2 [ps,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,sgs_tke,
+                       cld_amt,ud,vd,phis]
+
+  # Convert to Control variables (variables are flipped because we need the inverse)
+  - variable change: Control2Analysis
+    input variables: [psi,chi,tv,t,delp,ps,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel]
+    output variables: *output2
+    do inverse: true
+    femps_iterations: 175
+    femps_ngrids: 6
+    femps_path2fv3gridfiles: Data/femps/
+    femps_checkconvergence: false
+
+
+states:
+
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem001/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem001/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem002/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem002/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem003/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem003/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem004/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem004/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem005/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem005/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem006/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem006/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem007/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem007/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem008/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem008/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem009/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem009/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem010/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem010/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem011/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem011/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem012/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem012/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem013/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem013/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem014/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem014/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem015/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem015/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem016/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem016/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem017/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem017/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem018/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem018/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem019/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem019/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem020/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem020/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem021/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem021/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem022/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem022/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem023/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem023/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem024/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem024/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem025/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem025/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem026/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem026/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem027/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem027/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem028/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem028/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem029/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem029/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem030/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem030/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem031/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem031/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem032/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem032/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem033/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem033/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem034/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem034/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem035/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem035/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem036/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem036/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem037/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem037/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem038/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem038/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem039/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem039/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem040/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem040/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem041/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem041/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem042/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem042/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem043/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem043/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem044/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem044/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem045/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem045/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem046/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem046/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem047/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem047/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem048/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem048/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem049/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem049/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem050/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem050/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem051/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem051/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem052/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem052/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem053/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem053/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem054/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem054/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem055/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem055/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem056/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem056/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem057/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem057/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem058/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem058/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem059/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem059/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem060/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem060/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem061/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem061/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem062/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem062/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem063/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem063/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem064/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem064/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem065/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem065/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem066/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem066/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem067/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem067/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem068/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem068/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem069/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem069/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem070/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem070/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem071/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem071/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem072/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem072/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem073/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem073/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem074/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem074/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem075/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem075/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem076/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem076/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem077/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem077/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem078/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem078/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem079/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem079/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: *input1
+    datapath: EnsembleHolding/
+    filename_cold: %y%m%D%H/mem080/renamed.gfs_data.nc
+    skip coupler file: true
+    filename_orog: fix/C384_oro_data.nc
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%y%m%D%H/mem080/
+    filename_core: bvars.fv_core.res.nc
+    filename_trcr: bvars.fv_tracer.res.nc
+    filename_cold: bvars.gfs_data.nc
+    skip coupler file: true
