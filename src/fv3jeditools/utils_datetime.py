@@ -12,6 +12,7 @@ import fv3jeditools
 dtformat_jedi = '%Y-%m-%dT%H:%M:%S'
 dtformat_cylc = '%Y%m%dT%H%MZ'
 dtformat_geos = '%Y%m%d_%H%M%S'
+dtformat_da_h = '%Y%m%d_%H'
 
 # --------------------------------------------------------------------------------------------------
 
@@ -28,7 +29,10 @@ def stringToDateTime(isodate_string):
             try:
                 datetime = dt.datetime.strptime(isodate_string, dtformat_geos)
             except:
-                fv3jeditools.utils.abort("stringToDateTime in utils_datetime could not convert")
+                try:
+                    datetime = dt.datetime.strptime(isodate_string, dtformat_da_h)
+                except:
+                    fv3jeditools.utils.abort("stringToDateTime in utils_datetime could not convert")
 
     return datetime
 
