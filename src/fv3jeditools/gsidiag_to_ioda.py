@@ -127,7 +127,7 @@ def gsidiag_to_ioda(datetime, conf):
 
       # Ouput file
       date = datetime.strftime("%Y%m%d")
-      time = datetime.strftime("%H%M%S")
+      time = datetime.strftime("%H")
       outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
 
       # Perform combine
