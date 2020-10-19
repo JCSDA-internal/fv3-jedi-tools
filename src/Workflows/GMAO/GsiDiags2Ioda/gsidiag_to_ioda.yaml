@@ -4,10 +4,10 @@ application:
   application name: gsidiag_to_ioda
 
   # Application configuration
-  input directory: /nfs3m/archive/sfa_cache01/projects/dao_ops/GEOS-5.25/GEOSadas-5_25/f525_p7_fpp/obs/Y%Y/M%m/D%d/H%H
+  input directory: /nfs3m/archive/sfa_cache01/projects/dao_ops/GEOS-5.25/GEOSadas-5_25/f525_p7_fp/obs/Y%Y/M%m/D%d/H%H
   output directory: /gpfsm/dnb31/drholdaw/JediObs/obs/ioda/Y%Y/M%m/D%d/H%H
 
-  filename template: $INPUTDIR/f525_p7_fpp.diag_$PLATFORM_ges.%Y%m%d_%Hz.nc4
+  filename template: $INPUTDIR/f525_p7_fp.diag_$PLATFORM_ges.%Y%m%d_%Hz.nc4
 
   python executable: /gpfsm/dnb31/drholdaw/Programs/anaconda3/bin/python
 
