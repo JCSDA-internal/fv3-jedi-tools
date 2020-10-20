@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # (C) Copyright 2020 UCAR
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
@@ -17,6 +15,7 @@ def gsidiag_to_ioda(datetime, conf):
 
     # Import from ioda-converters in program to avoid needing by default
     import gsi_ncdiag as gsi_ncdiag
+    import combine_conv as combine_conv
 
     # Input and output directories
     idir_ = conf['input directory']
@@ -111,12 +110,6 @@ def gsidiag_to_ioda(datetime, conf):
 
     # Combine the conventional data
     # -----------------------------
-    if not conf['python executable']==None:
-        pythonexe = conf['python executable']
-    else:
-        pythonexe = 'python'
-
-
     for type in conv_types:
 
       print("\nCombining ", type)
@@ -131,10 +124,7 @@ def gsidiag_to_ioda(datetime, conf):
       outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
 
       # Perform combine
-      pathconv = shutil.which("combine_conv.py")
-      if pathconv==None:
-          utils.abort('combine_conv.py not found in path')
-      os.system(pythonexe+' '+pathconv+' -i ' + infiles + ' -o ' + outfile)
+      combine_conv.concat_ioda(infiles_list, outfile, False)
 
       # Remove input files
       if (os.path.exists(outfile)):

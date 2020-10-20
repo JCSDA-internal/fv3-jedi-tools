@@ -9,8 +9,6 @@ application:
 
   filename template: $INPUTDIR/f525_p7_fp.diag_$PLATFORM_ges.%Y%m%d_%Hz.nc4
 
-  python executable: /gpfsm/dnb31/drholdaw/Programs/anaconda3/bin/python
-
   conventional platforms:
     - conv_gps
     - conv_ps
