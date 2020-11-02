@@ -15,13 +15,11 @@ application:
     - conv_q
     - conv_t
     - conv_uv
+    - conv_sst
 
     # IODA converters cannot handle:
     #- conv_pw   # Precipitable water, not assimilated in GEOS
     #- conv_tcp  # TC central pressue, is assimilation in GEOS
-
-    # IODA converters can handle but not in diags:
-    #- conv_sst  # Conventional SST not used in GEOS
 
   conventional types: # These are the kinds that need to be combined
     - aircraft
@@ -47,6 +45,7 @@ application:
     - cris-fsr_n20
     - gmi_gpm
     - hirs4_metop-a
+    - hirs4_metop-b
     - hirs4_n18
     - hirs4_n19
     - iasi_metop-a
@@ -57,8 +56,6 @@ application:
     - seviri_m08
     - ssmis_f17
     - ssmis_f18
-
-    #- hirs4_metop-b
 
   ozone platforms: # GSI diag not ready for Ozone yet
     #- mls55_aura

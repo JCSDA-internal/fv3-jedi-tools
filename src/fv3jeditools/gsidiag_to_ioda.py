@@ -76,6 +76,10 @@ def gsidiag_to_ioda(datetime, conf):
 
         print("\nConverting: ", pathfile)
 
+        if not os.path.exists(pathfile):
+            print("\n  *** WARNING ***: file does not exist, skipping...\n")
+            continue
+
         # Constructor depends on observation type
         type = ''
         if (platform in conv_platforms):
@@ -105,8 +109,8 @@ def gsidiag_to_ioda(datetime, conf):
         else:
             diag.toIODAobs(odir)
 
-
         diag.close()
+
 
     # Combine the conventional data
     # -----------------------------
@@ -117,6 +121,11 @@ def gsidiag_to_ioda(datetime, conf):
       # Create list of files to combine
       infiles_list = glob.glob(os.path.join(odir, type+'_*_obs_*'))
       infiles = ' '.join(infiles_list)
+
+      # If no matching files found, skip this platform
+      if infiles_list==[]:
+          print("\n  *** WARNING ***: no", type, " files found, skipping...\n")
+          continue
 
       # Ouput file
       date = datetime.strftime("%Y%m%d")
