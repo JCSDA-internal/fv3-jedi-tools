@@ -61,7 +61,7 @@ def gsidiag_to_ioda(datetime, conf):
     # -----------------------
 
     if not os.path.exists(odir):
-      os.makedirs(odir)
+      os.makedirs(odir, 0o755)
 
 
     # Loop over all files and run conversion
