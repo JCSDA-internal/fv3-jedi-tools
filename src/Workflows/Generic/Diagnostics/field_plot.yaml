@@ -1,0 +1,13 @@
+application:
+
+  # Application to use
+  application name: field_plot
+
+  # File containing field to be plotted
+  fields file: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/inc.3denvar.latlon.%Y%m%d_%H%M%Sz.nc4
+
+  # Name of the field as it appears in the file
+  field name: t
+
+  # Model layer to plot when the field is rank 3
+  model layer: 50

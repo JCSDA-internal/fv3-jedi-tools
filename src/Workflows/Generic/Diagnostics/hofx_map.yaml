@@ -1,0 +1,28 @@
+application:
+
+  # Application to use
+  application name: hofx_map
+
+  # IODA output files containing h(x)
+  hofx files: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/hofx/aircraft_hofx_%Y%m%d%H_000*.nc4
+
+  # Variable to plot (either something from the file or variable@omb)
+  variable: air_temperature@hofx
+
+  # Units of the field being plotted
+  units: K
+
+  # Window length (hours)
+  window length: 6
+
+  # Offset of time in filename from window center (hours), e.g. -3, +3 or 0
+  time offset: 0
+
+  # Output format for plots ([png] or pdf)
+  plot format: pdf
+
+  # User defined colorbar minimum
+  #colorbar minimum: 210
+
+  # User defined colorbar maximum
+  #colorbar maximum: 260
