@@ -3,6 +3,7 @@ __path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
 from .diag_da_convergence import *
 from .diag_field_plot import *
+from .diag_hofx_innovations import *
 from .diag_hofx_map import *
 from .gsidiag_to_ioda import *
 from .untar import *

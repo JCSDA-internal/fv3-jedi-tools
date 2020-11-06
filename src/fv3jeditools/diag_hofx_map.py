@@ -52,7 +52,7 @@ def hofx_map(datetime, conf):
 
     # Get window length
     try:
-        window_length = window_length = dt.timedelta(hours=int(conf['window length']))
+        window_length = dt.timedelta(hours=int(conf['window length']))
     except:
         utils.abort('\'window length\' must be present in the configuration')
 
