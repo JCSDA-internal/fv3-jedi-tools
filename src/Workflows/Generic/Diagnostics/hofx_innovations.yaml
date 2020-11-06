@@ -22,10 +22,4 @@ application:
   time offset: 0
 
   # Output format for plots ([png] or pdf)
-  plot format: pdf
-
-  # User defined colorbar minimum
-  #colorbar minimum: 210
-
-  # User defined colorbar maximum
-  #colorbar maximum: 260
+  plot format: png

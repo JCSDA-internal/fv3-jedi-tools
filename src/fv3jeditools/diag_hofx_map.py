@@ -23,10 +23,23 @@ import fv3jeditools.utils as utils
 #  Configuration options:
 #  ----------------------
 #
+#  The datetime passed to this program is used to parse the file.
+#
+#  The datetime passed to this file is used to parse the file and so should match any datetime
+#  in the file name. If this time is not equivalent to the central time of the window the time
+#  offset option described below can be used.
+#
+#  hofx files       | File(s) to parse. E.g. aircraft_hofx_%Y%m%d%H.nc4
+#  variable         | Variable to plot (either something from the file or variable@omb)
+#  units            | Units of the field being plotted
+#  window length    | Window length (hours)
+#  time offset      | Offset of time in filename from window center (hours), e.g. -3, +3 or 0
+#  plot format      | Output format for plots ([png] or pdf)
+#  colorbar minimum | User defined colorbar minimum
+#  colorbar maximum | User defined colorbar maximum
 #
 #
 #  This function can be used to plot fields that are on a lon/lat grid as written by fv3-jedi.
-#
 #
 # --------------------------------------------------------------------------------------------------
 
@@ -37,31 +50,19 @@ def hofx_map(datetime, conf):
     # -------------------
 
     # File containing hofx files
-    try:
-        hofx_files_template = conf['hofx files']
-    except:
-        utils.abort('\'hofx files\' must be present in the configuration')
+    hofx_files_template = utils.configGetOrFail(conf, 'hofx files')
 
 
     # Get variable to plot
-    try:
-        variable = conf['variable']
-    except:
-        utils.abort('\'variable\' must be present in the configuration')
+    variable = utils.configGetOrFail(conf, 'variable')
 
 
     # Get window length
-    try:
-        window_length = dt.timedelta(hours=int(conf['window length']))
-    except:
-        utils.abort('\'window length\' must be present in the configuration')
+    window_length = dt.timedelta(hours=int(utils.configGetOrFail(conf, 'window length')))
 
 
     # Get time offset from center of window
-    try:
-        time_offset = dt.timedelta(hours=int(conf['time offset']))
-    except:
-        utils.abort('\'time offset\' must be present in the configuration')
+    time_offset = dt.timedelta(hours=int(utils.configGetOrFail(conf, 'time offset')))
 
 
     # Get optional colorbar min and max
@@ -109,7 +110,7 @@ def hofx_map(datetime, conf):
     # Figure filename
     # ---------------
     savename = os.path.join(os.path.dirname(hofx_files_template),
-                            varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
+                          varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
 
 
     # Compute window begin time
@@ -150,7 +151,8 @@ def hofx_map(datetime, conf):
             time_proc_str = ''
             for l in range(20):
                 time_proc_str = time_proc_str + time_proc_[l].decode('UTF-8')
-            time.append((dt.datetime.strptime(time_proc_str, '%Y-%m-%dT%H:%M:%SZ') - window_begin).total_seconds())
+            time.append((dt.datetime.strptime(time_proc_str, '%Y-%m-%dT%H:%M:%SZ') - \
+                                               window_begin).total_seconds())
 
         fh.close()
 
@@ -258,7 +260,7 @@ def hofx_map(datetime, conf):
     ax.coastlines()
 
     # figure labels
-    plt.title("IODA observation data: "+varname.replace("_"," ")+" "+vmetric+" | "+
+    plt.title("Observation statistics: "+varname.replace("_"," ")+" "+vmetric+" | "+
               window_begin.strftime("%Y%m%d %Hz")+" to "+
               (window_begin+window_length).strftime("%Y%m%d %Hz"), y=1.08)
     ax.text(0.45, -0.1,   'Longitude', transform=ax.transAxes, ha='left')

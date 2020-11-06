@@ -12,7 +12,7 @@ import matplotlib.ticker as mticker
 import netCDF4
 import numpy as np
 import os
-from scipy.interpolate import UnivariateSpline
+import scipy.interpolate
 
 import fv3jeditools.utils as utils
 
@@ -24,10 +24,22 @@ import fv3jeditools.utils as utils
 #  Configuration options:
 #  ----------------------
 #
+#  The datetime passed to this program is used to parse the file.
+#
+#  The datetime passed to this file is used to parse the file and so should match any datetime
+#  in the file name. If this time is not equivalent to the central time of the window the time
+#  offset option described below can be used.
+#
+#  hofx files            | File(s) to parse. E.g. aircraft_hofx_%Y%m%d%H.nc4
+#  variable              | Variable to plot (either something from the file or variable@omb)
+#  number of outer loops | Number of outer loops used in the assimilation
+#  units                 | Units of the field being plotted
+#  window length         | Window length (hours)
+#  time offset           | Offset of time in filename from window center (hours), e.g. -3, +3 or 0
+#  plot format           | Output format for plots ([png] or pdf)
 #
 #
-#  This function can be used to plot fields that are on a lon/lat grid as written by fv3-jedi.
-#
+#  This function can be used to plot innovation statistics for the variational assimilation output.
 #
 # --------------------------------------------------------------------------------------------------
 
@@ -166,7 +178,7 @@ def hofx_innovations(datetime, conf):
         edges[:,n] = edges_hist[:-1] + (edges_hist[1] - edges_hist[0])/2
 
         # Generate splines for plotting
-        spline = UnivariateSpline(edges[:,n], hist[:,n], s=None)
+        spline = scipy.interpolate.UnivariateSpline(edges[:,n], hist[:,n], s=None)
         splines[:,n] = spline(edges[:,n])
 
         # Standard deviation
@@ -177,8 +189,6 @@ def hofx_innovations(datetime, conf):
         print("  Mean observation minus h(x) = ", np.nanmean(hofx[:, n]))
         print("  Sdev observation minus h(x) = ", stddev[n])
 
-        #print(ordinal(n+1))
-
         if n == 0:
             label = "Obs minus background"
         else:
@@ -188,9 +198,14 @@ def hofx_innovations(datetime, conf):
         plt.xlim(-2*stddev[n], 2*stddev[n])
 
     plt.legend(loc='upper left')
-    ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=True)
-    plt.title("Observaton minus h(x) innovation statistics")
-    plt.xlabel("Observation minus h(x)")
+    ax.tick_params(labelbottom=True, labeltop=True, labelleft=True, labelright=True)
+    plt.title("Observation statistics: "+varname.replace("_"," ")+" "+vmetric+" | "+
+              window_begin.strftime("%Y%m%d %Hz")+" to "+
+              (window_begin+window_length).strftime("%Y%m%d %Hz"), y=1.08)
+    if not units==None:
+        plt.xlabel("Observation minus h(x) ["+units+"]")
+    else:
+        plt.xlabel("Observation minus h(x)")
     plt.ylabel("Frequency")
     plt.savefig(savename)
 
