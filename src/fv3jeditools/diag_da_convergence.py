@@ -106,7 +106,6 @@ def da_convergence(datetime, conf):
                 count[index] = count[index] + 1
 
     niter = count[0]
-    iter = np.arange(1, niter+1)
     stat = np.zeros(niter)
 
 
@@ -131,11 +130,15 @@ def da_convergence(datetime, conf):
         savename = ylabel.lower().strip()
         savename = savename.replace(" ", "-")
         savename = savename+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
+        savename = os.path.join(os.path.dirname(log_file),savename)
 
         stat[0:niter] = stats[index,0:niter]
+        stat_plot = stat[np.nonzero(stat)]
+
+        iter = np.arange(1, len(stat_plot)+1)
 
         fig, ax = plt.subplots(figsize=(15, 7.5))
-        ax.plot(iter, stat, linestyle='-', marker='x')
+        ax.plot(iter, stat_plot, linestyle='-', marker='x')
         ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=True)
         plt.title("JEDI variational assimilation convergence statistics | "+isodatestr)
         plt.xlabel("Iteration number")

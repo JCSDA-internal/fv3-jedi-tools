@@ -209,7 +209,7 @@ def hofx_map(datetime, conf):
       norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
 
     # If using omb then use standard deviation for the cmin/cmax
-    if vmetric=='omb':
+    if vmetric=='omb' or vmetric=='ombg' or vmetric=='oman':
       cmax = stdev
       cmin = -stdev
 
