@@ -62,7 +62,7 @@ def da_convergence(datetime, conf):
 
     # Patterns to search for from the file
     search_patterns = []
-    search_patterns.append(minimizer+" end of iteration .")
+    search_patterns.append("  Norm reduction .")
     search_patterns.append("  Quadratic cost function: J   .")
     search_patterns.append("  Quadratic cost function: Jb  .")
     search_patterns.append("  Quadratic cost function: JoJc.")
@@ -70,11 +70,11 @@ def da_convergence(datetime, conf):
 
     # Labels for the figures
     ylabels = []
-    ylabels.append(minimizer+" norm gradient")
+    ylabels.append(minimizer+" normalized gradient reduction")
     ylabels.append("Quadratic cost function J   ")
     ylabels.append("Quadratic cost function Jb  ")
     ylabels.append("Quadratic cost function JoJc")
-    ylabels.append("GMRESR norm gradient")
+    ylabels.append("GMRESR norm reduction")
 
     # Get all lines that match the search patterns
     matches = []
@@ -83,7 +83,6 @@ def da_convergence(datetime, conf):
             reg = re.compile(search_pattern)
             if bool(re.match(reg, line.rstrip())):
                 matches.append(line.rstrip())
-
 
     # Close the file
     file.close()

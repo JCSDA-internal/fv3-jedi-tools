@@ -33,6 +33,7 @@ import fv3jeditools.utils as utils
 #  hofx files            | File(s) to parse. E.g. aircraft_hofx_%Y%m%d%H.nc4
 #  variable              | Variable to plot (either something from the file or variable@omb)
 #  number of outer loops | Number of outer loops used in the assimilation
+#  number of bins        | Number of bins to use in histogram of the data
 #  units                 | Units of the field being plotted
 #  window length         | Window length (hours)
 #  time offset           | Offset of time in filename from window center (hours), e.g. -3, +3 or 0
@@ -80,6 +81,12 @@ def hofx_innovations(datetime, conf):
         plotformat = conf['plot format']
     except:
         plotformat = 'png'
+
+    # Number of bins for the histograms
+    try:
+        nbins = conf['number of bins']
+    except:
+        nbins = 1000
 
 
     # Get list of hofx files to read
@@ -161,7 +168,6 @@ def hofx_innovations(datetime, conf):
         fh.close()
 
     # Statistics arrays
-    nbins = 1250
     hist  = np.zeros((nbins, nouter+1))
     edges = np.zeros((nbins, nouter+1))
     splines = np.zeros((nbins, nouter+1))

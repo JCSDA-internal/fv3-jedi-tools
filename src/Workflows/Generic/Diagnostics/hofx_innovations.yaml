@@ -9,6 +9,9 @@ application:
   # Variable to plot (either something from the file or variable@omb)
   variable: air_temperature
 
+  # Number of bins to use for the histogram
+  number of bins: 1250
+
   # Number of outer loops used in the assimilation
   number of outer loops: 2
 
