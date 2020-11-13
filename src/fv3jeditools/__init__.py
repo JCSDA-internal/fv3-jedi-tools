@@ -5,6 +5,7 @@ from .diag_da_convergence import *
 from .diag_field_plot import *
 from .diag_hofx_innovations import *
 from .diag_hofx_map import *
+from .diag_log_timing import *
 from .gsidiag_to_ioda import *
 from .untar import *
 from .utils import *

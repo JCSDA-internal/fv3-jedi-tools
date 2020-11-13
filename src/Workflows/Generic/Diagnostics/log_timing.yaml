@@ -1,0 +1,13 @@
+application:
+
+  # Application to use
+  application name: log_timing
+
+  # JEDI log file to read
+  log file: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/hyb-3dvar_20180414_000000.run
+
+  # Number of methods to show in the pie chart. Code will pick n most expensive (default is 9)
+  number of methods: 12
+
+  # Output format for plots (png or pdf)
+  plot format: png
