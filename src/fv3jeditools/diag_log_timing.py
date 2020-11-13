@@ -42,7 +42,7 @@ def log_timing(datetime, conf):
     try:
         nplot = conf['number of methods']
     except:
-        nplot = 10
+        nplot = 9
 
     # Format for plots
     # ----------------
