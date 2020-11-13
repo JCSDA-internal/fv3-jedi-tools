@@ -245,7 +245,7 @@ def wait_for_batch_job(username, jobname):
             print(squeue_result)
             print_job = False
 
-        if squeue_result is '':
+        if squeue_result == '':
             job_finished = True
             print(' Slurm job is finished')
             break
