@@ -51,8 +51,9 @@ def main(isodatetime, config):
 
     # Print information
     print("\n")
-    print("fv3jeditools: calling application "+app_name+" with the config: \n")
+    print("fv3jeditools: calling application "+app_name+" with the config \n")
     print(app_conf)
+    print("and datetime: ", datetime)
     print("\n")
 
     # Execute the application

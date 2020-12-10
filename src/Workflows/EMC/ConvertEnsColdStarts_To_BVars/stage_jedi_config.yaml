@@ -1,0 +1,13 @@
+application:
+
+  application name: parse_file_datetime
+
+  files to parse:
+    - /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWF/fv3-jedi-tools/develop/src/Workflows/EMC/ConvertEnsColdStarts_To_BVars/convertstate_readwrite.yaml
+    - /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWF/fv3-jedi-tools/develop/src/Workflows/EMC/ConvertEnsColdStarts_To_BVars/convertstate_cold2bvars.yaml
+
+  output directory: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Work/Config #[./]
+
+  formats to parse:
+    - "%y%m%D%H"
+    - "%y%m%D_%H"
