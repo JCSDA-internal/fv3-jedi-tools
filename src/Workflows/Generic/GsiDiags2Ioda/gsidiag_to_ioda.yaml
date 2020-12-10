@@ -1,0 +1,66 @@
+application:
+
+  # Application to use
+  application name: gsidiag_to_ioda
+
+  # Application configuration
+  input directory: /nfs3m/archive/sfa_cache01/projects/dao_ops/GEOS-5.25/GEOSadas-5_25/f525_p7_fp/obs/Y%Y/M%m/D%d/H%H
+  output directory: /gpfsm/dnb31/drholdaw/JediObs/obs/ioda/Y%Y/M%m/D%d/H%H
+
+  filename template: $INPUTDIR/f525_p7_fp.diag_$PLATFORM_ges.%Y%m%d_%Hz.nc4
+
+  conventional platforms:
+    - conv_gps
+    - conv_ps
+    - conv_q
+    - conv_t
+    - conv_uv
+    - conv_sst
+
+    # IODA converters cannot handle:
+    #- conv_pw   # Precipitable water, not assimilated in GEOS
+    #- conv_tcp  # TC central pressue, is assimilation in GEOS
+
+  conventional types: # These are the kinds that need to be combined
+    - aircraft
+    - sfc
+    - sfcship
+    - sondes
+    - rass
+
+  radiance platforms:
+    - airs_aqua
+    - amsua_aqua
+    - amsua_metop-a
+    - amsua_metop-b
+    - amsua_n15
+    - amsua_n18
+    - amsua_n19
+    - atms_n20
+    - atms_npp
+    - avhrr_metop-a
+    - avhrr_metop-b
+    - avhrr_n18
+    - avhrr_n19
+    - cris-fsr_n20
+    - gmi_gpm
+    - hirs4_metop-a
+    - hirs4_metop-b
+    - hirs4_n18
+    - hirs4_n19
+    - iasi_metop-a
+    - iasi_metop-b
+    - mhs_metop-a
+    - mhs_metop-b
+    - mhs_n19
+    - seviri_m08
+    - ssmis_f17
+    - ssmis_f18
+
+  ozone platforms: # GSI diag not ready for Ozone yet
+    #- mls55_aura
+    #- omi_aura
+    #- ompsnm_npp
+
+  aod platforms:
+  radar platforms:

@@ -16,7 +16,7 @@ import sys
 import tarfile
 import time
 
-__all__ = ['dtformat', 'dtformatprnt',
+__all__ = ['dtformat', 'dtformatprnt','configGetOrFail','ordinalNumber',
            'stringReplaceDatetimeTemplate','setDateConfigFile', 'setDone', 'isDone',
            'getDateTimes', 'createPath',
            'run_csh_command', 'run_bash_command', 'run_shell_command',
@@ -40,6 +40,26 @@ def stringReplaceDatetimeTemplate(isodate, string_in):
     isodatetime = dt.datetime.strptime(isodate, '%Y-%m-%dT%H:%M:%S')
     string_out = isodatetime.strftime(string_in)
     return string_out
+
+# --------------------------------------------------------------------------------------------------
+
+def configGetOrFail(conf, config_string):
+
+    # File containing hofx files
+    try:
+        config_variable = conf[config_string]
+    except:
+        abort('\''+config_string+'\' must be present in the configuration')
+
+    return config_variable
+
+# --------------------------------------------------------------------------------------------------
+
+def ordinalNumber(num):
+
+    # File containing hofx files
+    ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
+    return ordinal(num)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -225,7 +245,7 @@ def wait_for_batch_job(username, jobname):
             print(squeue_result)
             print_job = False
 
-        if squeue_result is '':
+        if squeue_result == '':
             job_finished = True
             print(' Slurm job is finished')
             break

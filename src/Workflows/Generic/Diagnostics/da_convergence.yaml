@@ -1,0 +1,13 @@
+application:
+
+  # Application to use
+  application name: da_convergence
+
+  # JEDI log file to read
+  log file: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/hyb-3dvar_20180414_000000.run
+
+  # Yscale for figures (log or linear)
+  yscale: linear
+
+  # Output format for plots (png or pdf)
+  plot format: pdf
