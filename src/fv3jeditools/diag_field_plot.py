@@ -44,7 +44,7 @@ def field_plot(datetime, conf):
     try:
         field_names = conf['field names']
     except:
-        utils.abort('\'field name\' must be present in the configuration')
+        utils.abort('\'field names\' must be present in the configuration')
 
     # Get model layer to plot
     try:
@@ -110,9 +110,6 @@ def field_plot(datetime, conf):
           title = "Contour of "+field_name+" ("+units+")"
           outfile = fields_file_name+"_"+field_name+".png"
 
-        # Close the file
-        ncfile.close()
-
         # Check if field has positve and negative values
         # ----------------------------------------------
         if np.min(field) < 0:
@@ -161,6 +158,9 @@ def field_plot(datetime, conf):
         # Save the figure
         print(" Saving figure as", outfile, "\n")
         plt.savefig(outfile)
+
+    # Close the file
+    ncfile.close()
 
 
 # --------------------------------------------------------------------------------------------------
