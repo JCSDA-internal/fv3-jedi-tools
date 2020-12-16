@@ -28,15 +28,11 @@ module load hpss/hpss
 module list
 
 
-# Prepare yaml files
-# ------------------
-fv3jeditools.x $DATETIME $HOMEDIR/stage_jedi_config.yaml
-
-
 # Run conversions
 # ---------------
-cd $WORKDIR
-/apps/slurm/default/bin/srun $JEDIBLD/bin/fv3jedi_convertstate.x Config/convertstate_readwrite.yaml
+cd ${WORKDIR}/${DATETIME}
+mkdir -p Logs
+/apps/slurm/default/bin/srun $JEDIBLD/bin/fv3jedi_convertstate.x Config/convertstate_readwrite.yaml Logs/convertstate_readwrite.log
 
 e=$?
 if [[ $e -gt 0 ]]; then
@@ -44,7 +40,15 @@ if [[ $e -gt 0 ]]; then
     exit $e
 fi
 
-/apps/slurm/default/bin/srun $JEDIBLD/bin/fv3jedi_convertstate.x Config/convertstate_cold2bvars.yaml
+python rename_cold_starts.py EnsembleHolding/*/mem*/renamed.gfs_data.tile* --user_prompt=false
+
+e=$?
+if [[ $e -gt 0 ]]; then
+    echo -e "rename_cold_starts failed to run executable. Error code: $e \n"
+    exit $e
+fi
+
+/apps/slurm/default/bin/srun $JEDIBLD/bin/fv3jedi_convertstate.x Config/convertstate_cold2bvars.yaml Logs/convertstate_cold2bvars.log
 
 e=$?
 if [[ $e -gt 0 ]]; then

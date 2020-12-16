@@ -1,0 +1,7 @@
+application:
+
+  # Application to use
+  application name: remove
+
+  directories to remove:
+      - "${WORKDIR}/${DATETIME}"

@@ -35,951 +35,951 @@ states:
     datapath: EnsembleHolding/%Y%m%d%H/mem001/
     filename_cold: renamed.gfs_data.nc
     skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem002/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem002/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem003/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem003/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem004/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem004/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem005/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem005/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem006/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem006/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem007/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem007/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem008/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem008/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem009/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem009/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem010/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem010/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem011/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem011/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem012/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem012/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem013/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem013/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem014/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem014/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem015/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem015/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem016/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem016/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem017/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem017/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem018/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem018/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem019/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem019/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem020/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem020/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem021/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem021/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem022/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem022/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem023/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem023/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem024/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem024/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem025/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem025/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem026/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem026/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem027/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem027/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem028/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem028/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem029/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem029/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem030/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem030/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem031/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem031/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem032/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem032/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem033/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem033/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem034/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem034/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem035/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem035/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem036/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem036/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem037/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem037/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem038/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem038/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem039/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem039/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem040/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem040/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem041/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem041/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem042/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem042/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem043/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem043/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem044/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem044/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem045/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem045/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem046/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem046/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem047/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem047/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem048/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem048/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem049/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem049/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem050/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem050/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem051/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem051/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem052/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem052/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem053/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem053/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem054/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem054/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem055/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem055/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem056/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem056/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem057/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem057/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem058/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem058/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem059/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem059/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem060/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem060/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem061/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem061/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem062/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem062/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem063/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem063/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem064/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem064/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem065/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem065/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem066/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem066/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem067/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem067/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem068/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem068/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem069/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem069/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem070/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem070/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem071/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem071/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem072/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem072/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem073/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem073/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem074/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem074/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem075/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem075/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem076/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem076/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem077/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem077/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem078/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem078/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem079/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem079/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
-#- input:
-#    filetype: gfs
-#    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
-#    datapath: EnsembleHolding/%Y%m%d%H/mem080/
-#    filename_cold: gfs_data.nc
-#    skip coupler file: true
-#  output:
-#    filetype: gfs
-#    prepend files with date: false
-#    datapath: EnsembleHolding/%Y%m%d%H/mem080/
-#    filename_cold: renamed.gfs_data.nc
-#    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem002/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem002/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem003/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem003/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem004/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem004/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem005/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem005/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem006/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem006/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem007/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem007/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem008/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem008/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem009/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem009/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem010/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem010/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem011/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem011/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem012/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem012/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem013/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem013/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem014/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem014/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem015/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem015/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem016/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem016/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem017/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem017/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem018/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem018/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem019/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem019/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem020/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem020/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem021/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem021/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem022/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem022/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem023/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem023/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem024/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem024/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem025/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem025/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem026/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem026/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem027/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem027/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem028/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem028/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem029/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem029/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem030/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem030/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem031/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem031/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem032/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem032/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem033/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem033/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem034/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem034/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem035/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem035/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem036/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem036/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem037/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem037/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem038/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem038/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem039/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem039/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem040/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem040/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem041/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem041/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem042/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem042/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem043/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem043/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem044/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem044/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem045/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem045/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem046/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem046/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem047/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem047/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem048/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem048/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem049/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem049/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem050/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem050/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem051/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem051/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem052/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem052/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem053/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem053/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem054/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem054/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem055/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem055/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem056/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem056/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem057/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem057/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem058/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem058/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem059/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem059/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem060/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem060/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem061/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem061/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem062/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem062/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem063/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem063/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem064/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem064/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem065/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem065/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem066/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem066/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem067/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem067/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem068/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem068/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem069/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem069/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem070/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem070/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem071/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem071/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem072/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem072/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem073/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem073/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem074/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem074/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem075/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem075/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem076/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem076/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem077/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem077/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem078/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem078/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem079/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem079/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true
+- input:
+    filetype: gfs
+    state variables: [ps,w,zh,t,delp,sphum,liq_wat,o3mr,ice_wat,rainwat,snowwat,graupel,u_w,v_w,u_s,v_s]
+    datapath: EnsembleHolding/%Y%m%d%H/mem080/
+    filename_cold: gfs_data.nc
+    skip coupler file: true
+  output:
+    filetype: gfs
+    prepend files with date: false
+    datapath: EnsembleHolding/%Y%m%d%H/mem080/
+    filename_cold: renamed.gfs_data.nc
+    skip coupler file: true

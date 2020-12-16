@@ -7,7 +7,7 @@ application:
   tar command: htar
 
   # Path where to extract tar files [./]
-  path to extract to: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Work/EnsembleHolding
+  path to extract to: ${WORKDIR}/${DATETIME}/EnsembleHolding
 
   # Tar files to extract
   tar files:
@@ -15,4 +15,4 @@ application:
 
   # Files within the tar files to extract
   internal files:
-    - '%Y%m%d%H/mem001/*.nc'
+    - '%Y%m%d%H/mem*/*.nc'

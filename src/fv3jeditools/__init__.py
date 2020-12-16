@@ -8,6 +8,9 @@ from .diag_hofx_map import *
 from .diag_log_timing import *
 from .gsidiag_to_ioda import *
 from .parse_file_datetime import *
+from .remove import *
+from .stage_files import *
+from .tar import *
 from .untar import *
 from .utils import *
 from .utils_datetime import *

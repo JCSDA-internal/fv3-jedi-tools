@@ -2,37 +2,59 @@
     UTC mode = True
 
 [scheduling]
-    initial cycle point = 20200102T0000Z
-    final cycle point = 20200102T0000Z
-    max active cycle points = 1
+    initial cycle point = 20200104T0000Z
+    final cycle point = 20200131T0000Z
+    max active cycle points = 6
     [[dependencies]]
         [[[T00]]]
-        graph = "get_ensemble => convert_ensemble"
+        graph = "GetEnsemble => StageStaticData & StageJediConfig => ConvertEnsemble => EnsembleCleanup => ArchiveEnsemble => ExperimentCleanup"
 
 [runtime]
 
     [[root]] # suite defaults
         [[[environment]]]
             HOMEDIR = $CYLC_SUITE_DEF_PATH
-            WORKDIR = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Work
+            EXPRDIR = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWF/fv3-jedi-tools/develop/src/Workflows/EMC/ConvertEnsColdStarts_To_BVars
+            WORKDIR = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/CylcWork
             JEDIBLD = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/fv3-bundle/build-intel-release
+            JEDISRC = /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/fv3-bundle/fv3-jedi
             DATETIME = $CYLC_TASK_CYCLE_POINT
 #        [[[events]]]
 #            mail to = holdaway@ucar.edu
 #            mail events = failed
 
-    [[get_ensemble]]
+    [[GetEnsemble]]
         pre-script = "source setup_environment.sh"
         script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/get_ensemble.yaml"
 
-    [[convert_ensemble]]
+    [[StageStaticData]]
+        pre-script = "source setup_environment.sh"
+        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/stage_static_data.yaml"
+
+    [[StageJediConfig]]
+        pre-script = "source setup_environment.sh"
+        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/stage_jedi_config.yaml"
+
+    [[ConvertEnsemble]]
        script = convert_ensemble.sh
        [[[job]]]
            batch system = slurm
-           execution time limit = PT30M
+           execution time limit = PT8H
        [[[directives]]]
            --account = da-cpu
            --nodes = 9
            --tasks-per-node = 20
            --job-name = ens_to_psichi
-           --qos = debug
+           #--qos = debug
+
+    [[EnsembleCleanup]]
+        pre-script = "source setup_environment.sh"
+        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/ensemble_cleanup.yaml"
+
+    [[ArchiveEnsemble]]
+        pre-script = "source setup_environment.sh"
+        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/tar_bvar_ensemble.yaml"
+
+    [[ExperimentCleanup]]
+        pre-script = "source setup_environment.sh"
+        script = "fv3jeditools.x $CYLC_TASK_CYCLE_POINT $CYLC_SUITE_DEF_PATH/experiment_cleanup.yaml"

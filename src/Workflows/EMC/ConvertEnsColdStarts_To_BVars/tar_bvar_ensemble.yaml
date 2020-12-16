@@ -1,0 +1,16 @@
+application:
+
+  # Application to use
+  application name: tar
+
+  # Tar command to use [tar]. Can be tar or htar
+  tar command: htar
+
+  # Path where to extract tar files [./]
+  path to compress from: ${WORKDIR}/${DATETIME}/EnsembleHolding
+
+  # Tar files to extract
+  files to tar:
+    - '*/mem*/*'
+
+  created tar file: /NCEPDEV/emc-da/5year/Daniel.Holdaway/JediData/StaticB/C384/EnsembleForRegression/bvars_ens_%Y%m%d%H.tar

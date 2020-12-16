@@ -1,0 +1,34 @@
+application:
+
+  # Application to use
+  application name: stage_files
+
+  files to copy:
+      # source is relative to the model root (fv3-jedi)
+      - input path: ${JEDISRC}/test/Data/fieldsets
+        output path: ${WORKDIR}/${DATETIME}/Data/fieldsets
+        files:
+          - "*"
+      - input path: ${JEDISRC}/test/Data/fv3files
+        output path: ${WORKDIR}/${DATETIME}/Data/fv3files
+        files:
+          - "*"
+      - input path: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Data/fieldsets
+        output path: ${WORKDIR}/${DATETIME}/Data/fieldsets
+        files:
+          - "*"
+      - input path: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Data/
+        output path: ${WORKDIR}/${DATETIME}/
+        files:
+          - rename_cold_starts.py
+
+  files to link:
+      - input path: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Data/fix
+        output path: ${WORKDIR}/${DATETIME}/EnsembleHolding/fix
+        files:
+          - "*"
+
+      - input path: /scratch1/NCEPDEV/da/Daniel.Holdaway/JediWork/StaticB/Data/femps
+        output path: ${WORKDIR}/${DATETIME}/Data/femps
+        files:
+          - "*"

@@ -72,9 +72,9 @@ for nlev in range(nlevs):
     psig, chig = gaugrid.getpsichi(u[nlev],v[nlev])
     psi[0,nlev,...]=psig
     chi[0,nlev,...]=chig
-    if nlev == 55:
-        plt.imshow(chi)
-        plt.colorbar()
-        plt.savefig('chi.png')
-        raise SystemExit
+    #if nlev == 55:
+    #    plt.imshow(chi)
+    #    plt.colorbar()
+    #    plt.savefig('chi.png')
+    #    raise SystemExit
 nc.close()

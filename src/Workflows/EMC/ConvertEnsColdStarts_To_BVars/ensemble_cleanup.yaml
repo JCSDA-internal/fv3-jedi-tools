@@ -1,0 +1,11 @@
+application:
+
+  # Application to use
+  application name: remove
+
+  files to remove:
+      - directory: ${WORKDIR}/${DATETIME}/EnsembleHolding/*/mem*/
+        files:
+          - "gfs_ctrl.nc"
+          - "gfs_data.tile*.nc"
+          - "renamed.gfs_data.tile*.nc"

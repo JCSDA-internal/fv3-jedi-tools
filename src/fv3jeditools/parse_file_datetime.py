@@ -29,18 +29,17 @@ def parse_file_datetime(datetime, conf):
 
     # Output directory
     try:
-        output_directory = conf['output directory']
+        output_directory = os.path.expandvars(conf['output directory'])
     except:
         output_directory = './'
 
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
+    os.makedirs(output_directory, exist_ok=True)
 
     # Loop over input files, parse datetime and write new file
     for input_file in input_files:
 
        # Open file and read
-       fi = open(input_file)
+       fi = open(os.path.expandvars(input_file))
        lines = fi.read().splitlines()
        fi.close()
 
