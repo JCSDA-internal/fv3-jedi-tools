@@ -37,6 +37,16 @@ def da_convergence(datetime, conf):
     except:
         utils.abort('\'log file\' must be present in the configuration')
 
+    # Get output path for plots
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
+
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     # Replace datetime in logfile name
     isodatestr = datetime.strftime("%Y-%m-%dT%H:%M:%S")
     log_file = utils.stringReplaceDatetimeTemplate(isodatestr, log_file)
@@ -129,7 +139,7 @@ def da_convergence(datetime, conf):
         savename = ylabel.lower().strip()
         savename = savename.replace(" ", "-")
         savename = savename+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
-        savename = os.path.join(os.path.dirname(log_file),savename)
+        savename = os.path.join(output_path,savename)
 
         stat[0:niter] = stats[index,0:niter]
         stat_plot = stat[np.nonzero(stat)]

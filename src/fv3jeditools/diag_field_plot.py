@@ -42,7 +42,7 @@ def field_plot(datetime, conf):
 
     # Get field to plot
     try:
-        field_name = conf['field name']
+        field_names = conf['field names']
     except:
         utils.abort('\'field name\' must be present in the configuration')
 
@@ -52,10 +52,22 @@ def field_plot(datetime, conf):
     except:
         model_layer = None
 
+    # Get output path for plots
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
+
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     # Open the file
     print('\nOpening ', fields_file, 'for reading')
     ncfile = netCDF4.Dataset(fields_file, mode='r')
+
+    # Output filename
+    fields_file_name = output_path + os.path.splitext(os.path.basename(fields_file))[0]
 
     # Get metadata from the file
     npx = ncfile.dimensions["lon"].size
@@ -67,86 +79,88 @@ def field_plot(datetime, conf):
     # Print field dimensions
     print(" Grid dimensions", npx, 'x', npy, 'x', npz)
 
-    # Get field units from the file
-    units = ncfile.variables[field_name].units
+    for field_name in field_names:
 
-    # Zero out array to fill with field
-    field = np.zeros((npy, npx))
+        # Get field units from the file
+        units = ncfile.variables[field_name].units
 
-    # Check if field is two or three dimensions
-    if len(ncfile.variables[field_name].shape) == 4:
+        # Zero out array to fill with field
+        field = np.zeros((npy, npx))
 
-      # User must provide layer/level to plot if 3D
-      if (model_layer == None):
-          utils.abort("If plotting 3D variable user must provide \'model layer\' in the configuration")
+        # Check if field is two or three dimensions
+        if len(ncfile.variables[field_name].shape) == 4:
 
-      # Message and read the field at provided layer
-      print(" Reading layer ", model_layer, " from field ", field_name)
-      field[:,:] = ncfile.variables[field_name][:,model_layer-1,:,:]
+          # User must provide layer/level to plot if 3D
+          if (model_layer == None):
+              utils.abort("If plotting 3D variable user must provide \'model layer\' in the configuration")
 
-      # Set plot title and output file to include level plotted
-      title = "Contour of "+field_name+" ("+units+") for layer "+str(model_layer)
-      outfile = os.path.splitext(fields_file)[0]+"_"+field_name+"_layer-"+str(model_layer)+".png"
+          # Message and read the field at provided layer
+          print(" Reading layer ", model_layer, " from field ", field_name)
+          field[:,:] = ncfile.variables[field_name][:,model_layer-1,:,:]
 
-    elif len(ncfile.variables[field_name].shape) == 3:
+          # Set plot title and output file to include level plotted
+          title = "Contour of "+field_name+" ("+units+") for layer "+str(model_layer)
+          outfile = fields_file_name+"_"+field_name+"_layer-"+str(model_layer)+".png"
 
-      # Message and read the field at provided layer
-      print(" Reading field ", field_name)
-      field[:,:] = ncfile.variables[field_name][:,:]
-      title = "Contour of "+field_name+" ("+units+")"
-      outfile = os.path.splitext(fields_file)[0]+"_"+field_name+".png"
+        elif len(ncfile.variables[field_name].shape) == 3:
 
-    # Close the file
-    ncfile.close()
+          # Message and read the field at provided layer
+          print(" Reading field ", field_name)
+          field[:,:] = ncfile.variables[field_name][:,:]
+          title = "Contour of "+field_name+" ("+units+")"
+          outfile = fields_file_name+"_"+field_name+".png"
 
-    # Check if field has positve and negative values
-    # ----------------------------------------------
-    if np.min(field) < 0:
-      cmax = np.max(np.abs(field))
-      cmin = -cmax
-      cmap = 'RdBu'
-    else:
-      cmax = np.max(field)
-      cmin = np.min(field)
-      cmap = 'nipy_spectral'
+        # Close the file
+        ncfile.close()
 
-    levels = np.linspace(cmin,cmax,25)
+        # Check if field has positve and negative values
+        # ----------------------------------------------
+        if np.min(field) < 0:
+          cmax = np.max(np.abs(field))
+          cmin = -cmax
+          cmap = 'RdBu'
+        else:
+          cmax = np.max(field)
+          cmin = np.min(field)
+          cmap = 'nipy_spectral'
 
-    # Create two dimensional contour plot of field
-    # --------------------------------------------
+        levels = np.linspace(cmin,cmax,25)
 
-    # Set the projection
-    projection = ccrs.PlateCarree()
+        # Create two dimensional contour plot of field
+        # --------------------------------------------
 
-    # Create figure to hold plot
-    fig = plt.figure(figsize=(10, 5))
+        # Set the projection
+        projection = ccrs.PlateCarree()
 
-    # Just one subplot for now
-    ax = fig.add_subplot(1, 1, 1, projection=projection)
+        # Create figure to hold plot
+        fig = plt.figure(figsize=(10, 5))
 
-    # Contour the field
-    im = ax.contourf(lons, lats, field,
-                     transform=projection,
-                     cmap=cmap,
-                     levels=levels)
+        # Just one subplot for now
+        ax = fig.add_subplot(1, 1, 1, projection=projection)
 
-    # Add coast lines to the plot
-    ax.coastlines()
+        # Contour the field
+        im = ax.contourf(lons, lats, field,
+                         transform=projection,
+                         cmap=cmap,
+                         levels=levels)
 
-    # Add labels to the plot
-    ax.set_xticks(np.linspace(-180, 180, 5), crs=projection)
-    ax.set_yticks(np.linspace(-90, 90, 5), crs=projection)
-    ax.set_xlabel('Longitude')
-    ax.set_ylabel('Latitude')
-    ax.set_title(title)
-    ax.set_global()
+        # Add coast lines to the plot
+        ax.coastlines()
 
-    # Add a colorbar for the filled contour.
-    fig.colorbar(im)
+        # Add labels to the plot
+        ax.set_xticks(np.linspace(-180, 180, 5), crs=projection)
+        ax.set_yticks(np.linspace(-90, 90, 5), crs=projection)
+        ax.set_xlabel('Longitude')
+        ax.set_ylabel('Latitude')
+        ax.set_title(title)
+        ax.set_global()
 
-    # Show the figure
-    print(" Saving figure as", outfile, "\n")
-    plt.savefig(outfile)
+        # Add a colorbar for the filled contour.
+        fig.colorbar(im)
+
+        # Save the figure
+        print(" Saving figure as", outfile, "\n")
+        plt.savefig(outfile)
 
 
 # --------------------------------------------------------------------------------------------------

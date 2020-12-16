@@ -51,6 +51,17 @@ def log_timing(datetime, conf):
     except:
         plotformat = 'png'
 
+    # Get output path for plots
+    # -------------------------
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
+
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     # Replace datetime in logfile name
     # --------------------------------
     isodatestr = datetime.strftime("%Y-%m-%dT%H:%M:%S")
@@ -154,10 +165,10 @@ def log_timing(datetime, conf):
     savename = os.path.basename(log_file)
     savename = os.path.splitext(savename)[0]
     savename_total = savename+"_method_total_time_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
-    savename_total = os.path.join(os.path.dirname(log_file),savename_total)
+    savename_total = os.path.join(output_path,savename_total)
 
     savename_percall = savename+"_method_per_call_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
-    savename_percall = os.path.join(os.path.dirname(log_file),savename_percall)
+    savename_percall = os.path.join(output_path,savename_percall)
 
     fig, ax = plt.subplots(figsize=(20, 7.5))
     wedges, texts, autotexts = ax.pie(raw_timing_ttime_time_plot, autopct='%1.1f%%',
