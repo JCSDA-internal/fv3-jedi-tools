@@ -9,6 +9,7 @@ import fv3jeditools.utils as utils
 # --------------------------------------------------------------------------------------------------
 ## @package untar
 #  This function takes a yaml file configuration as well as a datetime. It will untar all the files
+#  listed in the yaml
 # --------------------------------------------------------------------------------------------------
 
 def untar(datetime, conf):
