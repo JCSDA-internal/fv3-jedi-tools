@@ -153,6 +153,8 @@ def da_convergence(datetime, conf):
         plt.xlabel("Iteration number")
         plt.ylabel(ylabel)
         plt.yscale(yscale)
+
+        print(" Saving figure as", savename, "\n")
         plt.savefig(savename)
 
 # --------------------------------------------------------------------------------------------------

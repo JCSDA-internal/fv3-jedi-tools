@@ -221,6 +221,7 @@ def hofx_innovations(datetime, conf):
     else:
         plt.xlabel("Observation minus h(x)")
     plt.ylabel("Frequency")
+    print(" Saving figure as", savename, "\n")
     plt.savefig(savename)
 
 # --------------------------------------------------------------------------------------------------

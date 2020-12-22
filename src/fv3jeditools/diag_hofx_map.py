@@ -276,6 +276,7 @@ def hofx_map(datetime, conf):
             rotation='vertical', va='bottom')
 
     # show plot
+    print(" Saving figure as", savename, "\n")
     plt.savefig(savename)
 
 

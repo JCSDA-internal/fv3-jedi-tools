@@ -176,6 +176,7 @@ def log_timing(datetime, conf):
     plt.title("JEDI application timings per method (total time = "+'{:.1f}'.format(np.sum(raw_timing_ttime_time_plot)) + "ms)")
     ax.legend(wedges, raw_timing_ttime_name_plot, title="Methods", loc="center left",
               bbox_to_anchor=(1, 0, 0.5, 1))
+    print(" Saving figure as", savename_total, "\n")
     plt.savefig(savename_total)
 
     fig, ax = plt.subplots(figsize=(20, 7.5))
@@ -184,6 +185,7 @@ def log_timing(datetime, conf):
     plt.title("JEDI application timings per method per call (ms)")
     ax.legend(wedges, raw_timing_pcall_name_plot, title="Methods", loc="center left",
               bbox_to_anchor=(1, 0, 0.5, 1))
+    print(" Saving figure as", savename_percall, "\n")
     plt.savefig(savename_percall)
 
 # --------------------------------------------------------------------------------------------------
