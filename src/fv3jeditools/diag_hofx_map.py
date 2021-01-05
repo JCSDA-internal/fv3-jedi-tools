@@ -87,6 +87,15 @@ def hofx_map(datetime, conf):
     except:
         plotformat = 'png'
 
+    # Get output path for plots
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
+
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     # Get list of hofx files to read
     # ------------------------------
@@ -109,8 +118,7 @@ def hofx_map(datetime, conf):
 
     # Figure filename
     # ---------------
-    savename = os.path.join(os.path.dirname(hofx_files_template),
-                          varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
+    savename = os.path.join(output_path, varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
 
 
     # Compute window begin time
@@ -268,6 +276,7 @@ def hofx_map(datetime, conf):
             rotation='vertical', va='bottom')
 
     # show plot
+    print(" Saving figure as", savename, "\n")
     plt.savefig(savename)
 
 
