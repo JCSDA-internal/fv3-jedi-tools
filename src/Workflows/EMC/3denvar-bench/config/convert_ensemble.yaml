@@ -1,0 +1,2025 @@
+input geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  trc_file: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk64.nc4
+  layout: [2,3]
+  io_layout: [1,1]
+  npx: 385
+  npy: 385
+  npz: 64
+  ntiles: 6
+  fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+
+output geometry:
+  trc_file: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk64.nc4
+  layout: [2,3]
+  io_layout: [1,1]
+  npx: 97
+  npy: 97
+  npz: 64
+  ntiles: 6
+  fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+
+states:
+- input:
+    filetype: gfs
+    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+                      u_srf,v_srf,f10m,zorl]
+    filetype: gfs
+    datapath: Data/input/mem001
+    filename_cplr: 20210301.000000.coupler.res
+    filename_core: 20210301.000000.fv_core.res.nc
+    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+    filename_trcr: 20210301.000000.fv_tracer.res.nc
+    filename_phys: 20210301.000000.phy_data.nc
+    filename_sfcd: 20210301.000000.sfc_data.nc
+
+  output:
+    filetype: gfs
+    datapath: Data/input/mem001_c96
+    filename_cplr: coupler.res
+    filename_core: fv_core.res.nc
+    filename_sfcw: fv_srf_wnd.res.nc
+    filename_trcr: fv_tracer.res.nc
+    filename_phys: phy_data.nc
+    filename_sfcd: sfc_data.nc
+
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem002
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem002_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem003
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem003_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem004
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem004_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem005
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem005_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem006
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem006_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem007
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem007_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem008
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem008_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem009
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem009_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem010
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem010_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem011
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem011_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem012
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem012_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem013
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem013_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem014
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem014_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem015
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem015_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem016
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem016_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem017
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem017_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem018
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem018_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem019
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem019_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem020
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem020_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem021
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem021_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem022
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem022_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem023
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem023_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem024
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem024_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem025
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem025_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem026
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem026_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem027
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem027_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem028
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem028_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem029
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem029_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem030
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem030_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem031
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem031_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem032
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem032_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem033
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem033_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem034
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem034_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem035
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem035_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem036
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem036_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem037
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem037_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem038
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem038_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem039
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem039_c96
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem040
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem040_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem041
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem041_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem042
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem042_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem043
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem043_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem044
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem044_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem045
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem045_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem046
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem046_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem047
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem047_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem048
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem048_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem049
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem049_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem050
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem050_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem051
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem051_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem052
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem052_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem053
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem053_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem054
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem054_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem055
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem055_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem056
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem056_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem057
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem057_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem058
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem058_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem059
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem059_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem060
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem060_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem061
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem061_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem062
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem062_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem063
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem063_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem064
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem064_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem065
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem065_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem066
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem066_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem067
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem067_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem068
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem068_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem069
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem069_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem070
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem070_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem071
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem071_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem072
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem072_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem073
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem073_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem074
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem074_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem075
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem075_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem076
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem076_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem077
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem077_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem078
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem078_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem079
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem079_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc
+#
+#- input:
+#    filetype: gfs
+#    state variables: [u,v,W,DZ,T,delp,phis,ua,va,ps,
+#                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+#                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+#                      u_srf,v_srf,f10m,zorl]
+#    filetype: gfs
+#    datapath: Data/input/mem080
+#    filename_cplr: 20210301.000000.coupler.res
+#    filename_core: 20210301.000000.fv_core.res.nc
+#    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+#    filename_trcr: 20210301.000000.fv_tracer.res.nc
+#    filename_phys: 20210301.000000.phy_data.nc
+#    filename_sfcd: 20210301.000000.sfc_data.nc
+#
+#  output:
+#    filetype: gfs
+#    datapath: Data/input/mem080_c96
+#    filename_cplr: coupler.res
+#    filename_core: fv_core.res.nc
+#    filename_sfcw: fv_srf_wnd.res.nc
+#    filename_trcr: fv_tracer.res.nc
+#    filename_phys: phy_data.nc
+#    filename_sfcd: sfc_data.nc

@@ -1,0 +1,159 @@
+cost function:
+
+  cost type: 3D-Var
+  window begin: '2021-02-28T21:00:00Z'
+  window length: PT6H
+  analysis variables: &anavars [ua,va,T,ps,sphum,ice_wat,liq_wat,o3mr]
+
+  geometry:
+    nml_file_mpp: Data/fv3files/fmsmpp.nml
+    trc_file: Data/fv3files/field_table
+    akbk: Data/fv3files/akbk64.nc4
+    layout: [2,3]
+    io_layout: [1,1]
+    npx: 193
+    npy: 193
+    npz: 64
+    ntiles: 6
+    interpolation method: bump
+    fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+    - fieldset: Data/fieldsets/ufo.yaml
+
+  background:
+    filetype: gfs
+    datapath: Data/input/bkg_c192
+    filename_cplr: 20210301.000000.coupler.res
+    filename_core: 20210301.000000.fv_core.res.nc
+    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+    filename_trcr: 20210301.000000.fv_tracer.res.nc
+    filename_phys: 20210301.000000.phy_data.nc
+    filename_sfcd: 20210301.000000.sfc_data.nc
+    state variables: &bkgvars [T,delp,ps,phis,ua,va,ps,
+                      sphum,liq_wat,rainwat,ice_wat,snowwat,graupel,o3mr,cld_amt,
+                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+                      u_srf,v_srf,f10m,zorl]
+
+  background error:
+
+    covariance model: ensemble
+
+    # Datetime
+    date: "2021-03-01T00:00:00Z"
+
+    # Localization operator
+    localization:
+      timeslots: ["2021-03-01T00:00:00Z"]
+      localization variables: *anavars
+      localization method: BUMP
+      bump:
+        prefix: Data/localization/fixed_c96
+        method: loc
+        strategy: common
+        load_nicas: 1
+        mpicom: 2
+        verbosity: main
+        io_keys: ["common"]
+        io_values: ["fixed_2500km_0.3"]
+
+    # Ensemble members
+    members:
+    - filetype: gfs
+      datapath: Data/input/mem001_c96/
+      filename_cplr: 20210301.000000.coupler.res
+      filename_core: 20210301.000000.fv_core.res.nc
+      filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+      filename_trcr: 20210301.000000.fv_tracer.res.nc
+      filename_phys: 20210301.000000.phy_data.nc
+      filename_sfcd: 20210301.000000.sfc_data.nc
+      state variables: *anavars
+    - filetype: gfs
+      datapath: Data/input/mem002_c96/
+      filename_cplr: 20210301.000000.coupler.res
+      filename_core: 20210301.000000.fv_core.res.nc
+      filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+      filename_trcr: 20210301.000000.fv_tracer.res.nc
+      filename_phys: 20210301.000000.phy_data.nc
+      filename_sfcd: 20210301.000000.sfc_data.nc
+      state variables: *anavars
+    - filetype: gfs
+      datapath: Data/input/mem003_c96/
+      filename_cplr: 20210301.000000.coupler.res
+      filename_core: 20210301.000000.fv_core.res.nc
+      filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+      filename_trcr: 20210301.000000.fv_tracer.res.nc
+      filename_phys: 20210301.000000.phy_data.nc
+      filename_sfcd: 20210301.000000.sfc_data.nc
+      state variables: *anavars
+    - filetype: gfs
+      datapath: Data/input/mem004_c96/
+      filename_cplr: 20210301.000000.coupler.res
+      filename_core: 20210301.000000.fv_core.res.nc
+      filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+      filename_trcr: 20210301.000000.fv_tracer.res.nc
+      filename_phys: 20210301.000000.phy_data.nc
+      filename_sfcd: 20210301.000000.sfc_data.nc
+      state variables: *anavars
+    - filetype: gfs
+      datapath: Data/input/mem005_c96/
+      filename_cplr: 20210301.000000.coupler.res
+      filename_core: 20210301.000000.fv_core.res.nc
+      filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+      filename_trcr: 20210301.000000.fv_tracer.res.nc
+      filename_phys: 20210301.000000.phy_data.nc
+      filename_sfcd: 20210301.000000.sfc_data.nc
+      state variables: *anavars
+
+  observations:
+  - obs space:
+      name: Aircraft
+      obsdatain:
+        obsfile: Data/obs/aircraft_obs_2021030100.nc4
+      obsdataout:
+        obsfile: Data/hofx/aircraft_2021030100.nc4
+      simulated variables: [eastward_wind, northward_wind, air_temperature]
+    obs operator:
+      name: VertInterp
+    obs error:
+      covariance model: diagonal
+
+
+variational:
+
+  minimizer:
+    algorithm: DRIPCG
+
+  iterations:
+  - ninner: 10
+    gradient norm reduction: 1e-10
+    test: on
+    geometry:
+      trc_file: Data/fv3files/field_table
+      akbk: Data/fv3files/akbk64.nc4
+      layout: [2,3]
+      io_layout: [1,1]
+      npx: 97
+      npy: 97
+      npz: 64
+      ntiles: 6
+      fieldsets:
+      - fieldset: Data/fieldsets/dynamics.yaml
+      - fieldset: Data/fieldsets/ufo.yaml
+    diagnostics:
+      departures: ombg
+
+final:
+  diagnostics:
+    departures: oman
+
+output:
+  filetype: gfs
+  datapath: Data/analysis/
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_sfcw: fv_srf_wnd.res.nc
+  filename_trcr: fv_tracer.res.nc
+  filename_phys: phy_data.nc
+  filename_sfcd: sfc_data.nc
+  first: PT0H
+  frequency: PT1H

@@ -1,0 +1,47 @@
+input geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  trc_file: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk64.nc4
+  layout: [2,3]
+  io_layout: [1,1]
+  npx: 769
+  npy: 769
+  npz: 64
+  ntiles: 6
+  fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+
+output geometry:
+  trc_file: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk64.nc4
+  layout: [2,3]
+  io_layout: [1,1]
+  npx: 193
+  npy: 193
+  npz: 64
+  ntiles: 6
+  fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+
+states:
+- input:
+    filetype: gfs
+    state variables: [ice_wat]
+    filetype: gfs
+    datapath: Data/input/bkg
+    filename_cplr: 20210301.000000.coupler.res
+    filename_core: 20210301.000000.fv_core.res.nc
+    filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+    filename_trcr: 20210301.000000.fv_tracer.res.nc
+    filename_phys: 20210301.000000.phy_data.nc
+    filename_sfcd: 20210301.000000.sfc_data.nc
+
+  output:
+    filetype: gfs
+    datapath: Data/input/bkg_c192
+    filename_cplr: test.coupler.res
+    filename_core: test.fv_core.res.nc
+    filename_sfcw: test.fv_srf_wnd.res.nc
+    filename_trcr: test.fv_tracer.res.nc
+    filename_phys: test.phy_data.nc
+    filename_sfcd: test.sfc_data.nc

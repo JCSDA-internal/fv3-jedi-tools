@@ -1,0 +1,82 @@
+# Increment geometry
+geometry:
+  nml_file_mpp: Data/fv3files/fmsmpp.nml
+  trc_file: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk64.nc4
+  layout: [2,3]
+  io_layout: [1,1]
+  npx: 97
+  npy: 97
+  npz: 64
+  ntiles: 6
+  fieldsets:
+    - fieldset: Data/fieldsets/dynamics.yaml
+
+# Variables, one 3d and one 2d
+input variables: &vars [T,ps]
+date: &date '2021-03-01T00:00:00Z'
+
+# Background
+background:
+  filetype: gfs
+  datapath: Data/input/mem001_c96
+  filename_cplr: 20210301.000000.coupler.res
+  filename_core: 20210301.000000.fv_core.res.nc
+  filename_sfcw: 20210301.000000.fv_srf_wnd.res.nc
+  filename_trcr: 20210301.000000.fv_tracer.res.nc
+  filename_phys: 20210301.000000.phy_data.nc
+  filename_sfcd: 20210301.000000.sfc_data.nc
+  state variables: *vars
+
+# BUMP setup
+bump:
+  prefix: Data/localization/fixed_c96
+  verbosity: main
+  universe_rad: 2500000.0
+  strategy: specific_univariate
+  new_nicas: 1
+  interp_type: mesh_based
+  ntry: 3
+  nrep: 2
+  resol: 6
+  mpicom: 2
+# Forced length-scales
+# --------------------
+  forced_radii: 1
+  rh:
+    T: [2500000.0]
+    ps: [2500000.0]
+  rv:
+    T: [0.3]
+    ps: [0.3]
+# Write C matrix
+# --------------
+  write_cmat: 0
+  io_keys:
+  - "T-T"
+  - "ps-ps"
+  io_values:
+  - "fixed_2500km_0.3"
+  - "fixed_2500km"
+
+output:
+- parameter: cor_rh
+  filetype: gfs
+  datapath: Data/localization/
+  filename_cplr: coupler.res
+  filename_core: cor_rh_c96.fv_core.res.nc
+  filename_sfcw: cor_rh_c96.fv_srf_wnd.res.nc
+  filename_trcr: cor_rh_c96.fv_tracer.res.nc
+  filename_phys: cor_rh_c96.phy_data.nc
+  filename_sfcd: cor_rh_c96.sfc_data.nc
+  date: *date
+- parameter: cor_rv
+  filetype: gfs
+  datapath: Data/localization/
+  filename_cplr: coupler.res
+  filename_core: cor_rv_c96.fv_core.res.nc
+  filename_sfcw: cor_rv_c96.fv_srf_wnd.res.nc
+  filename_trcr: cor_rv_c96.fv_tracer.res.nc
+  filename_phys: cor_rv_c96.phy_data.nc
+  filename_sfcd: cor_rv_c96.sfc_data.nc
+  date: *date
