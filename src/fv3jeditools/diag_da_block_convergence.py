@@ -37,6 +37,12 @@ def da_block_convergence(datetime, conf):
     except:
         utils.abort('\'log file\' must be present in the configuration')
 
+    # Get the number of members
+    try:
+        members = conf['members']
+    except:
+        utils.abort('\'members\' must be present in the configuration')
+
     # Get output path for plots
     try:
         output_path = conf['output path']
@@ -54,7 +60,6 @@ def da_block_convergence(datetime, conf):
 
     # Read file and gather norm information
     print(" Reading convergence from ", log_file)
-    print("This is the block version")
 
     # Open the file ready for reading
     if os.path.exists(log_file):
@@ -72,8 +77,8 @@ def da_block_convergence(datetime, conf):
 
     # Patterns to search for from the file
     search_patterns = []
-    search_patterns.append("  Norm reduction all members .")
-    search_patterns.append("  Quadratic cost function all members: J .")
+    search_patterns.append("   Norm reduction all members .")
+    search_patterns.append("   Quadratic cost function all members: J .") 
 
     # Labels for the figures
     ylabels = []
@@ -90,29 +95,28 @@ def da_block_convergence(datetime, conf):
 
     # Close the file
     file.close()
-
+ 
     # Loop over stats to be searched on
     maxiterations = 10000
     count = np.zeros(len(search_patterns), dtype=int)
-    stats = np.zeros((len(search_patterns), maxiterations))
+    stats = np.zeros((members, len(search_patterns), maxiterations))
     for search_pattern in search_patterns:
 
         index = [i for i, s in enumerate(search_patterns) if search_pattern in s]
 
         # Loop over the matches and fill stats
         for match in matches:
-
-            reg = re.compile(search_pattern)
-            print("this is a match")
-            print(match)
+            reg = re.compile(search_pattern) 
             if bool(re.match(reg, match)):
-
-                stats[index,count[index]] = match.split()[-1]
+                x = match.split()[-members:]
+                x2 = [sub.replace(',' , '') for sub in x]
+                for member in range(members):
+                    stats[member,index,count[index]]=x2[member]
                 count[index] = count[index] + 1
-                print("this is what is found:"+str(stats[index,count[index]]))
+
 
     niter = count[0]
-    stat = np.zeros(niter)
+    stat = np.zeros((members, niter))
 
 
     # Create figures
@@ -137,16 +141,15 @@ def da_block_convergence(datetime, conf):
         savename = savename.replace(" ", "-")
         savename = savename+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
         savename = os.path.join(output_path,savename)
-
-        stat[0:niter] = stats[index,0:niter]
-        stat_plot = stat[np.nonzero(stat)]
-
-        iter = np.arange(1, len(stat_plot)+1)
-
         fig, ax = plt.subplots(figsize=(15, 7.5))
-        ax.plot(iter, stat_plot, linestyle='-', marker='x')
+        for member in range(members):
+            stat[member,0:niter] = stats[member,index,0:niter]
+            stat_plot = stat[member,np.nonzero(stat[member,:])]
+            iter = np.arange(1, len(stat_plot[0])+1)
+            ax.plot(iter, stat_plot[0], linestyle='-', marker='x',label = 'member %s'%member) 
         ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=True)
         plt.title("JEDI variational assimilation convergence statistics | "+isodatestr)
+        plt.legend()
         plt.xlabel("Iteration number")
         plt.ylabel(ylabel)
         plt.yscale(yscale)
