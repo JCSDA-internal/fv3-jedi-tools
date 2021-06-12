@@ -1,0 +1,16 @@
+application:
+
+  # Application to use
+  application name: da_block_convergence
+
+  # JEDI EDA log file to read
+  log file: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/<block log file>
+
+  # Number of members in the EDA
+  members: 4
+
+  # Yscale for figures (log or linear)
+  yscale: linear
+
+  # Output format for plots (png or pdf)
+  plot format: pdf

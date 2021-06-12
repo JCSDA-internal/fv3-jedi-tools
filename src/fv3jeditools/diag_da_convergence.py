@@ -37,79 +37,11 @@ def da_convergence(datetime, conf):
     except:
         utils.abort('\'log file\' must be present in the configuration')
 
-    # Replace datetime in logfile name
-    isodatestr = datetime.strftime("%Y-%m-%dT%H:%M:%S")
-    log_file = utils.stringReplaceDatetimeTemplate(isodatestr, log_file)
-
-
-    # Read file and gather norm information
-    print(" Reading convergence from ", log_file)
-
-
-    # Open the file ready for reading
-    if os.path.exists(log_file):
-        file = open(log_file, "r")
-    else:
-        utils.abort('Log file not found.')
-
-
-    # Search for the type of minimizer used for the assimilation
-    for line in file:
-        if "Minimizer algorithm=" in line:
-            minimizer = line.split('=')[1].rstrip()
-            break
-
-
-    # Patterns to search for from the file
-    search_patterns = []
-    search_patterns.append("  Norm reduction .")
-    search_patterns.append("  Quadratic cost function: J   .")
-    search_patterns.append("  Quadratic cost function: Jb  .")
-    search_patterns.append("  Quadratic cost function: JoJc.")
-    search_patterns.append("GMRESR end of iteration .")
-
-    # Labels for the figures
-    ylabels = []
-    ylabels.append(minimizer+" normalized gradient reduction")
-    ylabels.append("Quadratic cost function J   ")
-    ylabels.append("Quadratic cost function Jb  ")
-    ylabels.append("Quadratic cost function JoJc")
-    ylabels.append("GMRESR norm reduction")
-
-    # Get all lines that match the search patterns
-    matches = []
-    for line in file:
-        for search_pattern in search_patterns:
-            reg = re.compile(search_pattern)
-            if bool(re.match(reg, line.rstrip())):
-                matches.append(line.rstrip())
-
-    # Close the file
-    file.close()
-
-    # Loop over stats to be searched on
-    maxiterations = 10000
-    count = np.zeros(len(search_patterns), dtype=int)
-    stats = np.zeros((len(search_patterns), maxiterations))
-    for search_pattern in search_patterns:
-
-        index = [i for i, s in enumerate(search_patterns) if search_pattern in s]
-
-        # Loop over the matches and fill stats
-        for match in matches:
-
-            reg = re.compile(search_pattern)
-            if bool(re.match(reg, match)):
-
-                stats[index,count[index]] = match.split()[-1]
-                count[index] = count[index] + 1
-
-    niter = count[0]
-    stat = np.zeros(niter)
-
-
-    # Create figures
-    # --------------
+    # Get output path for plots
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
 
     # Scale for y-axis
     try:
@@ -123,26 +55,104 @@ def da_convergence(datetime, conf):
     except:
         plotformat = 'png'
 
-    for ylabel in ylabels:
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
-        index = [i for i, s in enumerate(ylabels) if ylabel in s]
-        savename = ylabel.lower().strip()
-        savename = savename.replace(" ", "-")
-        savename = savename+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
-        savename = os.path.join(os.path.dirname(log_file),savename)
+    # Replace datetime in logfile name
+    isodatestr = datetime.strftime("%Y-%m-%dT%H:%M:%S")
+    log_file = utils.stringReplaceDatetimeTemplate(isodatestr, log_file)
 
-        stat[0:niter] = stats[index,0:niter]
-        stat_plot = stat[np.nonzero(stat)]
 
-        iter = np.arange(1, len(stat_plot)+1)
+    # Read file and gather norm information
+    print(" Reading convergence from ", log_file)
 
-        fig, ax = plt.subplots(figsize=(15, 7.5))
-        ax.plot(iter, stat_plot, linestyle='-', marker='x')
-        ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=True)
-        plt.title("JEDI variational assimilation convergence statistics | "+isodatestr)
-        plt.xlabel("Iteration number")
-        plt.ylabel(ylabel)
-        plt.yscale(yscale)
-        plt.savefig(savename)
+
+    # Check the file exists
+    if not os.path.exists(log_file):
+        utils.abort('Log file not found.')
+
+    # Convert file to list
+    lines = []
+    with open(log_file) as file:
+        for line in file:
+            lines.append(line)
+
+    # Get unique minizers used in run, e.g. DRIPCG + GMRES
+    minimizers = []
+    for line in lines:
+        if " end of iteration " in line:
+            minimizers.append(line.split()[0])
+    minimizers=set(minimizers) # Unique only
+
+
+    # Loop over minimizers
+    for minimizer in minimizers:
+
+        print('Processing ', minimizer)
+
+        grad_red  = []
+        norm_red  = []
+        quad_j    = []
+        quad_jb   = []
+        quad_JoJc = []
+        for num, line in enumerate(lines, 1):
+            if minimizer+" end of iteration " in line:
+                grad_red.append(lines[num].split()[-1])
+                norm_red.append(lines[num+1].split()[-1])
+                if (lines[num+3].split()[0] == 'Quadratic'):
+                    quad_j.append(lines[num+3].split()[-1])
+                if (lines[num+3].split()[0] == 'Quadratic'):
+                    quad_jb.append(lines[num+4].split()[-1])
+                if (lines[num+3].split()[0] == 'Quadratic'):
+                    quad_JoJc.append(lines[num+5].split()[-1])
+
+
+        # Loop over metrics
+        for s in range(5):
+
+            if (s==0):
+                stat_str = grad_red
+                ylabel = 'Gradient reduction'
+            elif (s==1):
+                stat_str = norm_red
+                ylabel = 'Norm reduction'
+            elif (s==2):
+                stat_str = quad_j
+                ylabel = 'Quadratic cost function: J'
+            elif (s==3):
+                stat_str = quad_jb
+                ylabel = 'Quadratic cost function: Jb'
+            elif (s==4):
+                stat_str = quad_JoJc
+                ylabel = 'Quadratic cost function: JoJc'
+
+            niter = len(stat_str)
+
+            if niter > 1:
+
+                stat = np.zeros(len(stat_str))
+                stat[0:niter] = stat_str
+
+                stat_plot = stat[np.nonzero(stat)]
+                iter = np.arange(1, len(stat_plot)+1)
+
+                savename = minimizer.lower()+"-"+ylabel.lower().strip()
+                savename = savename.replace(":", "")
+                savename = savename.replace(" ", "-")
+                savename = savename+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat
+                savename = os.path.join(output_path,savename)
+
+                fig, ax = plt.subplots(figsize=(15, 7.5))
+                ax.plot(iter, stat_plot, linestyle='-', marker='x')
+                ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=True)
+                plt.title("JEDI variational assimilation convergence statistics | "+isodatestr)
+                plt.xlabel("Iteration number")
+                plt.ylabel(ylabel)
+                plt.yscale(yscale)
+                plt.xlim([0.9, niter+0.1])
+                print(" Saving figure as", savename, "\n")
+                plt.savefig(savename)
+
 
 # --------------------------------------------------------------------------------------------------

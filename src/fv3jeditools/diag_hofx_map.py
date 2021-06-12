@@ -53,8 +53,12 @@ def hofx_map(datetime, conf):
     hofx_files_template = utils.configGetOrFail(conf, 'hofx files')
 
 
-    # Get variable to plot
-    variable = utils.configGetOrFail(conf, 'variable')
+    # Get metric to plot
+    metric = utils.configGetOrFail(conf, 'metric')
+
+
+    # Get field to plot
+    field = utils.configGetOrFail(conf, 'field')
 
 
     # Get window length
@@ -75,7 +79,7 @@ def hofx_map(datetime, conf):
     except:
         colmax = None
 
-    # Get units of variable being plotted
+    # Get units of field being plotted
     try:
         units = conf['units']
     except:
@@ -87,6 +91,15 @@ def hofx_map(datetime, conf):
     except:
         plotformat = 'png'
 
+    # Get output path for plots
+    try:
+        output_path = conf['output path']
+    except:
+        output_path = './'
+
+    # Create output path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     # Get list of hofx files to read
     # ------------------------------
@@ -99,18 +112,6 @@ def hofx_map(datetime, conf):
 
     if hofx_files==[]:
         utils.abort("No hofx files matching the input string")
-
-
-    # Variable name and units
-    # -----------------------
-    varname = variable.split('@')[0]
-    vmetric = variable.split('@')[1]
-
-
-    # Figure filename
-    # ---------------
-    savename = os.path.join(os.path.dirname(hofx_files_template),
-                          varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
 
 
     # Compute window begin time
@@ -132,38 +133,58 @@ def hofx_map(datetime, conf):
         # Open the file
         fh = netCDF4.Dataset(hofx_file)
 
-        # Read metric
-        if vmetric=='omb':
-            odat_proc = fh.variables[varname+'@ObsValue'][:] - fh.variables[varname+'@hofx'][:]
+        # Check for channels
+        try:
+            nchans = fh.dimensions["nchans"].size
+        except:
+            nchans = 0
+
+        # User must provide channel number
+        if nchans != 0:
+            chan = utils.configGetOrFail(conf, 'channel')
+
+            # Read metric
+            if metric=='omb':
+                odat_proc = fh.groups['ObsValue'].variables[field][:,chan-1] - fh.groups['hofx'].variables[field][:,chan-1]
+            else:
+                odat_proc = fh.groups[metric].variables[field][:,chan-1]
+
         else:
-            odat_proc = fh.variables[variable][:]
+
+            # Read metric
+            if metric=='omb':
+                odat_proc = fh.groups['ObsValue'].variables[field][:] - fh.groups['hofx'].variables[field][:]
+            else:
+                odat_proc = fh.groups[metric].variables[field][:]
 
         # Read metadata
-        lons_proc = fh.variables['longitude@MetaData'][:]
-        lats_proc = fh.variables['latitude@MetaData'][:]
-        time_proc = fh.variables['datetime@MetaData'][:]
+        lons_proc = fh.groups['MetaData'].variables['longitude'][:]
+        lats_proc = fh.groups['MetaData'].variables['latitude'][:]
+        time_proc = fh.groups['MetaData'].variables['datetime'][:]
+
 
         for m in range(len(odat_proc)):
             odat.append(odat_proc[m])
             lons.append(lons_proc[m])
             lats.append(lats_proc[m])
-            time_proc_ = (time_proc[m])
-            time_proc_str = ''
-            for l in range(20):
-                time_proc_str = time_proc_str + time_proc_[l].decode('UTF-8')
-            time.append((dt.datetime.strptime(time_proc_str, '%Y-%m-%dT%H:%M:%SZ') - \
-                                               window_begin).total_seconds())
 
         fh.close()
 
+    # Figure filename
+    # ---------------
+    field_savename = field
+    if nchans != 0:
+        field_savename = field_savename+"-channel"+str(chan)
+    savename = os.path.join(output_path, field_savename+"_"+metric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
+
+
     numobs = len(odat)
 
-    obarray = np.empty([numobs, 4])
+    obarray = np.empty([numobs, 3])
 
     obarray[:, 0] = odat
     obarray[:, 1] = lons
     obarray[:, 2] = lats
-    obarray[:, 3] = time
 
 
     # Compute and print some stats for the data
@@ -196,7 +217,7 @@ def hofx_map(datetime, conf):
       cmin = np.maximum(omean-stdev, 0.0)
       cmap = 'viridis'
 
-    if vmetric == 'PreQC' or vmetric == 'EffectiveQC':
+    if metric == 'PreQC' or metric == 'EffectiveQC':
       cmin = datmi
       cmax = datma
 
@@ -209,7 +230,7 @@ def hofx_map(datetime, conf):
       norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
 
     # If using omb then use standard deviation for the cmin/cmax
-    if vmetric=='omb' or vmetric=='ombg' or vmetric=='oman':
+    if metric=='omb' or metric=='ombg' or metric=='oman':
       cmax = stdev
       cmin = -stdev
 
@@ -260,7 +281,7 @@ def hofx_map(datetime, conf):
     ax.coastlines()
 
     # figure labels
-    plt.title("Observation statistics: "+varname.replace("_"," ")+" "+vmetric+" | "+
+    plt.title("Observation statistics: "+field.replace("_"," ")+" "+metric+" | "+
               window_begin.strftime("%Y%m%d %Hz")+" to "+
               (window_begin+window_length).strftime("%Y%m%d %Hz"), y=1.08)
     ax.text(0.45, -0.1,   'Longitude', transform=ax.transAxes, ha='left')
@@ -268,6 +289,7 @@ def hofx_map(datetime, conf):
             rotation='vertical', va='bottom')
 
     # show plot
+    print(" Saving figure as", savename, "\n")
     plt.savefig(savename)
 
 

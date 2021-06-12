@@ -95,6 +95,7 @@ def main():
     plt.xlim(0.9, niter)
     plt.yscale('log')
 
+    print(" Saving figure as", figfile, "\n")
     plt.savefig(figfile, transparent=True)
 
 

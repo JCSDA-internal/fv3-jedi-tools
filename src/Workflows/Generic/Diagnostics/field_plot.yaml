@@ -7,7 +7,11 @@ application:
   fields file: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/inc.3denvar.latlon.%Y%m%d_%H%M%Sz.nc4
 
   # Name of the field as it appears in the file
-  field name: t
+  field names:
+    - t
+
+  # Path where figure should be saved
+  output path: ./Plots/
 
   # Model layer to plot when the field is rank 3
   model layer: 50
