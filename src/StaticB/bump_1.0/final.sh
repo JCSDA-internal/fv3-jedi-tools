@@ -22,7 +22,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -102,7 +102,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -212,7 +212,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -324,7 +324,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -354,7 +354,7 @@ universe radius:
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
   filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 input:
 - parameter: cor_rh
   filetype: gfs
@@ -363,7 +363,7 @@ input:
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
   filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - parameter: cor_rv
   filetype: gfs
   psinfile: 1
@@ -421,7 +421,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]

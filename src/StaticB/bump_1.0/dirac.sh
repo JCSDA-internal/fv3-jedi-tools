@@ -22,7 +22,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -44,9 +44,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -113,7 +113,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -135,9 +135,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -204,7 +204,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -227,9 +227,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -316,7 +316,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -338,9 +338,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -427,7 +427,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -449,9 +449,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -551,7 +551,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -573,9 +573,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -675,7 +675,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -696,9 +696,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -801,7 +801,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -822,9 +822,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -877,9 +877,9 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: 1
       wind_streamfunction: stream_function
-      wind_velocity_potential: chi
-      wind_zonal: ua
-      wind_meridional: va
+      wind_velocity_potential: velocity_potential
+      wind_zonal: eastward_wind
+      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
@@ -938,7 +938,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -959,9 +959,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -1014,9 +1014,9 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: 1
       wind_streamfunction: stream_function
-      wind_velocity_potential: chi
-      wind_zonal: ua
-      wind_meridional: va
+      wind_velocity_potential: velocity_potential
+      wind_zonal: eastward_wind
+      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
@@ -1075,7 +1075,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -1092,14 +1092,14 @@ background error:
     verbosity: main
     strategy: specific_univariate
     universe_rad: 12000.0e3
-    load_nicas_global: 1
+    load_nicas_local: 1
     min_lev:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   variable changes:
   - variable change: StdDev
     input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -1125,7 +1125,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c192}/${bump_dir}
+      datadir: ${data_dir_c384}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -1144,9 +1144,9 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: 1
       wind_streamfunction: stream_function
-      wind_velocity_potential: chi
-      wind_zonal: ua
-      wind_meridional: va
+      wind_velocity_potential: velocity_potential
+      wind_zonal: eastward_wind
+      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c192}/${bump_dir}/geos
@@ -1205,7 +1205,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -1226,9 +1226,9 @@ background error:
       liq_wat: 76
     grids:
     - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
     psinfile: 1
@@ -1281,9 +1281,9 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: 1
       wind_streamfunction: stream_function
-      wind_velocity_potential: chi
-      wind_zonal: ua
-      wind_meridional: va
+      wind_velocity_potential: velocity_potential
+      wind_zonal: eastward_wind
+      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos

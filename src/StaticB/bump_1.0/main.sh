@@ -1,5 +1,19 @@
 #!/bin/bash
 
+run_sbatch () {
+  script=$1
+  pids=$2
+  if [[ -z ${pids} ]] ; then
+     dependency=""
+   else
+     dependency="--dependency=afterok${pids}"
+  fi
+  cmd="sbatch ${dependency} ${script}"
+  pid=$(eval ${cmd})
+  pid=${pid##* }
+  echo `date`": ${cmd} > "${pid}
+}
+
 # Variables
 export vars="psi chi t ps sphum liq_wat o3mr"
 declare -A vars_long
@@ -31,36 +45,36 @@ export create_directories=false
 # Get data
 export get_data=false
 
-# Convert data to C192 TODO
+# Convert backgrounds to C192
 export convert_to_c192=false
 
 # Daily
 export run_daily_vbal=false
-export run_daily_unbal=true
-export run_daily_varmom=true
+export run_daily_unbal=false
+export run_daily_varmom=false
 
 # Final
-export run_final_vbal=true
-export run_final_var=true
-export run_final_cor=true
-export run_final_nicas=true
-export run_final_psichitouv=true
+export run_final_vbal=false
+export run_final_var=false
+export run_final_cor=false
+export run_final_nicas=false
+export run_final_psichitouv=false
 
 # Merge
-export run_merge_var=false
-export run_merge_cor=false
+export run_merge_varcor=false
 export run_merge_nicas=false
 
-# Regridding
-export run_regridding=false
+# Split (for 7x7 procs on each tile)
+export nsplit=7
+export run_split_vbal=false
+export run_split_nicas=false
+export run_split_psichitouv=false
 
-# Split
-export run_split_vbal_c192=false
-export run_split_vbal_7x7=false
-export run_split_nicas_c192=false
-export run_split_nicas_7x7=false
-export run_split_psichitouv_c192=false
-export run_split_psichitouv_7x7=false
+# Regridding (at C192)
+export run_regridding_varcor=false
+export run_regridding_nicas=false
+export run_regridding_merge_nicas=false
+export run_regridding_psichitouv=false
 
 # Dirac
 export run_dirac_cor_local=false
@@ -74,6 +88,9 @@ export run_dirac_full_psichitouv_local=false
 export run_dirac_full_c192_local=false
 export run_dirac_full_7x7_local=false
 export run_dirac_full_global=false
+
+# Variational
+export run_variational_3dvar=true
 
 ####################################################################
 # No edition needed beyond this line ###############################
@@ -152,23 +169,40 @@ fi
 # Run generators
 echo `date`": run generators"
 
-# Daily runs
-./daily.sh
+if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
+   # Daily runs
+   ./daily.sh
+fi
 
-# Final runs
-./final.sh
+if test "${run_final_vbal}" = "true" || "${run_final_var}" = "true" || "${run_final_cor}" = "true" || "${run_final_nicas}" = "true" || "${run_final_psichitouv}" = "true"; then
+   # Final runs
+   ./final.sh
+fi
 
-# Split runs
-./split.sh
+if test "${run_merge_varcor}" = "true" || test "${run_merge_nicas}" = "true"; then
+   # Merge runs
+   ./merge.sh
+fi
 
-# Merge runs
-./merge.sh
+if test "${run_split_vbal}" = "true" || "${run_split_nicas}" = "true" || "${run_split_psichitouv}" = "true"; then
+   # Split runs
+   ./split.sh
+fi
 
-# Regridding run
-./regridding.sh
+if test "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" || "${run_regridding_psichitouv}" = "true"; then
+   # Regridding runs
+   ./regridding.sh
+fi
 
-# Dirac run
-./dirac.sh
+if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_c192_local}" = "true" || "${run_dirac_full_7x7_local}" = "true" || "${run_dirac_full_global}" = "true"; then
+   # Dirac runs
+   ./dirac.sh
+fi
+
+if test "${run_variational_3dvar}" = "true" ; then
+   # Variational runs
+   ./variational.sh
+fi
 
 # Go to sbatch directory
 echo `date`": cd ${sbatch_dir}"
@@ -176,257 +210,225 @@ cd ${sbatch_dir}
 
 # Daily runs
 
-# Run vbal step
+# Run vbal h
 if test "${run_daily_vbal}" = "true"; then
-   vbal_daily_pids=""
+   daily_vbal_pids=""
    for yyyymmddhh in ${dates}; do
-      echo `date`": sbatch vbal_${yyyymmddhh}.sh"
-      vbal_daily_pid=$(sbatch vbal_${yyyymmddhh}.sh)
-      vbal_daily_pid=${vbal_daily_pid##* }
-      vbal_daily_pids=${vbal_daily_pids}:${vbal_daily_pid}
+      run_sbatch vbal_${yyyymmddhh}.sh ""
+      daily_vbal_pids=${daily_vbal_pids}:${pid}
    done
 fi
 
-# Run unbal step
+# Run unbal 
 if test "${run_daily_unbal}" = "true"; then
-   unbal_daily_pids=""
+   daily_unbal_pids=""
    for yyyymmddhh in ${dates}; do
-      echo `date`": sbatch unbal_${yyyymmddhh}.sh"
-      if test "${run_daily_vbal}" = "true"; then
-         unbal_daily_pid=$(sbatch --dependency=afterok:${vbal_daily_pid} unbal_${yyyymmddhh}.sh)
-      else
-         unbal_daily_pid=$(sbatch unbal_${yyyymmddhh}.sh)
-      fi
-      unbal_daily_pid=${unbal_daily_pid##* }
-      unbal_daily_pids=${unbal_daily_pids}:${unbal_daily_pid}
+      run_sbatch unbal_${yyyymmddhh}.sh ${daily_vbal_pids}
+      daily_unbal_pids=${daily_unbal_pids}:${pid}
    done
 fi
 
-# Run var-mom step
+# Run var-mom 
 if test "${run_daily_varmom}" = "true"; then
-   declare -A varmom_daily_pids
+   declare -A daily_varmom_pids
    for var in ${vars}; do
-      varmom_daily_pids+=(["${var}"]="")
+      daily_varmom_pids+=(["${var}"]="")
       for yyyymmddhh in ${dates}; do
-         echo `date`": sbatch var-mom_${yyyymmddhh}_${var}.sh"
-         if test "${run_daily_unbal}" = "true"; then
-            varmom_daily_pid=$(sbatch --dependency=afterok:${unbal_daily_pid} var-mom_${yyyymmddhh}_${var}.sh)
-         else
-            varmom_daily_pid=$(sbatch var-mom_${yyyymmddhh}_${var}.sh)
-         fi
-         varmom_daily_pid=${varmom_daily_pid##* }
-         varmom_daily_pids[${var}]="${varmom_daily_pids[${var}]}:${varmom_daily_pid}"
+         run_sbatch var-mom_${yyyymmddhh}_${var}.sh ${daily_unbal_pids}
+         daily_varmom_pids[${var}]=${daily_varmom_pids[${var}]}:${pid}
       done
    done
 fi
 
 # Final runs
 
-# Run vbal step
+# Run vbal 
 if test "${run_final_vbal}" = "true"; then
    echo `date`": sbatch vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   if test "${run_daily_vbal}" = "true"; then
-      vbal_final_pid=$(sbatch --dependency=afterok${vbal_daily_pids} vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh)
-   else
-      vbal_final_pid=$(sbatch vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh)
-   fi
-   vbal_final_pid=${vbal_final_pid##* }
+   run_sbatch vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${daily_vbal_pids}
+   final_vbal_pid=:${pid}
 fi
 
-# Run var step
+# Run var 
 if test "${run_final_var}" = "true"; then
-   declare -A var_final_pids
+   final_var_pids=""
    for var in ${vars}; do
-      var_final_pids+=(["${var}"]="")
-      echo `date`": sbatch var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh"
-      if test "${run_daily_varmom}" = "true"; then
-         var_final_pid=$(sbatch --dependency=afterok${varmom_daily_pids[${var}]} var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      else
-         var_final_pid=$(sbatch var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      fi
-      var_final_pid=${var_final_pid##* }
-      var_final_pids[${var}]="${var_final_pids[${var}]}:${var_final_pid}"
+      run_sbatch var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${daily_varmom_pids[${var}]}
+      final_var_pids=${final_var_pids}:${pid}
    done
 fi
 
-# Run cor step
+# Run cor 
 if test "${run_final_cor}" = "true"; then
-   declare -A cor_final_pids
+   final_cor_pids=""
    for var in ${vars}; do
-      cor_final_pids+=(["${var}"]="")
-      echo `date`": sbatch cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh"
-      if test "${run_daily_varmom}" = "true"; then
-         cor_final_pid=$(sbatch --dependency=afterok${varmom_daily_pids[${var}]} cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      else
-         cor_final_pid=$(sbatch cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      fi
-      cor_final_pid=${cor_final_pid##* }
-      cor_final_pids[${var}]="${cor_final_pids[${var}]}:${cor_final_pid}"
+      run_sbatch cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${daily_varmom_pids[${var}]}
+      final_cor_pids=${final_cor_pids}:${pid}
    done
 fi
 
-# Run nicas step
+# Run nicas 
 if test "${run_final_nicas}" = "true"; then
-   declare -A nicas_final_pids
+   final_nicas_pids=""
    for var in ${vars}; do
-      nicas_final_pids+=(["${var}"]="")
-      echo `date`": sbatch nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh"
-      if test "${run_final_cor}" = "true"; then
-         nicas_final_pid=$(sbatch --dependency=afterok${cor_final_pids[${var}]} nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      else
-         nicas_final_pid=$(sbatch nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh)
-      fi
-      nicas_final_pid=${nicas_final_pid##* }
-      nicas_final_pids[${var}]="${nicas_final_pids[${var}]}:${nicas_final_pid}"
+      run_sbatch nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_cor_pids}
+      final_nicas_pids=${final_nicas_pids}:${pid}
    done
 fi
 
-# Run psichitouv step
+# Run psichitouv 
 if test "${run_final_psichitouv}" = "true"; then
-   echo `date`": sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   psichitouv_final_pid=$(sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh)
-   psichitouv_final_pid=${psichitouv_final_pid##* }
+   run_sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ""
+   final_psichitouv_pid=:${pid}
 fi
 
 # Merge runs
-# TODO: dependencies
 
-# Run var step
-if test "${run_merge_var}" = "true"; then
-   echo `date`": sbatch merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run var-cor 
+if test "${run_merge_varcor}" = "true"; then
+   run_sbatch merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_var_pids}${final_cor_pids}
+   merge_varcor_pid=:${pid}
 fi
 
-# Run cor step
-if test "${run_merge_cor}" = "true"; then
-   echo `date`": sbatch merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
-fi
-
-# Run nicas step
+# Run nicas 
 if test "${run_merge_nicas}" = "true"; then
+   merge_nicas_pids=""
    for itot in $(seq 1 216); do
       itotpad=$(printf "%.6d" "${itot}")
-      echo `date`": sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.sh"
-      sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.sh
+      run_sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.sh ${final_nicas_pids}
+      merge_nicas_pids=${merge_nicas_pids}:${pid}
    done
-   echo `date`": sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
-fi
-
-# Regrid run
-# TODO: dependencies
-if test "${run_regridding}" = "true"; then
-   echo `date`": sbatch regridding_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch regridding_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_nicas_pids}
+   merge_nicas_pids=${merge_nicas_pids}:${pid}
 fi
 
 # Split runs
-# TODO: dependencies
 
-# Run vbal_c192 step
-if test "${run_split_vbal_c192}" = "true"; then
-   echo `date`": sbatch split_vbal_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_vbal_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run vbal 
+if test "${run_split_vbal}" = "true"; then
+   run_sbatch split_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
+   split_vbal_pid=:${pid}
 fi
 
-# Run vbal_7x7 step
-if test "${run_split_vbal_7x7}" = "true"; then
-   echo `date`": sbatch split_vbal_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_vbal_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run nicas 
+if test "${run_split_nicas}" = "true"; then
+   run_sbatch split_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_global_pid}
+   split_nicas_pid=:${pid}
 fi
 
-# Run nicas_c192 step
-if test "${run_split_nicas_c192}" = "true"; then
-   echo `date`": sbatch split_nicas_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_nicas_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run psichitouv 
+if test "${run_split_psichitouv}" = "true"; then
+   run_sbatch split_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
+   split_psichitouv_pid=:${pid}
 fi
 
-# Run nicas_7x7 step
-if test "${run_split_nicas_7x7}" = "true"; then
-   echo `date`": sbatch split_nicas_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_nicas_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Regridding runs
+
+# Run var-cor 
+if test "${run_regridding_varcor}" = "true"; then
+   run_sbatch regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
+   regridding_varcor_pid=:${pid}
 fi
 
-# Run psichitouv_c192 step
-if test "${run_split_psichitouv_c192}" = "true"; then
-   echo `date`": sbatch split_psichitouv_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_psichitouv_c192_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run nicas 
+if test "${run_regridding_nicas}" = "true"; then
+   regridding_nicas_pids=""
+   for var in ${vars}; do
+      run_sbatch regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh
+      regridding_nicas_pids=${regridding_nicas_pids}:${pid}
+   done
 fi
 
-# Run psichitouv_7x7 step
-if test "${run_split_psichitouv_7x7}" = "true"; then
-   echo `date`": sbatch split_psichitouv_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch split_psichitouv_7x7_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+# Run merge nicas 
+if test "${run_regridding_merge_nicas}" = "true"; then
+   regridding_merge_nicas_pids=""
+   for itot in $(seq 1 216); do
+      itotpad=$(printf "%.6d" "${itot}")
+      run_sbatch regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.sh ${regridding_nicas_pids}
+      regridding_merge_nicas_pids=${regridding_merge_nicas_pids}:${pid}
+   done
+fi
+
+# Run psichitouv 
+if test "${run_regridding_psichitouv}" = "true"; then
+   run_sbatch regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
+   regridding_psichitouv_pid=:${pid}
 fi
 
 # Dirac runs
-# TODO: dependencies
 
-# Run dirac_cor_local step
+# Run dirac_cor_local 
 if test "${run_dirac_cor_local}" = "true"; then
-   echo `date`": sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cor_local_pid=:${pid}
 fi
 
-# Run dirac_cor_global step
+# Run dirac_cor_global 
 if test "${run_dirac_cor_global}" = "true"; then
-   echo `date`": sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cor_global_pid=:${pid}
 fi
 
-# Run dirac_cov_local step
+# Run dirac_cov_local 
 if test "${run_dirac_cov_local}" = "true"; then
-   echo `date`": sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cov_local_pid=:${pid}
 fi
 
-# Run dirac_cov_global step
+# Run dirac_cov_global 
 if test "${run_dirac_cov_global}" = "true"; then
-   echo `date`": sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cov_global_pid=:${pid}
 fi
 
-# Run dirac_cov_multi_local step
+# Run dirac_cov_multi_local 
 if test "${run_dirac_cov_multi_local}" = "true"; then
-   echo `date`": sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cov_multi_local_pid=:${pid}
 fi
 
-# Run dirac_cov_multi_global step
+# Run dirac_cov_multi_global 
 if test "${run_dirac_cov_multi_global}" = "true"; then
-   echo `date`": sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_cov_multi_global_pid=:${pid}
 fi
 
-# Run dirac_full_c2a_local step
+# Run dirac_full_c2a_local 
 if test "${run_dirac_full_c2a_local}" = "true"; then
-   echo `date`": sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_full_c2a_local_pid=:${pid}
 fi
 
-# Run dirac_full_psichitouv_local step
+# Run dirac_full_psichitouv_local 
 if test "${run_dirac_full_psichitouv_local}" = "true"; then
-   echo `date`": sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_full_psichitouv_local_pid=:${pid}
 fi
 
-# Run dirac_full_global step
+# Run dirac_full_global 
 if test "${run_dirac_full_global}" = "true"; then
-   echo `date`": sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_full_global_pid=:${pid}
 fi
 
-# Run dirac_full_c192_local step
+# Run dirac_full_c192_local 
 if test "${run_dirac_full_c192_local}" = "true"; then
-   echo `date`": sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_full_c192_local_pid=:${pid}
 fi
 
-# Run dirac_full_7x7_local step
+# Run dirac_full_7x7_local 
 if test "${run_dirac_full_7x7_local}" = "true"; then
-   echo `date`": sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-   sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
+   run_sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   dirac_full_7x7_local_pid=:${pid}
+fi
+
+# Variational runs
+
+# Run 3dvar 
+if test "${run_variational_3dvar}" = "true"; then
+   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO
+   variational_3dvar_pid=:${pid}
 fi
 
 exit 0

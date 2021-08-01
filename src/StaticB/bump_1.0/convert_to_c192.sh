@@ -51,7 +51,7 @@ input geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 output geometry:
   nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
   trc_file: ${data_dir}/fv3files/field_table
@@ -63,7 +63,7 @@ output geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 states:
 - input:
     filetype: gfs

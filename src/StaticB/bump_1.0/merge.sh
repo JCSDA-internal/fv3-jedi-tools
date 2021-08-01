@@ -1,30 +1,30 @@
 #!/bin/bash
 
 ####################################################################
-# VAR ##############################################################
+# VAR-COR ##########################################################
 ####################################################################
 
 # Create specific work directory
-mkdir -p ${work_dir}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge VAR files
-sbatch_name="merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+sbatch_name="merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH --time=00:20:00
+#SBATCH -e ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${HOME}/gnu-openmpi_env.sh
 module load nco
 
-cd ${work_dir}/merge_var_${yyyymmddhh_first}-${yyyymmddhh_last}
+cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Specific file
 declare -A vars_files
@@ -35,6 +35,8 @@ vars_files["ps"]="fv_core"
 vars_files["sphum"]="fv_tracer"
 vars_files["liq_wat"]="fv_tracer"
 vars_files["o3mr"]="fv_tracer"
+
+# VAR
 
 # NetCDF files
 for itile in \$(seq 1 6); do
@@ -58,7 +60,7 @@ done
 input_file=${data_dir}/coupler/coupler.res
 output_file=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
 echo -e "Create coupler file \${output_file}"
-sed -e s/"_YYYY_"/${yyyy}/g \${input_file} > \${output_file}
+sed -e s/"_YYYY_"/${yyyy_last}/g \${input_file} > \${output_file}
 if test "${m_last}" -le "9" ; then
    sed -i -e s/"_M_"/" "${m_last}/g \${output_file}
 else
@@ -75,44 +77,7 @@ else
    sed -i -e s/"_H_"/${h_last}/g \${output_file}
 fi
 
-exit 0
-EOF
-
-####################################################################
-# COR ##############################################################
-####################################################################
-
-# Create specific work directory
-mkdir -p ${work_dir}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Merge COR files
-sbatch_name="merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-source ${HOME}/gnu-openmpi_env.sh
-module load nco
-
-cd ${work_dir}/merge_cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Specific file
-declare -A vars_files
-vars_files["psi"]="fv_core"
-vars_files["chi"]="fv_core"
-vars_files["t"]="fv_core"
-vars_files["ps"]="fv_core"
-vars_files["sphum"]="fv_tracer"
-vars_files["liq_wat"]="fv_tracer"
-vars_files["o3mr"]="fv_tracer"
+# COR
 
 # NetCDF files
 for itile in \$(seq 1 6); do
@@ -136,7 +101,7 @@ done
 input_file=${data_dir}/coupler/coupler.res
 output_file=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
 echo -e "Create coupler file \${output_file}"
-sed -e s/"_YYYY_"/${yyyy}/g \${input_file} > \${output_file}
+sed -e s/"_YYYY_"/${yyyy_last}/g \${input_file} > \${output_file}
 if test "${m_last}" -le "9" ; then
    sed -i -e s/"_M_"/" "${m_last}/g \${output_file}
 else
@@ -187,8 +152,8 @@ module load nco
 
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D_local_${ntotpad}-${itotpad}.nc 
-filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D_local_${ntotpad}-${itotpad}.nc 
+filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas_local_${ntotpad}-${itotpad}.nc 
+filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_${ntotpad}-${itotpad}.nc 
 rm -f \${filename_full_3D}
 rm -f \${filename_full_2D}
 for var in ${vars}; do
@@ -225,8 +190,8 @@ module load nco
 
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_3D.nc
-filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_nicas_2D.nc
+filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas.nc
+filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas.nc
 rm -f \${filename_full_3D}
 rm -f \${filename_full_2D}
 for var in ${vars}; do

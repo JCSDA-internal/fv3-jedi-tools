@@ -29,7 +29,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -69,6 +69,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
       filename_core: bvars.fv_core.res.nc
       filename_trcr: bvars.fv_tracer.res.nc
       filename_cplr: bvars.coupler.res
+      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
    
@@ -116,7 +117,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -157,6 +158,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
     filename_core: unbal.fv_core.res.nc
     filename_trcr: unbal.fv_tracer.res.nc
     filename_cplr: unbal.coupler.res
+  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
    
@@ -170,7 +172,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
+#SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
 
@@ -206,7 +208,7 @@ geometry:
   npz: 127
   ntiles: 6
   fieldsets:
-    - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -251,6 +253,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
       filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc
       filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc
       filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.unbal.coupler.res
+      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
       done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
