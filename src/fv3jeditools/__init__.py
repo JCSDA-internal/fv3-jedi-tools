@@ -7,6 +7,7 @@ from .diag_field_plot import *
 from .diag_hofx_innovations import *
 from .diag_hofx_map import *
 from .diag_log_timing import *
+from .diag_obs_scatter import *
 from .gsidiag_to_ioda import *
 from .parse_file_datetime import *
 from .remove import *

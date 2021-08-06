@@ -1,10 +1,15 @@
 application:
 
   # Application to use
-  application name: hofx_map
+  application name: obs_scatter
 
   # IODA output files containing h(x)
-  hofx files: /gpfsm/dnb31/drholdaw/JediWF/fv3-jedi-tools-testing/hofx/aircraft_hofx_%Y%m%d%H_000*.nc4
+  ioda experiment files:
+    - /discover/nobackup/drholdaw/JediEwok/R2D2DataStore/Local/geos/diag/a003/PT6H/%Y-%m-%d/geos.a003.diag.PT6H.amsua_n19.%Y-%m-%dT21:00:00Z.PT6H.nc4
+
+  ioda referece files:
+    - /discover/nobackup/drholdaw/JediEwok/R2D2DataStore/Local/geos/diag/a003/PT6H/%Y-%m-%d/geos.a003.diag.PT6H.amsua_n19.%Y-%m-%dT21:00:00Z.PT6H.nc4
+
 
   # Variable to plot (either something from the file or variable@omb)
   variable: air_temperature@hofx
