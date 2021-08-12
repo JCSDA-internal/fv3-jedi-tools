@@ -1,4 +1,6 @@
-# This is an example of a YAML configuration featuring variable substitution, time tokens and get_data/stage constructs that make use of YAML anchors to re-use blocks of configuration (see get_data below).
+# This is an example of a YAML configuration featuring variable substitution,
+# time tokens and get_data/stage constructs that make use of YAML anchors to
+# re-use blocks of configuration (see get_data below).
 
 # Define the plot script to make the images (e.g. plot_fp.py)
 PLOT_ENGINE: plot_fp
