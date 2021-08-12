@@ -1,0 +1,49 @@
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = 2021-07-10T00
+    final cycle point = 2021-07-16T00
+    max active cycle points = 2
+    [[xtriggers]]
+        clock_1 = wall_clock(offset=PT6H)
+    [[dependencies]]
+        [[[T00,T06,T12,T18]]] # validity (hours)
+            graph = """
+                stage & getBackground & getObservations => hofx3d_run => hofx3d_run_post
+            """
+[runtime]
+    [[root]] # suite defaults
+
+        [[[environment]]]
+
+            datetime = $CYLC_TASK_CYCLE_POINT
+            config   = $CYLC_SUITE_DEF_PATH/config.yml
+            
+        [[[events]]]
+            mail to = joseph.v.ardizzone@nasa.gov
+            mail events = failed
+
+    [[stage]]
+        script = "stage.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 2*PT1M
+
+    [[getBackground]]
+        script = "getBackground.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 2*PT1M
+
+    [[getObservations]]
+        script = "getObservations.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 2*PT1M
+
+    [[hofx3d_run]]
+        script = "hofx3d_run.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 2*PT1M
+
+    [[hofx3d_run_post]]
+        script = "hofx3d_run_post.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 2*PT1M

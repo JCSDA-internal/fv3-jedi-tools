@@ -1,0 +1,140 @@
+# This is an example of a YAML configuration featuring variable substitution, time tokens and get_data/stage constructs that make use of YAML anchors to re-use blocks of configuration (see get_data below).
+
+# Define the plot script to make the images (e.g. plot_fp.py)
+PLOT_ENGINE: plot_fp
+
+# Desired Forecast Length (days)
+FC_LENGTH: 5
+
+# Directory path to gridded forecast files (NetCDF)
+FC_FILE_PATH: /discover/nobackup/projects/gmao/gmao_ops/pub/fp/forecast/Y%iy4/M%im2/D%id2/H%ih2
+
+# Directory path to gridded forecast control files
+FC_GRID_PATH: /discover/nobackup/projects/gmao/yotc/pub/fp/opendap/fcast
+
+# Directory path to output station sampled files (profiles).
+FC_PROF_PATH: /discover/nobackup/dao_ops/FLUID/datagrams/data/fp/Y%iy4/M%im2/D%id2/H%ih2
+
+# Root Directory path of station CSV data.
+STATION_PATH: /home/aconaty/data-services/gram/menus
+
+# Full pathname of gridded forecast control files.
+FC_GRID_PATHNAME: $FC_GRID_PATH/$collection/${collection}.%iy4%im2%id2_%ih2
+
+# Full pathname of output station sampled files (profiles).
+FC_PROF_PATHNAME: $FC_PROF_PATH/${collection}_$var.%iy4%im2%id2_%ih2z.nc
+
+# Directory path to datagram imagery
+GRAM_IMG_PATH: /discover/nobackup/dao_ops/FLUID/datagrams/images/fp/Y%iy4/M%im2/D%id2/H%ih2
+
+# Directory on Portal machine where images and station CSV files are published.
+GRAM_PUBLISH_PATH: /dataportal01/devel/gmao_data_services/static/data-services
+
+# Gridded forecast collections to be sampled and interpolated to station
+# locations. Add or delete collections as needed. Each collection contains the
+# following information:
+#
+# src:       Directory path to gridded forecast files (NetCDF).
+# min_count: minimum file count criteria for a forecast (see FC_LENGTH).
+# vars:      list of desired variables to be interpolated to station locations.
+# levs:      level range to be sampled in the form lev1-lev2 (e.g. 950-300).
+# offset:    time offset in minutes (useful for tavg collections that do not
+#            start on the hour).
+# files:     list of one or more pathname expressions describing the gridded
+#            forecast files.
+
+collections: &COLLECTIONS
+
+  inst3_2d_met_Nx:
+
+    src: $FC_FILE_PATH
+    min_count: 41
+    vars: [CLDLOW,CLDMID,CLDHGH,PRECTOT,PRECCON,PRECSNO]
+
+    files:
+
+      - "GEOS.fp.fcst.inst3_2d_met_Nx.%iy4%im2%id2_%ih2+*nc4"
+
+  tavg1_2d_slv_Nx:
+
+    src: $FC_FILE_PATH
+    min_count: 123
+    vars: [U2M,V2M,T2M,SLP]
+    offset: 30
+
+    files:
+
+      - "GEOS.fp.fcst.tavg1_2d_slv_Nx.%iy4%im2%id2_%ih2+*nc4"
+
+  inst1_2d_hwl_Nx:
+
+    src: $FC_FILE_PATH
+    min_count: 123
+    vars: [SSEXTTAU,DUEXTTAU,BCEXTTAU,OCEXTTAU,SUEXTTAU,NIEXTTAU, DUSMASS25,SSSMASS25,OCSMASS,BCSMASS,NISMASS25,SO4SMASS,COSC]
+
+    files:
+
+      - "GEOS.fp.fcst.inst1_2d_hwl_Nx.%iy4%im2%id2_%ih2+*nc4"
+
+  inst3_3d_ext_Np:
+
+    src: $FC_FILE_PATH
+    min_count: 41
+    vars: [BCEXT,OCEXT,SSEXT,SUEXT,DUEXT]
+    levs: 950-300
+
+    files:
+
+      - "GEOS.fp.fcst.inst3_3d_ext_Np.%iy4%im2%id2_%ih2+*nc4"
+
+  inst3_3d_aer_Np:
+
+    src: $FC_FILE_PATH
+    min_count: 41
+    vars: [BC,OC,SS,SO4,DU,NI]
+    levs: 950-300
+
+    files:
+
+      - "GEOS.fp.fcst.inst3_3d_aer_Np.%iy4%im2%id2_%ih2+*nc4"
+
+  inst3_3d_chm_Np:
+
+    src: $FC_FILE_PATH
+    min_count: 41
+    vars: [CO,CO2,AIRDENS]
+    levs: 950-300
+
+    files:
+
+      - "GEOS.fp.fcst.inst3_3d_chm_Np.%iy4%im2%id2_%ih2+*nc4"
+
+  inst3_3d_asm_Np:
+
+    src: $FC_FILE_PATH
+    min_count: 41
+    vars: [U,V,RH]
+    levs: 950-300
+
+    files:
+
+      - "GEOS.fp.fcst.inst3_3d_asm_Np.%iy4%im2%id2_%ih2+*nc4"
+
+get_data:
+
+  <<: *COLLECTIONS
+
+  opendap:
+
+    src: $FC_GRID_PATH
+    min_count: 7
+
+    files:
+
+      - $FC_GRID_PATH/inst3_2d_met_Nx/inst3_2d_met_Nx.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/tavg1_2d_slv_Nx/tavg1_2d_slv_Nx.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/inst1_2d_hwl_Nx/inst1_2d_hwl_Nx.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/inst3_3d_ext_Np/inst3_3d_ext_Np.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/inst3_3d_aer_Np/inst3_3d_aer_Np.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/inst3_3d_chm_Np/inst3_3d_chm_Np.%iy4%im2%id2_%ih2
+      - $FC_GRID_PATH/inst3_3d_asm_Np/inst3_3d_asm_Np.%iy4%im2%id2_%ih2
