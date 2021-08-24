@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for yyyymmddhh in ${dates}; do
+for yyyymmddhh in ${yyyymmddhh_list}; do
    # Date
    yyyy=${yyyymmddhh:0:4}
    mm=${yyyymmddhh:4:2}
@@ -19,17 +19,16 @@ for yyyymmddhh in ${dates}; do
    yaml_name="vbal_${yyyymmddhh}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -107,17 +106,16 @@ EOF
    yaml_name="unbal_${yyyymmddhh}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -198,17 +196,16 @@ EOF
       yaml_name="var-mom_${yyyymmddhh}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]

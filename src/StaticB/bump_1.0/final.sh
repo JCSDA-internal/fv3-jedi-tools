@@ -12,17 +12,16 @@ mkdir -p ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -44,11 +43,11 @@ bump:
   fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
   fname_vbal_cov:
 EOF
-for yyyymmddhh in ${dates}; do
+for yyyymmddhh in ${yyyymmddhh_list}; do
   echo "  - vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal_cov" >> ${yaml_dir}/${yaml_name}
 done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-  ens1_nsub: ${ndates}
+  ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: 1
   write_samp_global: 1
   vbal_block: [1,1,0,1]
@@ -92,17 +91,16 @@ for var in ${vars}; do
    yaml_name="var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -118,15 +116,15 @@ bump:
   datadir: ${data_dir_c384}/${bump_dir}
   verbosity: main
   universe_rad: 3000.0e3
-  ens1_nsub: ${ndates}
+  ens1_nsub: ${yyyymmddhh_size}
   var_filter: 1
   var_niter: 1
   var_rhflt:
     ${vars_long[${var}]}: [3000.0e3]
-  ne: $((nmem*ndates))
+  ne: $((nmem*yyyymmddhh_size))
 input:
 EOF
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       yyyy=${yyyymmddhh:0:4}
       mm=${yyyymmddhh:4:2}
       dd=${yyyymmddhh:6:2}
@@ -202,17 +200,16 @@ for var in ${vars}; do
    yaml_name="cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -235,12 +232,12 @@ bump:
   write_diag: 1
   fname_mom:
 EOF
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       echo "    - var-mom_${yyyymmddhh}/var-mom_${yyyymmddhh}_${var}_mom" >> ${yaml_dir}/${yaml_name}
    done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
   fname_samp: var-mom_${yyyymmddhh_last}/var-mom_${yyyymmddhh_last}_${var}_sampling
-  ens1_nsub: ${ndates}
+  ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: 1
   nc1: 5000
   nc2: 1000
@@ -250,7 +247,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   local_diag: 1
   local_rad: 2000.0e3
   diag_rvflt: 0.1
-  ne: $((nmem*ndates))
+  ne: $((nmem*yyyymmddhh_size))
 output:
 - parameter: cor_rh
   filetype: gfs
@@ -314,17 +311,16 @@ for var in ${vars}; do
    yaml_name="nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -411,17 +407,16 @@ mkdir -p ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]

@@ -12,17 +12,16 @@ mkdir -p ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -103,17 +102,16 @@ mkdir -p ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -194,17 +192,16 @@ mkdir -p ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -306,17 +303,16 @@ mkdir -p ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -417,17 +413,16 @@ mkdir -p ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last
 yaml_name="dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -541,17 +536,16 @@ mkdir -p ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_las
 yaml_name="dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -665,17 +659,16 @@ mkdir -p ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -791,17 +784,16 @@ mkdir -p ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddh
 yaml_name="dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -928,17 +920,16 @@ mkdir -p ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -1065,17 +1056,16 @@ mkdir -p ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last
 yaml_name="dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 193
   npy: 193
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
@@ -1195,17 +1185,16 @@ mkdir -p ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 yaml_name="dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [7,7]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
   state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]

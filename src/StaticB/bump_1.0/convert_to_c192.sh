@@ -41,29 +41,27 @@ mkdir -p ${work_dir}/convert_to_c192_${yyyymmddhh}
 yaml_name="convert_to_c192_${yyyymmddhh}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 input geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 output geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [6,6]
-  io_layout: [1,1]
   npx: 193
   npy: 193
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 states:
 - input:
     filetype: gfs

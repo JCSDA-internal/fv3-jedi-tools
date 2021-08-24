@@ -29,13 +29,15 @@ export vars_long
 # Parameters
 export nmem=80
 export bump_dir="bump_1.0"
-export dates="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
-#export dates="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
+export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
+#export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
+export yyyymmddhh_obs="2020121421"
 
 # Directories
 export data_dir="/work/noaa/da/menetrie/StaticBTraining"
-export xp_dir="${HOME}/xp"
+export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
 export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
+export xp_dir="${HOME}/xp"
 
 # What should be run?
 
@@ -97,8 +99,8 @@ export run_variational_3dvar=true
 ####################################################################
 
 # Dates
-set -- ${dates}
-export ndates=${#dates[@]}
+set -- ${yyyymmddhh_list}
+export yyyymmddhh_size=${#yyyymmddhh_list[@]}
 export yyyymmddhh_first=${1}
 export yyyymmddhh_last=${@: -1}
 export yyyy_last=${yyyymmddhh_last:0:4}
@@ -108,9 +110,14 @@ export hh_last=${yyyymmddhh_last:8:2}
 export m_last=${mm_last##0}
 export d_last=${dd_last##0}
 export h_last=${hh_last##0}
-echo `date`": dates are ${dates}"
+export yyyy_obs=${yyyymmddhh_obs:0:4}
+export mm_obs=${yyyymmddhh_obs:4:2}
+export dd_obs=${yyyymmddhh_obs:6:2}
+export hh_obs=${yyyymmddhh_obs:8:2}
+echo `date`": dates are ${yyyymmddhh_list}"
 echo `date`": first date is ${yyyymmddhh_first}"
 echo `date`": last date is ${yyyymmddhh_last}"
+echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
@@ -118,6 +125,7 @@ export data_dir_c384=${data_dir}/c384
 export data_dir_c192=${data_dir}/c192
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_last}"
+export bkg_obs_dir="bkg_${yyyymmddhh_obs}"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
@@ -131,7 +139,7 @@ if test "${create_directories}" = "true"; then
    mkdir -p ${data_dir_c192}/${bump_dir}
    mkdir -p ${data_dir_c384}/${bump_dir}/geos
    mkdir -p ${data_dir_c192}/${bump_dir}/geos
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
       for imem in $(seq 1 1 ${nmem}); do
          imemp=$(printf "%.3d" "${imem}")
@@ -148,7 +156,7 @@ if test "${get_data}" = "true"; then
    echo `date`": cd ${data_dir}/c384"
    cd ${data_dir}/c384
 
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       # Download ensemble from S3
       echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet"
       aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet
@@ -213,7 +221,7 @@ cd ${sbatch_dir}
 # Run vbal h
 if test "${run_daily_vbal}" = "true"; then
    daily_vbal_pids=""
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       run_sbatch vbal_${yyyymmddhh}.sh ""
       daily_vbal_pids=${daily_vbal_pids}:${pid}
    done
@@ -222,7 +230,7 @@ fi
 # Run unbal 
 if test "${run_daily_unbal}" = "true"; then
    daily_unbal_pids=""
-   for yyyymmddhh in ${dates}; do
+   for yyyymmddhh in ${yyyymmddhh_list}; do
       run_sbatch unbal_${yyyymmddhh}.sh ${daily_vbal_pids}
       daily_unbal_pids=${daily_unbal_pids}:${pid}
    done
@@ -233,7 +241,7 @@ if test "${run_daily_varmom}" = "true"; then
    declare -A daily_varmom_pids
    for var in ${vars}; do
       daily_varmom_pids+=(["${var}"]="")
-      for yyyymmddhh in ${dates}; do
+      for yyyymmddhh in ${yyyymmddhh_list}; do
          run_sbatch var-mom_${yyyymmddhh}_${var}.sh ${daily_unbal_pids}
          daily_varmom_pids[${var}]=${daily_varmom_pids[${var}]}:${pid}
       done

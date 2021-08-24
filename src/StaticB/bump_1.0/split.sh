@@ -11,17 +11,16 @@ mkdir -p ${work_dir}/split_vbal_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymm
 yaml_name="split_vbal_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [${nsplit},${nsplit}]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -40,7 +39,7 @@ bump:
   load_vbal: 1
   write_vbal: 1
   fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-  ens1_nsub: ${ndates}
+  ens1_nsub: ${yyyymmddhh_size}
   load_samp_global: 1
   write_samp_local: 1
   vbal_block: [1,1,0,1]
@@ -79,17 +78,16 @@ mkdir -p ${work_dir}/split_nicas_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyym
 yaml_name="split_nicas_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [${nsplit},${nsplit}]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -158,17 +156,16 @@ mkdir -p ${work_dir}/split_psichitouv_${nsplit}x${nsplit}_${yyyymmddhh_first}-${
 yaml_name="split_psichitouv_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
-  nml_file_mpp: ${data_dir}/fv3files/fmsmpp.nml
-  trc_file: ${data_dir}/fv3files/field_table
-  akbk: ${data_dir}/fv3files/akbk127.nc4
+  fms initialization:
+    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
+    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [${nsplit},${nsplit}]
-  io_layout: [1,1]
   npx: 385
   npy: 385
   npz: 127
-  ntiles: 6
   fieldsets:
-  - fieldset: ${data_dir}/fieldsets/dynamics.yaml
+  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
