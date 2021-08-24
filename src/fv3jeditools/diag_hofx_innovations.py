@@ -55,7 +55,7 @@ def hofx_innovations(datetime, conf):
 
 
     # Get variable to plot
-    variable = utils.configGetOrFail(conf, 'variable')
+    variable = utils.configGetOrFail(conf, 'field')
 
 
     # Get number of outer loops used in the assimilation
@@ -117,11 +117,6 @@ def hofx_innovations(datetime, conf):
     vmetric = 'innovations'
 
 
-    # Figure filename
-    # ---------------
-    savename = os.path.join(output_path, varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
-
-
     # Compute window begin time
     # -------------------------
     window_begin = datetime + time_offset - window_length/2
@@ -155,11 +150,25 @@ def hofx_innovations(datetime, conf):
         # Open file for reading
         fh = netCDF4.Dataset(hofx_file)
 
+        # Check for channels
+        try:
+            nchans = fh.dimensions["nchans"].size
+        except:
+            nchans = 0
+
+        # User must provide channel number
+        if nchans != 0:
+            chan = utils.configGetOrFail(conf, 'channel')
+
         # Number of locations in this file
         nlocs_final = nlocs_start + fh.dimensions['nlocs'].size
 
         # Background
-        obs[nlocs_start:nlocs_final] = fh.variables[variable+'@ObsValue'][:]
+        if nchans != 0:
+            obs[nlocs_start:nlocs_final] = fh.groups['ObsValue'].variables[variable][:,chan-1]
+        else:
+            obs[nlocs_start:nlocs_final] = fh.groups['ObsValue'].variables[variable][:]
+
 
         # Set missing values to nans
         obs[nlocs_start:nlocs_final] = np.where(np.abs(obs[nlocs_start:nlocs_final]) < missing,
@@ -167,13 +176,25 @@ def hofx_innovations(datetime, conf):
 
         # Loop over outer loops
         for n in range(nouter+1):
-            hofx[nlocs_start:nlocs_final,n] = fh.variables[variable+'@hofx'+str(n)][:] - \
-                                              obs[nlocs_start:nlocs_final]
+            if nchans != 0:
+                hofx[nlocs_start:nlocs_final,n] = fh.groups['hofx'+str(n)].variables[variable][:,chan-1] - \
+                                                  obs[nlocs_start:nlocs_final]
+            else:
+                hofx[nlocs_start:nlocs_final,n] = fh.groups['hofx'+str(n)].variables[variable][:] - \
+                                                  obs[nlocs_start:nlocs_final]
 
         # Set start ready for next file
         nlocs_start = nlocs_final
 
         fh.close()
+
+    # Figure filename
+    # ---------------
+    if nchans != 0:
+        savename = os.path.join(output_path, varname+"-channel"+str(chan)+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
+    else:
+        savename = os.path.join(output_path, varname+"_"+vmetric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
+
 
     # Statistics arrays
     hist  = np.zeros((nbins, nouter+1))

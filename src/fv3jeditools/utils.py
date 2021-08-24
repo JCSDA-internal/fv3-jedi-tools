@@ -16,12 +16,13 @@ import sys
 import tarfile
 import time
 
-__all__ = ['dtformat', 'dtformatprnt','configGetOrFail','ordinalNumber',
+__all__ = ['dtformat', 'dtformatprnt','configGetOrFail','configGet','ordinalNumber',
            'stringReplaceDatetimeTemplate','setDateConfigFile', 'setDone', 'isDone',
            'getDateTimes', 'createPath',
            'run_csh_command', 'run_bash_command', 'run_shell_command',
            'getFileSize', 'wait_for_batch_job', 'abort',
-           'depends', 'ship2S3', 'recvS3', 'lines_that_contain']
+           'depends', 'ship2S3', 'recvS3', 'lines_that_contain',
+           'ioda_platform_dict', 'ioda_group_dict', 'read_ioda_variable']
 
 # --------------------------------------------------------------------------------------------------
 
@@ -43,6 +44,111 @@ def stringReplaceDatetimeTemplate(isodate, string_in):
 
 # --------------------------------------------------------------------------------------------------
 
+def ioda_platform_dict(ioda_platform):
+
+    ioda_platform_dictionary = {
+      "aircraft": "Aircraft",
+      "airs_aqua": "AIRS AQUA",
+      "amsua_aqua": "AMSUA AQUA",
+      "amsua_metop-a": "AMSUA METOP-A",
+      "amsua_metop-b": "AMSUA METOP-B",
+      "amsua_metop-c": "AMSUA METOP-C",
+      "amsua_n15": "AMSUA NOAA-15",
+      "amsua_n18": "AMSUA NOAA-18",
+      "amsua_n19": "AMSUA NOAA-19",
+      "atms_n20": "ATMS NOAA-20",
+      "atms_npp": "ATMS NPP",
+      "avhrr3_metop-a": "AVHRR3 METOP-A",
+      "avhrr3_n18": "AVHRR3 NOAA-18",
+      "cris-fsr_n20": "CRIS FSR NOAA-20",
+      "cris-fsr_npp": "CRIS FSR NPP",
+      "gnssrobndnbam": "GNSSRO",
+      "iasi_metop-a": "IASI METOP-A",
+      "iasi_metop-b": "IASI METOP-B",
+      "mhs_metop-b": "MHS METOP-B",
+      "mhs_metop-c": "MHS METOP-C",
+      "mhs_n19": "MHS NOAA-19",
+      "omi_aura": "OMI AURA",
+      "ompsnp_npp": "OMPSNP NPP",
+      "ompstc8_npp": "OMPSTC8 NPP",
+      "rass_tv": "RASS Tv",
+      "satwind": "Satellite Wind",
+      "scatwind": "Scatterometer Wind",
+      "seviri_m11": "SEVIRI Meteosat-11",
+      "sfcship": "Surface ship",
+      "sfc": "Surface",
+      "sondes": "Radiosondes",
+      "ssmis_f17": "SSMIS DMSP-F17",
+      "vadwind": "VAD Winds"
+    }
+
+    try:
+        ioda_platform_out = ioda_platform_dictionary[ioda_platform]
+    except:
+        abort('\''+ioda_platform+'\' is not in the ioda platform dictionary')
+
+    return ioda_platform_out
+
+# --------------------------------------------------------------------------------------------------
+
+def ioda_group_dict(ioda_group):
+
+    ioda_group_dictionary = {
+      "omb": "Observation minus h(x)",
+      "hofx": "Simulated observation, h(x)",
+      "ObsValue": "Observation value",
+      "GsiHofX": "GSI simulated observation, h(x)",
+      "Gsiomb": "GSI observation minus h(x)",
+      "GsiHofXBc": "GSI simulated observation, h(x), bias corrected",
+      "GsiombBc": "GSI observation minus h(x), bias corrected"
+    }
+
+    try:
+        ioda_group_out = ioda_group_dictionary[ioda_group]
+    except:
+        abort('\''+ioda_group+'\' is not in the ioda group dictionary')
+
+    return ioda_group_out
+
+# --------------------------------------------------------------------------------------------------
+
+def read_ioda_variable(fh, group, variable, channel = None):
+
+    # Users often want omb, which is not a group in the files. This special case and other special
+    # cases can be added here.
+
+    if channel == None:
+
+        if group=='omb':
+            data = fh.groups['ObsValue' ].variables[variable][:] - \
+                   fh.groups['hofx'     ].variables[variable][:]
+        elif group=='Gsiomb':
+            data = fh.groups['ObsValue' ].variables[variable][:] - \
+                   fh.groups['GsiHofX'  ].variables[variable][:]
+        elif group=='GsiombBc':
+            data = fh.groups['ObsValue' ].variables[variable][:] - \
+                   fh.groups['GsiHofXBc'].variables[variable][:]
+        else:
+            data = fh.groups[group].variables[variable][:]
+
+    else:
+
+        if group=='omb':
+            data = fh.groups['ObsValue' ].variables[variable][:,channel-1] - \
+                   fh.groups['hofx'     ].variables[variable][:,channel-1]
+        elif group=='Gsiomb':
+            data = fh.groups['ObsValue' ].variables[variable][:,channel-1] - \
+                   fh.groups['GsiHofX'  ].variables[variable][:,channel-1]
+        elif group=='GsiombBc':
+            data = fh.groups['ObsValue' ].variables[variable][:,channel-1] - \
+                   fh.groups['GsiHofXBc'].variables[variable][:,channel-1]
+        else:
+            data = fh.groups[group].variables[variable][:,channel-1]
+
+    return data
+
+# --------------------------------------------------------------------------------------------------
+
 def configGetOrFail(conf, config_string):
 
     # File containing hofx files
@@ -50,6 +156,21 @@ def configGetOrFail(conf, config_string):
         config_variable = conf[config_string]
     except:
         abort('\''+config_string+'\' must be present in the configuration')
+
+    return config_variable
+
+# --------------------------------------------------------------------------------------------------
+
+def configGet(conf, config_string, default=None):
+
+    # File containing hofx files
+    try:
+        config_variable = conf[config_string]
+    except:
+        if default == None:
+            abort('\''+config_string+'\' must be present in the configuration')
+        else:
+            config_variable = default
 
     return config_variable
 
