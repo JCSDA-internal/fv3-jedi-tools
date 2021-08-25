@@ -128,50 +128,7 @@ EOF
 # Create specific work directory
 mkdir -p ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Loop over local files
-ntotpad=$(printf "%.6d" "216")
-for itot in $(seq 1 216); do
-   itotpad=$(printf "%.6d" "${itot}")
-
-   # Merge local NICAS files
-   sbatch_name="merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:05:00
-#SBATCH -e ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.err
-#SBATCH -o ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${itotpad}.out
-
-source ${HOME}/gnu-openmpi_env.sh
-module load nco
-
-cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas_local_${ntotpad}-${itotpad}.nc 
-filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_${ntotpad}-${itotpad}.nc 
-rm -f \${filename_full_3D}
-rm -f \${filename_full_2D}
-for var in ${vars}; do
-   if test "\${var}" = "ps"; then
-      filename_full=\${filename_full_2D}
-   else
-      filename_full=\${filename_full_3D}
-   fi
-   filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_${ntotpad}-${itotpad}.nc 
-   echo -e "ncks -A \${filename_var} \${filename_full}"
-   ncks -A \${filename_var} \${filename_full}
-done
-
-exit 0
-EOF
-done
-
-# Merge global NICAS files
+# Merge NICAS files
 sbatch_name="merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
@@ -179,7 +136,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=1
+#SBATCH --ntasks=40
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
@@ -190,10 +147,37 @@ module load nco
 
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
+# Number of local files
+nlocal=216
+
+# Create scripts for local files
+ntotpad=\$(printf "%.6d" "\${nlocal}")
+for itot in \$(seq 1 \${nlocal}); do
+   itotpad=\$(printf "%.6d" "\${itot}")
+   filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas_local_\${ntotpad}-\${itotpad}.nc 
+   filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_\${ntotpad}-\${itotpad}.nc 
+   rm -f \${filename_full_3D}
+   rm -f \${filename_full_2D}
+   echo "#!/bin/bash" > merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+   for var in ${vars}; do
+      if test "\${var}" = "ps"; then
+         filename_full=\${filename_full_2D}
+      else
+         filename_full=\${filename_full_3D}
+      fi
+      filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc 
+      echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+   done
+done
+
+# Create scripts for global files
+nlocalp1=\$((nlocal+1))
+itotpad=\$(printf "%.6d" "\${nlocalp1}")
 filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas.nc
 filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas.nc
 rm -f \${filename_full_3D}
 rm -f \${filename_full_2D}
+echo "#!/bin/bash" > merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
 for var in ${vars}; do
    if test "\${var}" = "ps"; then
       filename_full=\${filename_full_2D}
@@ -201,8 +185,23 @@ for var in ${vars}; do
       filename_full=\${filename_full_3D}
    fi
    filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas.nc 
-   echo -e "ncks -A \${filename_var} \${filename_full}"
-   ncks -A \${filename_var} \${filename_full}
+   echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+done
+
+# Run scripts in parallel
+nbatch=\$((nlocalp1/40+1))
+itot=0
+for ibatch in \$(seq 1 \${nbatch}); do
+   for i in \$(seq 1 40); do
+      itot=\$((itot+1))
+      if test "\${itot}" -le "\${nlocalp1}"; then
+         itotpad=\$(printf "%.6d" "\${itot}")
+         echo "Batch \${ibatch} - job \${i}: ./merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh"
+         chmod 755 merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+         ./merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh &
+      fi
+   done
+   wait
 done
 
 exit 0

@@ -45,7 +45,77 @@ cost function:
     psinfile: true
  
   background error:
-    covariance model: ID
+    covariance model: BUMP
+    full inverse: 1
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
+      verbosity: main
+      strategy: specific_univariate
+      load_nicas_local: 1
+      min_lev:
+        liq_wat: 76
+      grids:
+      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
+      - variables: [surface_pressure]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+    universe radius:
+      filetype: gfs
+      psinfile: 1
+      datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    variable changes:
+    - variable change: StdDev
+      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+      output variables: *control_vars
+      active variables: *active_vars
+      bump:
+        verbosity: main
+        universe_rad: 100.0e3
+        grids:
+        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [surface_pressure]
+      input:
+      - parameter: stddev
+        filetype: gfs
+        psinfile: 1
+        datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    - variable change: StatsVariableChange
+      input variables: *control_vars
+      output variables: *control_vars
+      active variables: *active_vars
+      bump:
+        datadir: ${data_dir_c384}/${bump_dir}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+        verbosity: main
+        universe_rad: 2000.0e3
+        load_vbal: 1
+        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        load_samp_local: 1
+        vbal_block: [1,1,0,1]
+    - variable change: PsiChiToUV
+      input variables: *control_vars
+      output variables: *vars
+      active variables: [psi,chi]
+      bump:
+        datadir: ${data_dir_c384}/${bump_dir}
+        prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+        verbosity: main
+        universe_rad: 2000.0e3
+        load_wind_local: 1
+        wind_streamfunction: stream_function
+        wind_velocity_potential: velocity_potential
+        wind_zonal: eastward_wind
+        wind_meridional: northward_wind
 
   observations:
   - obs space:
@@ -64,7 +134,7 @@ variational:
     algorithm: DRIPCG
 
   iterations:
-  - ninner: 10
+  - ninner: 30
     gradient norm reduction: 1e-10
     test: on
     geometry:
@@ -109,7 +179,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
+#SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 

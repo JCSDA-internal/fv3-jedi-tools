@@ -19,7 +19,7 @@ for imem in $(seq 1 1 ${nmem}); do
    imemp=$(printf "%.3d" "${imem}")
 
    # Output file
-   output_file=${ensemble_dir}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
+   output_file=${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
 
    # Print
    echo `date`": - create coupler file ${output_file} for date ${yyyy}/${m}/${d}-${h}"
