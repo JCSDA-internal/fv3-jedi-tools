@@ -40,8 +40,8 @@ export bump_dir="bump_1.0"
 # Environment script (gnu-openmpi or intel-impi) ###################
 ####################################################################
 
-export env_script=${xp_dir}/env/gnu-openmpi_env.sh
-#export env_script=${xp_dir}/env/intel-impi_env.sh
+export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
+#export env_script=${xp_dir}/env_script/intel-impi_env.sh
 
 ####################################################################
 # Parameters #######################################################
