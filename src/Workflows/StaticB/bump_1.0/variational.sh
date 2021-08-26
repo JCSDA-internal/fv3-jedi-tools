@@ -35,7 +35,7 @@ cost function:
   background:
     filetype: gfs
     datapath: ${data_dir_c384}/${bkg_obs_dir}
-    filename_cplr: coupler.ress
+    filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
     filename_trcr: fv_tracer.res.nc
