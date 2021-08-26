@@ -1,5 +1,8 @@
 #!/bin/bash
 
+####################################################################
+# Function: run sbatch script, dealing with optional dependencies ##
+####################################################################
 run_sbatch () {
   script=$1
   pids=$2
@@ -14,23 +17,51 @@ run_sbatch () {
   echo `date`": ${cmd} > "${pid}
 }
 
+####################################################################
+# Directories ######################################################
+####################################################################
+
+# Data directory
+export data_dir="/work/noaa/da/menetrie/StaticBTraining"
+
+# FV3-JEDI source directory
+export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
+
+# JEDI binaries directory
+export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
+
+# Experiments directory
+export xp_dir="${HOME}/xp"
+
+# BUMP subdirectory name
+export bump_dir="bump_1.0"
+
+####################################################################
+# Environment script (gnu-openmpi or intel-impi) ###################
+####################################################################
+
+export env_script=${xp_dir}/env/gnu-openmpi_env.sh
+#export env_script=${xp_dir}/env/intel-impi_env.sh
+
+####################################################################
+# Parameters #######################################################
+####################################################################
 # Variables
 export vars="psi chi t ps sphum liq_wat o3mr"
 
-# Parameters
+# Number of ensemble members
 export nmem=80
-export bump_dir="bump_1.0"
+
+# List of cycles for training (january or july)
 export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
 #export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
+
+# Observation cycle
 export yyyymmddhh_obs="2020121421"
 
-# Directories
-export data_dir="/work/noaa/da/menetrie/StaticBTraining"
-export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
-export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
-export xp_dir="${HOME}/xp"
-
-# What should be run?
+####################################################################
+# What should be run? ##############################################
+####################################################################
 
 # Create directories
 export create_directories=false
@@ -47,27 +78,27 @@ export run_daily_unbal=false
 export run_daily_varmom=false
 
 # Final runs
+export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
 export run_final_nicas=false
-export run_final_psichitouv=false
 
 # Merge runs
 export run_merge_varcor=false
 export run_merge_nicas=false
 
 # Split runs (for 7x7 procs on each tile)
+export run_split_psichitouv=false
 export nsplit=7
 export run_split_vbal=false
 export run_split_nicas=false
-export run_split_psichitouv=false
 
 # Regridding runs (at C192)
+export run_regridding_psichitouv=false
 export run_regridding_varcor=false
 export run_regridding_nicas=false
 export run_regridding_merge_nicas=false
-export run_regridding_psichitouv=false
 
 # Dirac runs
 export run_dirac_cor_local=false
@@ -86,7 +117,13 @@ export run_dirac_full_global=false
 export run_variational_3dvar=false
 
 ####################################################################
-# No edition needed beyond this line ###############################
+####################################################################
+################ No edition needed beyond this line ################
+####################################################################
+####################################################################
+
+####################################################################
+# Set other variables ##############################################
 ####################################################################
 
 # Dates
@@ -121,6 +158,10 @@ export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
 
+####################################################################
+# Get data #########################################################
+####################################################################
+
 if test "${create_directories}" = "true"; then
    # Create directories
    echo `date`": create directories"
@@ -144,6 +185,10 @@ if test "${create_directories}" = "true"; then
    mkdir -p ${work_dir}
 fi
 
+####################################################################
+# Get data #########################################################
+####################################################################
+
 if test "${get_data}" = "true"; then
    # Go to data directory
    echo `date`": cd ${data_dir_c384}"
@@ -153,7 +198,7 @@ if test "${get_data}" = "true"; then
       # Download ensemble from S3
       echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet"
       aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet
-   
+
       # Untar ensemble
       echo `date`": tar -xvf bvars_ens_${yyyymmddhh}.tar"
       tar -xvf bvars_ens_${yyyymmddhh}.tar
@@ -166,6 +211,10 @@ if test "${get_data}" = "true"; then
       ./coupler.sh ${yyyymmddhh}
    done
 fi
+
+####################################################################
+# Run generators ###################################################
+####################################################################
 
 # Run generators
 echo `date`": run generators"
@@ -180,7 +229,7 @@ if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || te
    ./daily.sh
 fi
 
-if test "${run_final_vbal}" = "true" || "${run_final_var}" = "true" || "${run_final_cor}" = "true" || "${run_final_nicas}" = "true" || "${run_final_psichitouv}" = "true"; then
+if test "${run_final_psichitouv}" = "true" || "${run_final_vbal}" = "true" || "${run_final_var}" = "true" || "${run_final_cor}" = "true" || "${run_final_nicas}" = "true" ; then
    # Final runs
    ./final.sh
 fi
@@ -190,12 +239,12 @@ if test "${run_merge_varcor}" = "true" || test "${run_merge_nicas}" = "true"; th
    ./merge.sh
 fi
 
-if test "${run_split_vbal}" = "true" || "${run_split_nicas}" = "true" || "${run_split_psichitouv}" = "true"; then
+if test "${run_split_psichitouv}" = "true" || "${run_split_vbal}" = "true" || "${run_split_nicas}" = "true" ; then
    # Split runs
    ./split.sh
 fi
 
-if test "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" || "${run_regridding_psichitouv}" = "true"; then
+if test "${run_regridding_psichitouv}" = "true" || "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" ; then
    # Regridding runs
    ./regridding.sh
 fi
@@ -210,11 +259,16 @@ if test "${run_variational_3dvar}" = "true" ; then
    ./variational.sh
 fi
 
+####################################################################
+# Run sbatch #######################################################
+####################################################################
+
 # Go to sbatch directory
 echo `date`": cd ${sbatch_dir}"
 cd ${sbatch_dir}
 
 # Conversion runs
+# ---------------
 
 # Run convert_to_c192
 if test "${run_convert_to_c192}" = "true"; then
@@ -223,6 +277,7 @@ if test "${run_convert_to_c192}" = "true"; then
 fi
 
 # Daily runs
+# ----------
 
 # Run vbal
 if test "${run_daily_vbal}" = "true"; then
@@ -233,7 +288,7 @@ if test "${run_daily_vbal}" = "true"; then
    done
 fi
 
-# Run unbal 
+# Run unbal
 if test "${run_daily_unbal}" = "true"; then
    daily_unbal_pids=""
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -242,7 +297,7 @@ if test "${run_daily_unbal}" = "true"; then
    done
 fi
 
-# Run var-mom 
+# Run var-mom
 if test "${run_daily_varmom}" = "true"; then
    declare -A daily_varmom_pids
    for var in ${vars}; do
@@ -255,14 +310,15 @@ if test "${run_daily_varmom}" = "true"; then
 fi
 
 # Final runs
+# ----------
 
-# Run vbal 
+# Run vbal
 if test "${run_final_vbal}" = "true"; then
    run_sbatch vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${daily_vbal_pids}
    final_vbal_pid=:${pid}
 fi
 
-# Run var 
+# Run var
 if test "${run_final_var}" = "true"; then
    final_var_pids=""
    for var in ${vars}; do
@@ -271,7 +327,7 @@ if test "${run_final_var}" = "true"; then
    done
 fi
 
-# Run cor 
+# Run cor
 if test "${run_final_cor}" = "true"; then
    final_cor_pids=""
    for var in ${vars}; do
@@ -280,7 +336,7 @@ if test "${run_final_cor}" = "true"; then
    done
 fi
 
-# Run nicas 
+# Run nicas
 if test "${run_final_nicas}" = "true"; then
    final_nicas_pids=""
    for var in ${vars}; do
@@ -289,55 +345,58 @@ if test "${run_final_nicas}" = "true"; then
    done
 fi
 
-# Run psichitouv 
+# Run psichitouv
 if test "${run_final_psichitouv}" = "true"; then
    run_sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ""
    final_psichitouv_pid=:${pid}
 fi
 
 # Merge runs
+# ----------
 
-# Run var-cor 
+# Run var-cor
 if test "${run_merge_varcor}" = "true"; then
    run_sbatch merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_var_pids}${final_cor_pids}
    merge_varcor_pid=:${pid}
 fi
 
-# Run nicas 
+# Run nicas
 if test "${run_merge_nicas}" = "true"; then
    run_sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_nicas_pids}
    merge_nicas_pid=:${pid}
 fi
 
 # Split runs
+# ----------
 
-# Run vbal 
+# Run vbal
 if test "${run_split_vbal}" = "true"; then
    run_sbatch split_vbal_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
    split_vbal_pid=:${pid}
 fi
 
-# Run nicas 
+# Run nicas
 if test "${run_split_nicas}" = "true"; then
    run_sbatch split_nicas_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_global_pid}
    split_nicas_pid=:${pid}
 fi
 
-# Run psichitouv 
+# Run psichitouv
 if test "${run_split_psichitouv}" = "true"; then
    run_sbatch split_psichitouv_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
    split_psichitouv_pid=:${pid}
 fi
 
 # Regridding runs
+# ---------------
 
-# Run var-cor 
+# Run var-cor
 if test "${run_regridding_varcor}" = "true"; then
    run_sbatch regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
    regridding_varcor_pid=:${pid}
 fi
 
-# Run nicas 
+# Run nicas
 if test "${run_regridding_nicas}" = "true"; then
    regridding_nicas_pids=""
    for var in ${vars}; do
@@ -346,91 +405,93 @@ if test "${run_regridding_nicas}" = "true"; then
    done
 fi
 
-# Run merge nicas 
+# Run merge nicas
 if test "${run_regridding_merge_nicas}" = "true"; then
    run_sbatch regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_nicas_pids}
    regridding_merge_nicas_pid=:${pid}
 fi
 
-# Run psichitouv 
+# Run psichitouv
 if test "${run_regridding_psichitouv}" = "true"; then
    run_sbatch regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
    regridding_psichitouv_pid=:${pid}
 fi
 
 # Dirac runs
+# ----------
 
-# Run dirac_cor_local 
+# Run dirac_cor_local
 if test "${run_dirac_cor_local}" = "true"; then
-   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}
    dirac_cor_local_pid=:${pid}
 fi
 
-# Run dirac_cor_global 
+# Run dirac_cor_global
 if test "${run_dirac_cor_global}" = "true"; then
-   run_sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}
    dirac_cor_global_pid=:${pid}
 fi
 
-# Run dirac_cov_local 
+# Run dirac_cov_local
 if test "${run_dirac_cov_local}" = "true"; then
-   run_sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
    dirac_cov_local_pid=:${pid}
 fi
 
-# Run dirac_cov_global 
+# Run dirac_cov_global
 if test "${run_dirac_cov_global}" = "true"; then
-   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
    dirac_cov_global_pid=:${pid}
 fi
 
-# Run dirac_cov_multi_local 
+# Run dirac_cov_multi_local
 if test "${run_dirac_cov_multi_local}" = "true"; then
-   run_sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
    dirac_cov_multi_local_pid=:${pid}
 fi
 
-# Run dirac_cov_multi_global 
+# Run dirac_cov_multi_global
 if test "${run_dirac_cov_multi_global}" = "true"; then
-   run_sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
    dirac_cov_multi_global_pid=:${pid}
 fi
 
-# Run dirac_full_c2a_local 
+# Run dirac_full_c2a_local
 if test "${run_dirac_full_c2a_local}" = "true"; then
-   run_sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
    dirac_full_c2a_local_pid=:${pid}
 fi
 
-# Run dirac_full_psichitouv_local 
+# Run dirac_full_psichitouv_local
 if test "${run_dirac_full_psichitouv_local}" = "true"; then
-   run_sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    dirac_full_psichitouv_local_pid=:${pid}
 fi
 
-# Run dirac_full_global 
+# Run dirac_full_global
 if test "${run_dirac_full_global}" = "true"; then
-   run_sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    dirac_full_global_pid=:${pid}
 fi
 
-# Run dirac_full_c192_local 
+# Run dirac_full_c192_local
 if test "${run_dirac_full_c192_local}" = "true"; then
-   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_merge_nicas_pid}${regridding_varcor_pid}${final_vbal_pid}${regridding_psichitouv_pid}
    dirac_full_c192_local_pid=:${pid}
 fi
 
-# Run dirac_full_7x7_local 
+# Run dirac_full_7x7_local
 if test "${run_dirac_full_7x7_local}" = "true"; then
-   run_sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${split_nicas_pid}${merge_varcor_pid}${run_split_vbal}${run_split_psichitouv}
    dirac_full_7x7_local_pid=:${pid}
 fi
 
 # Variational runs
+# ----------------
 
-# Run 3dvar 
+# Run 3dvar
 if test "${run_variational_3dvar}" = "true"; then
-   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh # TODO: dependencies
+   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    variational_3dvar_pid=:${pid}
 fi
 

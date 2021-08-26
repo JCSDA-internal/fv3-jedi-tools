@@ -75,7 +75,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/convert_to_c192_${yyyymmddhh_last}/convert_to_c192_${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/convert_to_c192_${yyyymmddhh_last}/convert_to_c192_${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/convert_to_c192_${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}

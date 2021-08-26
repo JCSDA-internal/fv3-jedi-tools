@@ -35,7 +35,7 @@ cost function:
   background:
     filetype: gfs
     datapath: ${data_dir_c384}/${bkg_obs_dir}
-    filename_cplr: coupler.res
+    filename_cplr: coupler.ress
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -43,7 +43,7 @@ cost function:
     filename_sfcd: sfc_data.nc
     state variables: *vars
     psinfile: true
- 
+
   background error:
     covariance model: BUMP
     full inverse: 1
@@ -183,7 +183,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}

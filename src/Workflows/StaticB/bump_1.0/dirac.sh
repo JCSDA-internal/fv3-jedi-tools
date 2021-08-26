@@ -82,7 +82,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -172,7 +172,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -283,7 +283,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -393,7 +393,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -516,7 +516,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -639,7 +639,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -764,7 +764,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -900,7 +900,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -1036,7 +1036,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -1165,7 +1165,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -1301,7 +1301,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 294 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}

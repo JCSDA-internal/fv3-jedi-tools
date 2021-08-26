@@ -6,15 +6,15 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    mm=${yyyymmddhh:4:2}
    dd=${yyyymmddhh:6:2}
    hh=${yyyymmddhh:8:2}
-   
+
    ####################################################################
    # VBAL #############################################################
    ####################################################################
-   
+
    # Create specific BUMP and work directories
    mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh}
    mkdir -p ${work_dir}/vbal_${yyyymmddhh}
-   
+
    # VBAL yaml
    yaml_name="vbal_${yyyymmddhh}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
@@ -71,7 +71,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
       date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
-   
+
    # VBAL sbatch
    sbatch_name="vbal_${yyyymmddhh}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
@@ -86,18 +86,18 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/vbal_${yyyymmddhh}
 mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
-   
+
    ####################################################################
    # Unbal ############################################################
    ####################################################################
-   
+
    # Create specific BUMP and work directories
    mkdir -p ${data_dir_c384}/${bump_dir}/unbal_${yyyymmddhh}
    mkdir -p ${work_dir}/unbal_${yyyymmddhh}
@@ -159,7 +159,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
-   
+
    # Unbal sbatch
    sbatch_name="unbal_${yyyymmddhh}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
@@ -174,7 +174,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/unbal_${yyyymmddhh}
 mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
@@ -187,11 +187,11 @@ EOF
    # VAR-MOM ##########################################################
    ####################################################################
 
-   for var in ${vars}; do   
+   for var in ${vars}; do
       # Create specific BUMP and work directories
       mkdir -p ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
       mkdir -p ${work_dir}/var-mom_${yyyymmddhh}_${var}
-   
+
       # VAR-MOM yaml
       yaml_name="var-mom_${yyyymmddhh}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
@@ -319,7 +319,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.err
 #SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 
 cd ${work_dir}/var-mom_${yyyymmddhh}_${var}
 mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}

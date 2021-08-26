@@ -21,7 +21,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 module load nco
 
 cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -142,7 +142,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${HOME}/gnu-openmpi_env.sh
+source ${env_script}
 module load nco
 
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -154,8 +154,8 @@ nlocal=216
 ntotpad=\$(printf "%.6d" "\${nlocal}")
 for itot in \$(seq 1 \${nlocal}); do
    itotpad=\$(printf "%.6d" "\${itot}")
-   filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas_local_\${ntotpad}-\${itotpad}.nc 
-   filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_\${ntotpad}-\${itotpad}.nc 
+   filename_full_3D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas_local_\${ntotpad}-\${itotpad}.nc
+   filename_full_2D=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_\${ntotpad}-\${itotpad}.nc
    rm -f \${filename_full_3D}
    rm -f \${filename_full_2D}
    echo "#!/bin/bash" > merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
@@ -165,7 +165,7 @@ for itot in \$(seq 1 \${nlocal}); do
       else
          filename_full=\${filename_full_3D}
       fi
-      filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc 
+      filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
    done
 done
@@ -184,7 +184,7 @@ for var in ${vars}; do
    else
       filename_full=\${filename_full_3D}
    fi
-   filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas.nc 
+   filename_var=${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas.nc
    echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
 done
 
