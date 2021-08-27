@@ -5,10 +5,10 @@
 ####################################################################
 
 # Create specific work directory
-mkdir -p ${work_dir}/regridding_background
+mkdir -p ${work_dir}/regrid_background
 
-# REGRIDDING_BACKGROUND yaml
-yaml_name="regridding_background.yaml"
+# BACKGROUND yaml
+yaml_name="regrid_background.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 input geometry:
   fms initialization:
@@ -35,7 +35,7 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_obs_dir}
+    datapath: ${data_dir_c384}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -43,37 +43,37 @@ states:
     psinfile: true
   output:
     filetype: gfs
-    datapath: ${data_dir_c192}/${bkg_obs_dir}
+    datapath: ${data_dir_c192}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
 EOF
 
-# REGRIDDING_BACKGROUND sbatch
-sbatch_name="regridding_background.sh"
+# BACKGROUND sbatch
+sbatch_name="regrid_background.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_background
+#SBATCH --job-name=regrid_background
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/regridding_background/regridding_background.err
-#SBATCH -o ${work_dir}/regridding_background/regridding_background.out
+#SBATCH -e ${work_dir}/regrid_background/regrid_background.err
+#SBATCH -o ${work_dir}/regrid_background/regrid_background.out
 
 source ${env_script}
 
-cd ${work_dir}/regridding_background
+cd ${work_dir}/regrid_background
 mpirun -n 216 ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 for i in \$(seq 1 6); do
    # Rename background files
-   mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.fv_core.res.tile\${i}.nc ${data_dir_c192}/${bkg_obs_dir}/fv_core.res.tile\${i}.nc
-   mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.fv_tracer.res.tile\${i}.nc ${data_dir_c192}/${bkg_obs_dir}/fv_tracer.res.tile\${i}.nc
+   mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_core.res.tile\${i}.nc ${data_dir_c192}/${bkg_dir}/fv_core.res.tile\${i}.nc
+   mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_tracer.res.tile\${i}.nc ${data_dir_c192}/${bkg_dir}/fv_tracer.res.tile\${i}.nc
 done
-mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.coupler.res ${data_dir_c192}/${bkg_obs_dir}/coupler.res
+mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.coupler.res ${data_dir_c192}/${bkg_dir}/coupler.res
 
 exit 0
 EOF
@@ -83,10 +83,10 @@ EOF
 ####################################################################
 
 # Create specific work directory
-mkdir -p ${work_dir}/regridding_first_member_${yyyymmddhh_last}
+mkdir -p ${work_dir}/regrid_first_member_${yyyymmddhh_last}
 
-# REGRIDDING_FIRST_MEMBER yaml
-yaml_name="regridding_first_member_${yyyymmddhh_last}.yaml"
+# FIRST_MEMBER yaml
+yaml_name="regrid_first_member_${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 input geometry:
   fms initialization:
@@ -126,23 +126,23 @@ states:
     filename_cplr: bvars.coupler.res
 EOF
 
-# REGRIDDING_FIRST_MEMBER sbatch
-sbatch_name="regridding_first_member_${yyyymmddhh_last}.sh"
+# FIRST_MEMBER sbatch
+sbatch_name="regrid_first_member_${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_first_member_${yyyymmddhh_last}
+#SBATCH --job-name=regrid_first_member_${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/regridding_first_member_${yyyymmddhh_last}/regridding_first_member_${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/regridding_first_member_${yyyymmddhh_last}/regridding_first_member_${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/regrid_first_member_${yyyymmddhh_last}/regrid_first_member_${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/regrid_first_member_${yyyymmddhh_last}/regrid_first_member_${yyyymmddhh_last}.out
 
 source ${env_script}
 
-cd ${work_dir}/regridding_first_member_${yyyymmddhh_last}
+cd ${work_dir}/regrid_first_member_${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 for i in \$(seq 1 6); do
@@ -162,10 +162,10 @@ EOF
 
 # Create specific work directory
 mkdir -p ${data_dir_c192}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # PSICHITOUV yaml
-yaml_name="regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
+yaml_name="regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
   fms initialization:
@@ -202,23 +202,23 @@ bump:
 EOF
 
 # PSICHITOUV sbatch
-sbatch_name="regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+sbatch_name="regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:20:00
-#SBATCH -e ${work_dir}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 export OMP_NUM_THREADS=2
 source ${env_script}
 
-cd ${work_dir}/regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+cd ${work_dir}/regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
 
 exit 0
@@ -229,14 +229,14 @@ EOF
 ####################################################################
 
 # Create specific work directory
-mkdir -p ${work_dir}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Create output directory
 mkdir -p ${data_dir_c192}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${data_dir_c192}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # VAR-COR yaml
-yaml_name="regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
+yaml_name="regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 input geometry:
   fms initialization:
@@ -298,22 +298,22 @@ states:
 EOF
 
 # VAR-COR sbatch
-sbatch_name="regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+sbatch_name="regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:20:00
-#SBATCH -e ${work_dir}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
 
-cd ${work_dir}/regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+cd ${work_dir}/regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 exit 0
@@ -326,14 +326,14 @@ EOF
 for var in ${vars}; do
    # Create specific BUMP and work directories
    mkdir -p ${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-   mkdir -p ${work_dir}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+   mkdir -p ${work_dir}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
    # Link input files
    ln -sf ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
    ln -sf ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
 
    # NICAS yaml
-   yaml_name="regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.yaml"
+   yaml_name="regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
   fms initialization:
@@ -376,23 +376,23 @@ universe radius:
 EOF
 
    # NICAS sbatch
-   sbatch_name="regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh"
+   sbatch_name="regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+#SBATCH --job-name=regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=2
 #SBATCH --time=00:20:00
-#SBATCH -e ${work_dir}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
-#SBATCH -o ${work_dir}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
+#SBATCH -e ${work_dir}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
+#SBATCH -o ${work_dir}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
 
 export OMP_NUM_THREADS=2
 source ${env_script}
 
-cd ${work_dir}/regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+cd ${work_dir}/regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
 
 exit 0
@@ -404,26 +404,26 @@ done
 ####################################################################
 
 # Create specific work directory
-mkdir -p ${work_dir}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge local NICAS files
-sbatch_name="regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+sbatch_name="regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=40
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:30:00
-#SBATCH -e ${work_dir}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
 module load nco
 
-cd ${work_dir}/regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+cd ${work_dir}/regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Number of local files
 nlocal=216
@@ -436,7 +436,7 @@ for itot in \$(seq 1 \${nlocal}); do
    filename_full_2D=${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas_local_\${ntotpad}-\${itotpad}.nc
    rm -f \${filename_full_3D}
    rm -f \${filename_full_2D}
-   echo "#!/bin/bash" > regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+   echo "#!/bin/bash" > regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
    for var in ${vars}; do
       if test "\${var}" = "ps"; then
          filename_full=\${filename_full_2D}
@@ -444,7 +444,7 @@ for itot in \$(seq 1 \${nlocal}); do
          filename_full=\${filename_full_3D}
       fi
       filename_var=${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
-      echo -e "ncks -A \${filename_var} \${filename_full}" >> regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+      echo -e "ncks -A \${filename_var} \${filename_full}" >> regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
    done
 done
 
@@ -455,7 +455,7 @@ filename_full_3D=${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymm
 filename_full_2D=${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas.nc
 rm -f \${filename_full_3D}
 rm -f \${filename_full_2D}
-echo "#!/bin/bash" > regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+echo "#!/bin/bash" > regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
 for var in ${vars}; do
    if test "\${var}" = "ps"; then
       filename_full=\${filename_full_2D}
@@ -463,7 +463,7 @@ for var in ${vars}; do
       filename_full=\${filename_full_3D}
    fi
    filename_var=${data_dir_c192}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas.nc
-   echo -e "ncks -A \${filename_var} \${filename_full}" >> regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+   echo -e "ncks -A \${filename_var} \${filename_full}" >> regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
 done
 
 # Run scripts in parallel
@@ -474,9 +474,9 @@ for ibatch in \$(seq 1 \${nbatch}); do
       itot=\$((itot+1))
       if test "\${itot}" -le "\${nlocalp1}"; then
          itotpad=\$(printf "%.6d" "\${itot}")
-         echo "Batch \${ibatch} - job \${i}: ./regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh"
-         chmod 755 regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
-         ./regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh &
+         echo "Batch \${ibatch} - job \${i}: ./regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh"
+         chmod 755 regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh
+         ./regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${itotpad}.sh &
       fi
    done
    wait
