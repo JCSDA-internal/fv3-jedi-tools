@@ -6,8 +6,7 @@
 
 # Create specific work directory
 mkdir -p ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir}/hofx/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir}/analysis/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_c384}/analysis/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # 3DVAR yaml
 yaml_name="variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -158,7 +157,7 @@ final:
 
 output:
   filetype: gfs
-  datapath: ${data_dir}/analysis/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_c384}/analysis/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc

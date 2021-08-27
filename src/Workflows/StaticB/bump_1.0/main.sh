@@ -69,9 +69,6 @@ export create_directories=false
 # Get data
 export get_data=false
 
-# Conversion runs
-export run_convert_to_c192=false
-
 # Daily runs
 export run_daily_vbal=false
 export run_daily_unbal=false
@@ -95,6 +92,8 @@ export run_split_vbal=false
 export run_split_nicas=false
 
 # Regridding runs (at C192)
+export run_regridding_background=false
+export run_regridding_first_member=false
 export run_regridding_psichitouv=false
 export run_regridding_varcor=false
 export run_regridding_nicas=false
@@ -158,8 +157,11 @@ export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
 
+# Local scripts directory
+export script_dir=`pwd`
+
 ####################################################################
-# Get data #########################################################
+# Create directories ###############################################
 ####################################################################
 
 if test "${create_directories}" = "true"; then
@@ -194,12 +196,13 @@ if test "${get_data}" = "true"; then
    echo `date`": cd ${data_dir_c384}"
    cd ${data_dir_c384}
 
+   # Get ensemble for regression
    for yyyymmddhh in ${yyyymmddhh_list}; do
-      # Download ensemble from S3
+      # Download ensemble member from S3
       echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet"
       aws s3 cp s3://fv3-jedi/StaticBTraining/C384/EnsembleForRegression/bvars_ens_${yyyymmddhh}.tar . --quiet
 
-      # Untar ensemble
+      # Untar ensemble member
       echo `date`": tar -xvf bvars_ens_${yyyymmddhh}.tar"
       tar -xvf bvars_ens_${yyyymmddhh}.tar
 
@@ -210,19 +213,46 @@ if test "${get_data}" = "true"; then
       # Create coupler files
       ./coupler.sh ${yyyymmddhh}
    done
+
+   # Get background
+   echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_2020121421.tar . --quiet"
+   aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_2020121421.tar . --quiet
+
+   # Untar background
+   echo `date`": tar -xvf bkg_2020121421.tar"
+   tar -xvf bkg_2020121421.tar
+
+   # Remove archive
+   echo `date`": rm -f bkg_2020121421.tar"
+   rm -f bkg_2020121421.tar
+
+   # Go to data directory
+   echo `date`": cd ${data_dir}"
+   cd ${data_dir}
+
+   # Get observations
+   echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/Observations/obs.tar . --quiet"
+   aws s3 cp s3://fv3-jedi/StaticBTraining/Observations/obs.tar . --quiet
+
+   # Untar background
+   echo `date`": tar -xvf obs.tar"
+   tar -xvf obs.tar
+
+   # Remove archive
+   echo `date`": rm -f obs.tar"
+   rm -f obs.tar
 fi
 
 ####################################################################
 # Run generators ###################################################
 ####################################################################
 
+# Go to script directory
+echo `date`": cd ${script_dir}"
+cd ${script_dir}
+
 # Run generators
 echo `date`": run generators"
-
-if test "${run_convert_to_c192}" = "true"; then
-   # Conversion to C192 runs
-   ./conversion.sh
-fi
 
 if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
    # Daily runs
@@ -244,7 +274,7 @@ if test "${run_split_psichitouv}" = "true" || "${run_split_vbal}" = "true" || "$
    ./split.sh
 fi
 
-if test "${run_regridding_psichitouv}" = "true" || "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" ; then
+if test "${run_regridding_background}" = "true" || "${run_regridding_first_member}" = "true" || "${run_regridding_psichitouv}" = "true" || "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" ; then
    # Regridding runs
    ./regridding.sh
 fi
@@ -266,15 +296,6 @@ fi
 # Go to sbatch directory
 echo `date`": cd ${sbatch_dir}"
 cd ${sbatch_dir}
-
-# Conversion runs
-# ---------------
-
-# Run convert_to_c192
-if test "${run_convert_to_c192}" = "true"; then
-   run_sbatch convert_to_c192_${yyyymmddhh_last}.sh
-   convert_to_c192_pid=:${pid}
-fi
 
 # Daily runs
 # ----------
@@ -390,6 +411,24 @@ fi
 # Regridding runs
 # ---------------
 
+# Run background
+if test "${run_regridding_background}" = "true"; then
+   run_sbatch regridding_background.sh
+   regridding_background_pid=:${pid}
+fi
+
+# Run first member
+if test "${run_regridding_first_member}" = "true"; then
+   run_sbatch regridding_first_member_${yyyymmddhh_last}.sh
+   regridding_first_member_pid=:${pid}
+fi
+
+# Run psichitouv
+if test "${run_regridding_psichitouv}" = "true"; then
+   run_sbatch regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regridding_first_member_pid}
+   regridding_psichitouv_pid=:${pid}
+fi
+
 # Run var-cor
 if test "${run_regridding_varcor}" = "true"; then
    run_sbatch regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
@@ -400,7 +439,7 @@ fi
 if test "${run_regridding_nicas}" = "true"; then
    regridding_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh
+      run_sbatch regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_nicas_pids}${regridding_first_member_pid}
       regridding_nicas_pids=${regridding_nicas_pids}:${pid}
    done
 fi
@@ -409,12 +448,6 @@ fi
 if test "${run_regridding_merge_nicas}" = "true"; then
    run_sbatch regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_nicas_pids}
    regridding_merge_nicas_pid=:${pid}
-fi
-
-# Run psichitouv
-if test "${run_regridding_psichitouv}" = "true"; then
-   run_sbatch regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
-   regridding_psichitouv_pid=:${pid}
 fi
 
 # Dirac runs
@@ -476,7 +509,7 @@ fi
 
 # Run dirac_full_c192_local
 if test "${run_dirac_full_c192_local}" = "true"; then
-   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_merge_nicas_pid}${regridding_varcor_pid}${final_vbal_pid}${regridding_psichitouv_pid}
+   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_merge_nicas_pid}${regridding_varcor_pid}${final_vbal_pid}${regridding_psichitouv_pid}${regridding_background_pid}
    dirac_full_c192_local_pid=:${pid}
 fi
 

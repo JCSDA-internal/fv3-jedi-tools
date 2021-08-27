@@ -204,8 +204,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: 1
+  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -237,7 +236,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -315,7 +314,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: 1
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
@@ -347,7 +346,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -425,7 +424,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -457,7 +456,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -548,7 +547,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -580,7 +579,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -671,11 +670,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  datapath: ${data_dir_c384}/${bkg_dir}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res
+  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_trcr: fv_tracer.res.nc
+  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  psinfile: true
 background error:
   covariance model: BUMP
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -702,7 +702,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -740,7 +740,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -796,11 +796,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  datapath: ${data_dir_c384}/${bkg_dir}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res
+  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_trcr: fv_tracer.res.nc
+  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  psinfile: true
 background error:
   covariance model: BUMP
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -827,7 +828,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -876,7 +877,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -932,11 +933,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  datapath: ${data_dir_c384}/${bkg_dir}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res
+  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_trcr: fv_tracer.res.nc
+  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  psinfile: true
 background error:
   covariance model: BUMP
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -963,7 +965,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -1012,7 +1014,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -1068,11 +1070,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  datapath: ${data_dir_c192}/${bkg_dir}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res
+  datapath: ${data_dir_c192}/${bkg_obs_dir}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_trcr: fv_tracer.res.nc
+  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  psinfile: true
 background error:
   covariance model: BUMP
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -1092,7 +1095,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -1141,7 +1144,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c192}/${bump_dir}/geos
   filename_bkgd: dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
 dirac:
   ndir: 6
   ixdir: [64,64,64,64,64,64]
@@ -1197,11 +1200,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &state_vars [ua,va,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
-  datapath: ${data_dir_c384}/${bkg_dir}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res
+  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_trcr: fv_tracer.res.nc
+  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  psinfile: true
 background error:
   covariance model: BUMP
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
@@ -1228,7 +1232,7 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,delp,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     output variables: *control_vars
     active variables: *active_vars
     bump:
@@ -1277,7 +1281,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
