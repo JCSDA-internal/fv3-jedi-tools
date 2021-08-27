@@ -33,11 +33,9 @@ export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
 # Experiments directory
 export xp_dir="${HOME}/xp"
 
-# BUMP subdirectory name
-export bump_dir="bump_1.0"
-
 ####################################################################
-# Environment script (gnu-openmpi or intel-impi) ###################
+# Environment script path ##########################################
+# Provided: gnu-openmpi or intel-impi on Orion #####################
 ####################################################################
 
 export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
@@ -46,13 +44,14 @@ export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
 ####################################################################
 # Parameters #######################################################
 ####################################################################
+
 # Variables
 export vars="psi chi t ps sphum liq_wat o3mr"
 
 # Number of ensemble members
 export nmem=80
 
-# List of cycles for training (january or july)
+# List of dates for the training (january or july)
 export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
 #export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
 
@@ -67,7 +66,7 @@ export yyyymmddhh_obs="2020121421"
 ####################################################################
 
 # Create directories
-export create_directories=true
+export create_directories=false
 
 # Get data
 export get_data=false
@@ -94,13 +93,13 @@ export nsplit=7
 export run_split_vbal=false
 export run_split_nicas=false
 
-# Regridding runs (at C192)
-export run_regridding_background=true
-export run_regridding_first_member=true
-export run_regridding_psichitouv=true
-export run_regridding_varcor=true
-export run_regridding_nicas=true
-export run_regridding_merge_nicas=true
+# Regrid runs (at C192)
+export run_regrid_background=false
+export run_regrid_first_member=false
+export run_regrid_psichitouv=false
+export run_regrid_varcor=false
+export run_regrid_nicas=false
+export run_regrid_merge_nicas=false
 
 # Dirac runs
 export run_dirac_cor_local=false
@@ -111,7 +110,7 @@ export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
-export run_dirac_full_c192_local=true
+export run_dirac_full_c192_local=false
 export run_dirac_full_7x7_local=false
 export run_dirac_full_global=false
 
@@ -160,6 +159,7 @@ export data_dir_c384=${data_dir}/c384
 export data_dir_c192=${data_dir}/c192
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
+export bump_dir="bump_1.0"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
@@ -281,9 +281,9 @@ if test "${run_split_psichitouv}" = "true" || "${run_split_vbal}" = "true" || "$
    ./split.sh
 fi
 
-if test "${run_regridding_background}" = "true" || "${run_regridding_first_member}" = "true" || "${run_regridding_psichitouv}" = "true" || "${run_regridding_varcor}" = "true" || "${run_regridding_nicas}" = "true" || "${run_regridding_merge_nicas}" = "true" ; then
-   # Regridding runs
-   ./regridding.sh
+if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_varcor}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
+   # Regrid runs
+   ./regrid.sh
 fi
 
 if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_c192_local}" = "true" || "${run_dirac_full_7x7_local}" = "true" || "${run_dirac_full_global}" = "true"; then
@@ -415,46 +415,46 @@ if test "${run_split_psichitouv}" = "true"; then
    split_psichitouv_pid=:${pid}
 fi
 
-# Regridding runs
-# ---------------
+# Regrid runs
+# -----------
 
 # Run background
-if test "${run_regridding_background}" = "true"; then
-   run_sbatch regridding_background.sh
-   regridding_background_pid=:${pid}
+if test "${run_regrid_background}" = "true"; then
+   run_sbatch regrid_background.sh
+   regrid_background_pid=:${pid}
 fi
 
 # Run first member
-if test "${run_regridding_first_member}" = "true"; then
-   run_sbatch regridding_first_member_${yyyymmddhh_last}.sh
-   regridding_first_member_pid=:${pid}
+if test "${run_regrid_first_member}" = "true"; then
+   run_sbatch regrid_first_member_${yyyymmddhh_last}.sh
+   regrid_first_member_pid=:${pid}
 fi
 
 # Run psichitouv
-if test "${run_regridding_psichitouv}" = "true"; then
-   run_sbatch regridding_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regridding_first_member_pid}
-   regridding_psichitouv_pid=:${pid}
+if test "${run_regrid_psichitouv}" = "true"; then
+   run_sbatch regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
+   regrid_psichitouv_pid=:${pid}
 fi
 
 # Run var-cor
-if test "${run_regridding_varcor}" = "true"; then
-   run_sbatch regridding_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
-   regridding_varcor_pid=:${pid}
+if test "${run_regrid_varcor}" = "true"; then
+   run_sbatch regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
+   regrid_varcor_pid=:${pid}
 fi
 
 # Run nicas
-if test "${run_regridding_nicas}" = "true"; then
-   regridding_nicas_pids=""
+if test "${run_regrid_nicas}" = "true"; then
+   regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regridding_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_nicas_pids}${regridding_first_member_pid}
-      regridding_nicas_pids=${regridding_nicas_pids}:${pid}
+      run_sbatch regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_nicas_pids}${regrid_first_member_pid}
+      regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
 
 # Run merge nicas
-if test "${run_regridding_merge_nicas}" = "true"; then
-   run_sbatch regridding_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_nicas_pids}
-   regridding_merge_nicas_pid=:${pid}
+if test "${run_regrid_merge_nicas}" = "true"; then
+   run_sbatch regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}
+   regrid_merge_nicas_pid=:${pid}
 fi
 
 # Dirac runs
@@ -516,7 +516,7 @@ fi
 
 # Run dirac_full_c192_local
 if test "${run_dirac_full_c192_local}" = "true"; then
-   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regridding_merge_nicas_pid}${regridding_varcor_pid}${final_vbal_pid}${regridding_psichitouv_pid}${regridding_background_pid}
+   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${final_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
    dirac_full_c192_local_pid=:${pid}
 fi
 
