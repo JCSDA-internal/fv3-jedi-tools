@@ -56,7 +56,10 @@ export nmem=80
 export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
 #export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
 
-# Observation cycle
+# Background date
+export yyyymmddhh_bkg="2020121500"
+
+# Observation date
 export yyyymmddhh_obs="2020121421"
 
 ####################################################################
@@ -64,7 +67,7 @@ export yyyymmddhh_obs="2020121421"
 ####################################################################
 
 # Create directories
-export create_directories=false
+export create_directories=true
 
 # Get data
 export get_data=false
@@ -92,12 +95,12 @@ export run_split_vbal=false
 export run_split_nicas=false
 
 # Regridding runs (at C192)
-export run_regridding_background=false
-export run_regridding_first_member=false
-export run_regridding_psichitouv=false
-export run_regridding_varcor=false
-export run_regridding_nicas=false
-export run_regridding_merge_nicas=false
+export run_regridding_background=true
+export run_regridding_first_member=true
+export run_regridding_psichitouv=true
+export run_regridding_varcor=true
+export run_regridding_nicas=true
+export run_regridding_merge_nicas=true
 
 # Dirac runs
 export run_dirac_cor_local=false
@@ -108,7 +111,7 @@ export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
-export run_dirac_full_c192_local=false
+export run_dirac_full_c192_local=true
 export run_dirac_full_7x7_local=false
 export run_dirac_full_global=false
 
@@ -137,6 +140,10 @@ export hh_last=${yyyymmddhh_last:8:2}
 export m_last=${mm_last##0}
 export d_last=${dd_last##0}
 export h_last=${hh_last##0}
+export yyyy_bkg=${yyyymmddhh_bkg:0:4}
+export mm_bkg=${yyyymmddhh_bkg:4:2}
+export dd_bkg=${yyyymmddhh_bkg:6:2}
+export hh_bkg=${yyyymmddhh_bkg:8:2}
 export yyyy_obs=${yyyymmddhh_obs:0:4}
 export mm_obs=${yyyymmddhh_obs:4:2}
 export dd_obs=${yyyymmddhh_obs:6:2}
@@ -144,6 +151,7 @@ export hh_obs=${yyyymmddhh_obs:8:2}
 echo `date`": dates are ${yyyymmddhh_list}"
 echo `date`": first date is ${yyyymmddhh_first}"
 echo `date`": last date is ${yyyymmddhh_last}"
+echo `date`": background date is ${yyyymmddhh_bkg}"
 echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
@@ -151,8 +159,7 @@ echo `date`": define directories"
 export data_dir_c384=${data_dir}/c384
 export data_dir_c192=${data_dir}/c192
 export first_member_dir="${yyyymmddhh_last}/mem001"
-export bkg_dir="bkg_${yyyymmddhh_last}"
-export bkg_obs_dir="bkg_${yyyymmddhh_obs}"
+export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
@@ -215,16 +222,16 @@ if test "${get_data}" = "true"; then
    done
 
    # Get background
-   echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_2020121421.tar . --quiet"
-   aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_2020121421.tar . --quiet
+   echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"
+   aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet
 
    # Untar background
-   echo `date`": tar -xvf bkg_2020121421.tar"
-   tar -xvf bkg_2020121421.tar
+   echo `date`": tar -xvf bkg_${yyyymmddhh_bkg}.tar"
+   tar -xvf bkg_${yyyymmddhh_bkg}.tar
 
    # Remove archive
-   echo `date`": rm -f bkg_2020121421.tar"
-   rm -f bkg_2020121421.tar
+   echo `date`": rm -f bkg_${yyyymmddhh_bkg}.tar"
+   rm -f bkg_${yyyymmddhh_bkg}.tar
 
    # Go to data directory
    echo `date`": cd ${data_dir}"

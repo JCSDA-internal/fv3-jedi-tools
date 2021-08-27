@@ -33,7 +33,7 @@ cost function:
 
   background:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_obs_dir}
+    datapath: ${data_dir_c384}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -111,10 +111,6 @@ cost function:
         verbosity: main
         universe_rad: 2000.0e3
         load_wind_local: 1
-        wind_streamfunction: stream_function
-        wind_velocity_potential: velocity_potential
-        wind_zonal: eastward_wind
-        wind_meridional: northward_wind
 
   observations:
   - obs space:

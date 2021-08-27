@@ -35,7 +35,7 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_obs_dir}
+    datapath: ${data_dir_c384}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -43,7 +43,7 @@ states:
     psinfile: true
   output:
     filetype: gfs
-    datapath: ${data_dir_c192}/${bkg_obs_dir}
+    datapath: ${data_dir_c192}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -70,10 +70,10 @@ mpirun -n 216 ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 for i in \$(seq 1 6); do
    # Rename background files
-   mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.fv_core.res.tile\${i}.nc ${data_dir_c192}/${bkg_obs_dir}/fv_core.res.tile\${i}.nc
-   mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.fv_tracer.res.tile\${i}.nc ${data_dir_c192}/${bkg_obs_dir}/fv_tracer.res.tile\${i}.nc
+   mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_core.res.tile\${i}.nc ${data_dir_c192}/${bkg_dir}/fv_core.res.tile\${i}.nc
+   mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_tracer.res.tile\${i}.nc ${data_dir_c192}/${bkg_dir}/fv_tracer.res.tile\${i}.nc
 done
-mv ${data_dir_c192}/${bkg_obs_dir}/${yyyy_obs}${mm_obs}${dd_obs}.${hh_obs}0000.coupler.res ${data_dir_c192}/${bkg_obs_dir}/coupler.res
+mv ${data_dir_c192}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.coupler.res ${data_dir_c192}/${bkg_dir}/coupler.res
 
 exit 0
 EOF

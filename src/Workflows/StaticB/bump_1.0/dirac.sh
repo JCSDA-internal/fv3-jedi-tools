@@ -670,7 +670,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  datapath: ${data_dir_c384}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -740,7 +740,7 @@ output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -796,7 +796,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  datapath: ${data_dir_c384}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -869,15 +869,11 @@ background error:
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: 1
-      wind_streamfunction: stream_function
-      wind_velocity_potential: velocity_potential
-      wind_zonal: eastward_wind
-      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -933,7 +929,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  datapath: ${data_dir_c384}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -1006,15 +1002,11 @@ background error:
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: 1
-      wind_streamfunction: stream_function
-      wind_velocity_potential: velocity_potential
-      wind_zonal: eastward_wind
-      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -1070,7 +1062,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c192}/${bkg_obs_dir}
+  datapath: ${data_dir_c192}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -1136,15 +1128,11 @@ background error:
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: 1
-      wind_streamfunction: stream_function
-      wind_velocity_potential: velocity_potential
-      wind_zonal: eastward_wind
-      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c192}/${bump_dir}/geos
   filename_bkgd: dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [64,64,64,64,64,64]
@@ -1200,7 +1188,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_obs_dir}
+  datapath: ${data_dir_c384}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -1273,15 +1261,11 @@ background error:
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: 1
-      wind_streamfunction: stream_function
-      wind_velocity_potential: velocity_potential
-      wind_zonal: eastward_wind
-      wind_meridional: northward_wind
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
   filename_bkgd: dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
