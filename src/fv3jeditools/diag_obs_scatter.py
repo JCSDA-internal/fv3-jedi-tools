@@ -146,43 +146,49 @@ def obs_scatter(datetime, conf):
                     remove_idx_ref = np.where(data_ref < -10e10)[0]
                     remove_idx = np.unique(np.concatenate([remove_idx_exp,remove_idx_ref]))
 
+                    make_plot = True
                     if len(remove_idx) > 0:
                         print('      Missing values: removing ', len(remove_idx), ' values. ',
                               'Original number of locations:', len(data_exp))
-                        data_exp = np.delete(data_exp, remove_idx)
-                        data_ref = np.delete(data_ref, remove_idx)
+                        if (len(remove_idx) != len(data_exp)):
+                            data_exp = np.delete(data_exp, remove_idx)
+                            data_ref = np.delete(data_ref, remove_idx)
+                        else:
+                            make_plot = False
+                            print('      No data for this variable/channel, skip plotting')
 
 
                     # Create and save the figure
                     # --------------------------
-                    print("      Creating figure")
+                    if make_plot:
+                        print("      Creating figure")
 
-                    # Create output filename
-                    output_path_fig = os.path.join(output_path, platform, variable_name)
-                    utils.createPath(output_path_fig)
-                    output_file = source_file.split(".")
-                    output_file[4] = output_file[4]+'-'+exp_metric+'_vs_'+ref_metric
-                    output_file = os.path.join(output_path_fig, ".".join(output_file))
-                    output_file = os.path.splitext(output_file)[0]+'.'+file_type
+                        # Create output filename
+                        output_path_fig = os.path.join(output_path, platform, variable_name)
+                        utils.createPath(output_path_fig)
+                        output_file = source_file.split(".")
+                        output_file[4] = output_file[4]+'-'+exp_metric+'_vs_'+ref_metric
+                        output_file = os.path.join(output_path_fig, ".".join(output_file))
+                        output_file = os.path.splitext(output_file)[0]+'.'+file_type
 
-                    # Limits for the figure
-                    data_min = min(min(data_exp), min(data_ref))
-                    data_max = max(max(data_exp), max(data_ref))
-                    data_dif = data_max - data_min
+                        # Limits for the figure
+                        data_min = min(min(data_exp), min(data_ref))
+                        data_max = max(max(data_exp), max(data_ref))
+                        data_dif = data_max - data_min
 
-                    # Create and save figure
-                    fig = plt.figure()
-                    ax = fig.add_subplot(111)
-                    plt.scatter(data_ref, data_exp, s=marker_size)
-                    plt.title(platform_long_name + ' | ' + variable_name_no_)
-                    plt.ylabel(exp_metric_long_name)
-                    plt.xlabel(ref_metric_long_name)
-                    ax.set_aspect('equal', adjustable='box')
-                    plt.xlim(data_min - 0.1*data_dif, data_max + 0.1*data_dif)
-                    plt.ylim(data_min - 0.1*data_dif, data_max + 0.1*data_dif)
-                    plt.axline((0, 0), slope=1.0, color='k')
-                    plt.savefig(output_file)
-                    plt.close('all')
+                        # Create and save figure
+                        fig = plt.figure()
+                        ax = fig.add_subplot(111)
+                        plt.scatter(data_ref, data_exp, s=marker_size)
+                        plt.title(platform_long_name + ' | ' + variable_name_no_)
+                        plt.ylabel(exp_metric_long_name)
+                        plt.xlabel(ref_metric_long_name)
+                        ax.set_aspect('equal', adjustable='box')
+                        plt.xlim(data_min - 0.1*data_dif, data_max + 0.1*data_dif)
+                        plt.ylim(data_min - 0.1*data_dif, data_max + 0.1*data_dif)
+                        plt.axline((0, 0), slope=1.0, color='k')
+                        plt.savefig(output_file)
+                        plt.close('all')
 
         # Close files
         fh_exp.close()

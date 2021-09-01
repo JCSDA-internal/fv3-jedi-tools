@@ -15,7 +15,7 @@ def gsidiag_to_ioda(datetime, conf):
 
     # Import from ioda-converters in program to avoid needing by default
     import gsi_ncdiag as gsi_ncdiag
-    import combine_conv as combine_conv
+    import combine_files as combine_files
 
     # Input and output directories
     idir_ = conf['input directory']
@@ -133,7 +133,7 @@ def gsidiag_to_ioda(datetime, conf):
       outfile = os.path.join(odir, type+'_obs_'+date+time+'.nc4')
 
       # Perform combine
-      combine_conv.concat_ioda(infiles_list, outfile, False)
+      combine_files.concat_ioda(infiles_list, outfile, False)
 
       # Remove input files
       if (os.path.exists(outfile)):
