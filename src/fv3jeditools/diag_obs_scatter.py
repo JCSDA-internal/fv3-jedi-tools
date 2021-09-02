@@ -75,7 +75,7 @@ def obs_scatter(datetime, conf):
         fh_ref = netCDF4.Dataset(ioda_ref_file)
 
         # Get potential variables
-        variables = fh_exp.groups['ObsValue'].variables.keys()
+        variables = fh_exp.groups['hofx'].variables.keys()
 
         # Check for channels
         try:
