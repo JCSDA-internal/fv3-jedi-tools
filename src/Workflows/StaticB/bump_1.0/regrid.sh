@@ -240,8 +240,8 @@ geometry:
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
   layout: [${nlx},${nly}]
-  npx: 385
-  npy: 385
+  npx: ${npx}
+  npy: ${npy}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -249,14 +249,14 @@ background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_regrid}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
 date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_regrid}/${bump_dir}
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3

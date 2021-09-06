@@ -65,8 +65,6 @@ export yyyymmddhh_obs="2020121421"
 export nlx=4
 export nly=4
 export cregrid=96
-export npx=97
-export npy=97
 
 ####################################################################
 # What should be run? ##############################################
@@ -98,6 +96,7 @@ export run_merge_nicas=false
 export run_regrid_background=false
 export run_regrid_first_member=false
 export run_regrid_psichitouv=false
+export run_regrid_vbal=false
 export run_regrid_varcor=false
 export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
@@ -111,11 +110,15 @@ export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
-export run_dirac_full_regrid_local=false
 export run_dirac_full_global=false
+export run_dirac_full_regrid_local=false
 
 # Variational runs
 export run_variational_3dvar=false
+export run_variational_3dvar_regrid=false
+
+# Conversion
+export run_convert_background=false
 
 ####################################################################
 ####################################################################
@@ -166,6 +169,11 @@ export yaml_dir="${xp_dir}/${bump_dir}/yaml"
 
 # Local scripts directory
 export script_dir=`pwd`
+
+# Regridding
+export npx=$((cregrid+1))
+export npy=$((cregrid+1))
+export dirac_center=$((cregrid/2))
 
 ####################################################################
 # Create directories ###############################################
@@ -281,14 +289,19 @@ if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "t
    ./regrid.sh
 fi
 
-if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_regrid_local}" = "true" || "${run_dirac_full_global}" = "true"; then
+if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || "${run_dirac_full_global}" = "true" || test "${run_dirac_full_regrid_local}" = "true" ; then
    # Dirac runs
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}" = "true" ; then
    # Variational runs
    ./variational.sh
+fi
+
+if test "${run_convert_background}" = "true" ; then
+   # Convert runs
+   ./convert.sh
 fi
 
 ####################################################################
@@ -394,31 +407,31 @@ fi
 
 # Run background
 if test "${run_regrid_background}" = "true"; then
-   run_sbatch regrid_background.sh
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_background.sh
    regrid_background_pid=:${pid}
 fi
 
 # Run first member
 if test "${run_regrid_first_member}" = "true"; then
-   run_sbatch regrid_first_member_${yyyymmddhh_last}.sh
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}.sh
    regrid_first_member_pid=:${pid}
 fi
 
 # Run psichitouv
 if test "${run_regrid_psichitouv}" = "true"; then
-   run_sbatch regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
    regrid_psichitouv_pid=:${pid}
 fi
 
 # Run vbal
 if test "${run_regrid_vbal}" = "true"; then
-   run_sbatch regrid_vbal_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}${regrid_first_member_pid}
    regrid_vbal_pid=:${pid}
 fi
 
 # Run var-cor
 if test "${run_regrid_varcor}" = "true"; then
-   run_sbatch regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}${regrid_first_member_pid}
    regrid_varcor_pid=:${pid}
 fi
 
@@ -426,14 +439,14 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_nicas_pids}${regrid_first_member_pid}
+      run_sbatch regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_varcor_pid}${final_nicas_pids}${regrid_first_member_pid}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
 
 # Run merge nicas
 if test "${run_regrid_merge_nicas}" = "true"; then
-   run_sbatch regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}${regrid_first_member_pid}
    regrid_merge_nicas_pid=:${pid}
 fi
 
@@ -496,7 +509,7 @@ fi
 
 # Run dirac_full_regrid_local
 if test "${run_dirac_full_regrid_local}" = "true"; then
-   run_sbatch dirac_full_regrid_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${final_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   run_sbatch dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
    dirac_full_regrid_local_pid=:${pid}
 fi
 
@@ -507,6 +520,21 @@ fi
 if test "${run_variational_3dvar}" = "true"; then
    run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    variational_3dvar_pid=:${pid}
+fi
+
+# Run 3dvar_regrid
+if test "${run_variational_3dvar_regrid}" = "true"; then
+   run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   variational_3dvar_regrid_pid=:${pid}
+fi
+
+# Convert runs
+# ------------
+
+# Run background
+if test "${run_convert_background}" = "true"; then
+   run_sbatch convert_background.sh
+   convert_background_pid=:${pid}
 fi
 
 exit 0

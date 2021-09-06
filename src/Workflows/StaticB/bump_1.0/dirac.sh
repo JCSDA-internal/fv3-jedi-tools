@@ -1039,30 +1039,30 @@ exit 0
 EOF
 
 ####################################################################
-# DIRAC_FULL_C192_LOCAL ############################################
+# DIRAC_FULL_REGRID_LOCAL ##########################################
 ####################################################################
 
 # Create specific BUMP and work directories
-mkdir -p ${data_dir_c192}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# DIRAC_FULL_C192_LOCAL yaml
-yaml_name="dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
+# DIRAC_FULL_REGRID_LOCAL yaml
+yaml_name="dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 193
-  npy: 193
+  layout: [${nlx},${nly}]
+  npx: ${npx}
+  npy: ${npy}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c192}/${bkg_dir}
+  datapath: ${data_dir_regrid}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -1073,133 +1073,7 @@ background error:
   active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c192}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    universe_rad: 12000.0e3
-    load_nicas_local: 1
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-    output variables: *control_vars
-    active variables: *active_vars
-    bump:
-      verbosity: main
-      universe_rad: 100.0e3
-      grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      - variables: [surface_pressure]
-    input:
-    - parameter: stddev
-      filetype: gfs
-      psinfile: 1
-      datapath: ${data_dir_c192}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
-    input variables: *control_vars
-    output variables: *control_vars
-    active variables: *active_vars
-    bump:
-      datadir: ${data_dir_c384}/${bump_dir}
-      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-      verbosity: main
-      universe_rad: 2000.0e3
-      load_vbal: 1
-      fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_global: 1
-      vbal_block: [1,1,0,1]
-  - variable change: PsiChiToUV
-    input variables: *control_vars
-    output variables: *state_vars
-    active variables: [psi,chi]
-    bump:
-      datadir: ${data_dir_c192}/${bump_dir}
-      prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-      verbosity: main
-      universe_rad: 2000.0e3
-      load_wind_local: 1
-output B:
-  filetype: geos
-  datapath: ${data_dir_c192}/${bump_dir}/geos
-  filename_bkgd: dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
-dirac:
-  ndir: 6
-  ixdir: [64,64,64,64,64,64]
-  iydir: [64,64,64,64,64,64]
-  ildir: [50,50,50,50,50,50]
-  itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
-EOF
-
-# DIRAC_FULL_C192_LOCAL sbatch
-sbatch_name="dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-source ${env_script}
-
-cd ${work_dir}/dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
-
-exit 0
-EOF
-
-####################################################################
-# DIRAC_FULL_7x7_LOCAL #############################################
-####################################################################
-
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# DIRAC_FULL_7x7_LOCAL yaml
-yaml_name="dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
-geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [7,7]
-  npx: 385
-  npy: 385
-  npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
-initial condition:
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_dir}
-  filename_cplr: coupler.res
-  filename_core: fv_core.res.nc
-  filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: true
-background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
+    datadir: ${data_dir_regrid}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
     load_nicas_local: 1
@@ -1213,7 +1087,7 @@ background error:
   universe radius:
     filetype: gfs
     psinfile: 1
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
     filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
@@ -1233,7 +1107,7 @@ background error:
     - parameter: stddev
       filetype: gfs
       psinfile: 1
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
@@ -1243,7 +1117,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_regrid}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -1256,43 +1130,43 @@ background error:
     output variables: *state_vars
     active variables: [psi,chi]
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_regrid}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: 1
 output B:
   filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  datapath: ${data_dir_regrid}/${bump_dir}/geos
+  filename_bkgd: dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
   date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
-  ixdir: [192,192,192,192,192,192]
-  iydir: [192,192,192,192,192,192]
+  ixdir: [${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center}]
+  iydir: [${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center}]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
   ifdir: ["t","t","t","t","t","t"]
 EOF
 
-# DIRAC_FULL_7x7_LOCAL sbatch
-sbatch_name="dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+# DIRAC_FULL_REGRID_LOCAL sbatch
+sbatch_name="dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=294
+#SBATCH --ntasks=$((6*nlx*nly))
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
 
-cd ${work_dir}/dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 294 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+cd ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
