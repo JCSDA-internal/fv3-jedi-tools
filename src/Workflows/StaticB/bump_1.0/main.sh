@@ -61,6 +61,13 @@ export yyyymmddhh_bkg="2020121500"
 # Observation date
 export yyyymmddhh_obs="2020121421"
 
+# Regridding layout and resolution
+export nlx=4
+export nly=4
+export cregrid=96
+export npx=97
+export npy=97
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################
@@ -87,13 +94,7 @@ export run_final_nicas=false
 export run_merge_varcor=false
 export run_merge_nicas=false
 
-# Split runs (for 7x7 procs on each tile)
-export run_split_psichitouv=false
-export nsplit=7
-export run_split_vbal=false
-export run_split_nicas=false
-
-# Regrid runs (at C192)
+# Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_background=false
 export run_regrid_first_member=false
 export run_regrid_psichitouv=false
@@ -110,8 +111,7 @@ export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
-export run_dirac_full_c192_local=false
-export run_dirac_full_7x7_local=false
+export run_dirac_full_regrid_local=false
 export run_dirac_full_global=false
 
 # Variational runs
@@ -156,7 +156,7 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 # Define directories
 echo `date`": define directories"
 export data_dir_c384=${data_dir}/c384
-export data_dir_c192=${data_dir}/c192
+export data_dir_regrid=${data_dir}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export bump_dir="bump_1.0"
@@ -175,12 +175,12 @@ if test "${create_directories}" = "true"; then
    # Create directories
    echo `date`": create directories"
    mkdir -p ${data_dir_c384}
-   mkdir -p ${data_dir_c192}
-   mkdir -p ${data_dir_c192}/${bkg_dir}
+   mkdir -p ${data_dir_regrid}
+   mkdir -p ${data_dir_regrid}/${bkg_dir}
    mkdir -p ${data_dir_c384}/${bump_dir}
-   mkdir -p ${data_dir_c192}/${bump_dir}
+   mkdir -p ${data_dir_regrid}/${bump_dir}
    mkdir -p ${data_dir_c384}/${bump_dir}/geos
-   mkdir -p ${data_dir_c192}/${bump_dir}/geos
+   mkdir -p ${data_dir_regrid}/${bump_dir}/geos
    for yyyymmddhh in ${yyyymmddhh_list}; do
       mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
       for imem in $(seq 1 1 ${nmem}); do
@@ -188,7 +188,7 @@ if test "${create_directories}" = "true"; then
          mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       done
    done
-   mkdir -p ${data_dir_c192}/${first_member_dir}
+   mkdir -p ${data_dir_regrid}/${first_member_dir}
    mkdir -p ${yaml_dir}
    mkdir -p ${sbatch_dir}
    mkdir -p ${work_dir}
@@ -276,17 +276,12 @@ if test "${run_merge_varcor}" = "true" || test "${run_merge_nicas}" = "true"; th
    ./merge.sh
 fi
 
-if test "${run_split_psichitouv}" = "true" || "${run_split_vbal}" = "true" || "${run_split_nicas}" = "true" ; then
-   # Split runs
-   ./split.sh
-fi
-
 if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_varcor}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
    # Regrid runs
    ./regrid.sh
 fi
 
-if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_c192_local}" = "true" || "${run_dirac_full_7x7_local}" = "true" || "${run_dirac_full_global}" = "true"; then
+if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_regrid_local}" = "true" || "${run_dirac_full_global}" = "true"; then
    # Dirac runs
    ./dirac.sh
 fi
@@ -394,27 +389,6 @@ if test "${run_merge_nicas}" = "true"; then
    merge_nicas_pid=:${pid}
 fi
 
-# Split runs
-# ----------
-
-# Run vbal
-if test "${run_split_vbal}" = "true"; then
-   run_sbatch split_vbal_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
-   split_vbal_pid=:${pid}
-fi
-
-# Run nicas
-if test "${run_split_nicas}" = "true"; then
-   run_sbatch split_nicas_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_global_pid}
-   split_nicas_pid=:${pid}
-fi
-
-# Run psichitouv
-if test "${run_split_psichitouv}" = "true"; then
-   run_sbatch split_psichitouv_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
-   split_psichitouv_pid=:${pid}
-fi
-
 # Regrid runs
 # -----------
 
@@ -434,6 +408,12 @@ fi
 if test "${run_regrid_psichitouv}" = "true"; then
    run_sbatch regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
    regrid_psichitouv_pid=:${pid}
+fi
+
+# Run vbal
+if test "${run_regrid_vbal}" = "true"; then
+   run_sbatch regrid_vbal_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
+   regrid_vbal_pid=:${pid}
 fi
 
 # Run var-cor
@@ -514,16 +494,10 @@ if test "${run_dirac_full_global}" = "true"; then
    dirac_full_global_pid=:${pid}
 fi
 
-# Run dirac_full_c192_local
-if test "${run_dirac_full_c192_local}" = "true"; then
-   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${final_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
-   dirac_full_c192_local_pid=:${pid}
-fi
-
-# Run dirac_full_7x7_local
-if test "${run_dirac_full_7x7_local}" = "true"; then
-   run_sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${split_nicas_pid}${merge_varcor_pid}${run_split_vbal}${run_split_psichitouv}
-   dirac_full_7x7_local_pid=:${pid}
+# Run dirac_full_regrid_local
+if test "${run_dirac_full_regrid_local}" = "true"; then
+   run_sbatch dirac_full_regrid_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${final_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   dirac_full_regrid_local_pid=:${pid}
 fi
 
 # Variational runs
