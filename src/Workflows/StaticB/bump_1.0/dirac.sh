@@ -4,8 +4,8 @@
 # DIRAC_COR_LOCAL ##################################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COR_LOCAL yaml
@@ -94,8 +94,8 @@ EOF
 # DIRAC_COR_GLOBAL #################################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COR_GLOBAL yaml
@@ -184,8 +184,8 @@ EOF
 # DIRAC_COV_LOCAL ##################################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_LOCAL yaml
@@ -294,8 +294,8 @@ EOF
 # DIRAC_COV_GLOBAL #################################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_GLOBAL yaml
@@ -404,8 +404,8 @@ EOF
 # DIRAC_COV_MULTI_LOCAL ############################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_MULTI_LOCAL yaml
@@ -527,8 +527,8 @@ EOF
 # DIRAC_COV_MULTI_GLOBAL ###########################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_MULTI_GLOBAL yaml
@@ -650,8 +650,8 @@ EOF
 # DIRAC_FULL_C2A_LOCAL #############################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_C2A_LOCAL yaml
@@ -776,8 +776,8 @@ EOF
 # DIRAC_FULL_PSICHITOUV_LOCAL ######################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_PSICHITOUV_LOCAL yaml
@@ -909,8 +909,8 @@ EOF
 # DIRAC_FULL_GLOBAL ################################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_c384}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_c384}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_GLOBAL yaml
@@ -1042,8 +1042,8 @@ EOF
 # DIRAC_FULL_REGRID_LOCAL ##########################################
 ####################################################################
 
-# Create specific BUMP and work directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Create directories
+mkdir -p ${data_dir_regrid}/${bump_dir}/geos
 mkdir -p ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_REGRID_LOCAL yaml

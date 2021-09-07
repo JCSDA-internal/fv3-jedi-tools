@@ -4,7 +4,8 @@
 # BACKGROUND #######################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
+mkdir -p ${data_dir_regrid}/${bkg_dir}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_background
 
 # BACKGROUND yaml
@@ -82,7 +83,8 @@ EOF
 # FIRST_MEMBER #####################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
+mkdir -p ${data_dir_regrid}/${first_member_dir}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}
 
 # FIRST_MEMBER yaml
@@ -160,7 +162,7 @@ EOF
 # PSICHITOUV #######################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${data_dir_regrid}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -228,8 +230,13 @@ EOF
 # VBAL #############################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
+mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+
+# Link input file
+ln -sf ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc
+ln -sf ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc
 
 # VBAL yaml
 yaml_name="regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -295,12 +302,10 @@ EOF
 # VAR-COR ##########################################################
 ####################################################################
 
-# Create specific work directory
-mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create output directory
+# Create directories
 mkdir -p ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # VAR-COR yaml
 yaml_name="regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -391,12 +396,11 @@ EOF
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
    # Link input files
-   ln -sf ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
    ln -sf ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
 
    # NICAS yaml
@@ -470,7 +474,7 @@ done
 # MERGE NICAS ######################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge local NICAS files

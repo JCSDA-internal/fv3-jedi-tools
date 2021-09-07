@@ -70,9 +70,6 @@ export cregrid=96
 # What should be run? ##############################################
 ####################################################################
 
-# Create directories
-export create_directories=false
-
 # Get data
 export get_data=false
 
@@ -176,37 +173,24 @@ export npy=$((cregrid+1))
 export dirac_center=$((cregrid/2))
 
 ####################################################################
-# Create directories ###############################################
+# Create work directories ##########################################
 ####################################################################
 
-if test "${create_directories}" = "true"; then
-   # Create directories
-   echo `date`": create directories"
-   mkdir -p ${data_dir_c384}
-   mkdir -p ${data_dir_regrid}
-   mkdir -p ${data_dir_regrid}/${bkg_dir}
-   mkdir -p ${data_dir_c384}/${bump_dir}
-   mkdir -p ${data_dir_regrid}/${bump_dir}
-   mkdir -p ${data_dir_c384}/${bump_dir}/geos
-   mkdir -p ${data_dir_regrid}/${bump_dir}/geos
-   for yyyymmddhh in ${yyyymmddhh_list}; do
-      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
-      for imem in $(seq 1 1 ${nmem}); do
-         imemp=$(printf "%.3d" "${imem}")
-         mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-      done
-   done
-   mkdir -p ${data_dir_regrid}/${first_member_dir}
-   mkdir -p ${yaml_dir}
-   mkdir -p ${sbatch_dir}
-   mkdir -p ${work_dir}
-fi
+# Create work directories
+echo `date`": create work directories"
+mkdir -p ${yaml_dir}
+mkdir -p ${sbatch_dir}
+mkdir -p ${work_dir}
 
 ####################################################################
 # Get data #########################################################
 ####################################################################
 
 if test "${get_data}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir_c384}"
+   mkdir -p ${data_dir_c384}
+
    # Go to data directory
    echo `date`": cd ${data_dir_c384}"
    cd ${data_dir_c384}

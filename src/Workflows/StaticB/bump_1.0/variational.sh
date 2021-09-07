@@ -4,7 +4,7 @@
 # 3DVAR ############################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${data_dir_c384}/${bump_dir}/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -193,7 +193,7 @@ EOF
 # 3DVAR REGRID #####################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${data_dir_regrid}/${bump_dir}/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 

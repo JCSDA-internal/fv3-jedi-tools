@@ -11,7 +11,7 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    # VBAL #############################################################
    ####################################################################
 
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh}
    mkdir -p ${work_dir}/vbal_${yyyymmddhh}
 
@@ -98,8 +98,12 @@ EOF
    # Unbal ############################################################
    ####################################################################
 
-   # Create specific BUMP and work directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/unbal_${yyyymmddhh}
+   # Create directories
+   mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
+      for imem in $(seq 1 1 ${nmem}); do
+      imemp=$(printf "%.3d" "${imem}")
+      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+   done
    mkdir -p ${work_dir}/unbal_${yyyymmddhh}
 
    # Unbal yaml
@@ -188,7 +192,7 @@ EOF
    ####################################################################
 
    for var in ${vars}; do
-      # Create specific BUMP and work directories
+      # Create directories
       mkdir -p ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
       mkdir -p ${work_dir}/var-mom_${yyyymmddhh}_${var}
 

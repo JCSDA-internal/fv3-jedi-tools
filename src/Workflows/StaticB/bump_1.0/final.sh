@@ -14,7 +14,7 @@ vars_generic+=(["ps"]="surface_pressure")
 # PSICHITOUV #######################################################
 ####################################################################
 
-# Create specific BUMP and work directories
+# Create directories
 mkdir -p ${data_dir_c384}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -82,7 +82,7 @@ EOF
 # VBAL #############################################################
 ####################################################################
 
-# Create specific BUMP and work directories
+# Create directories
 mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -161,7 +161,7 @@ EOF
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
@@ -270,7 +270,7 @@ done
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
@@ -381,7 +381,7 @@ done
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 

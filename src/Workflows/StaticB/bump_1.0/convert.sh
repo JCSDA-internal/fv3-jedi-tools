@@ -4,7 +4,7 @@
 # BACKGROUND #######################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/convert_background
 
 # BACKGROUND yaml
