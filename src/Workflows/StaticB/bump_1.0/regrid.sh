@@ -231,6 +231,7 @@ EOF
 ####################################################################
 
 # Create directories
+mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}
 mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 
