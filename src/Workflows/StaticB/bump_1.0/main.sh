@@ -112,6 +112,7 @@ export run_dirac_full_regrid_local=false
 
 # Variational runs
 export run_variational_3dvar=false
+export run_variational_3dvar_single_obs=false
 export run_variational_3dvar_regrid=false
 
 # Conversion
@@ -278,7 +279,7 @@ if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" 
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_single_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" ; then
    # Variational runs
    ./variational.sh
 fi
@@ -504,6 +505,12 @@ fi
 if test "${run_variational_3dvar}" = "true"; then
    run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    variational_3dvar_pid=:${pid}
+fi
+
+# Run 3dvar_single-obs
+if test "${run_variational_3dvar_single_obs}" = "true"; then
+   run_sbatch variational_3dvar_single-obs_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+   variational_3dvar_single_obs_pid=:${pid}
 fi
 
 # Run 3dvar_regrid
