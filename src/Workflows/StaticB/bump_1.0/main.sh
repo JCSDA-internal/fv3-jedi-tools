@@ -66,6 +66,16 @@ export nlx=4
 export nly=4
 export cregrid=96
 
+# Specific observations experiments
+export obs_xp="
+sondes
+single_ob_a
+single_ob_b
+single_ob_c
+single_ob_d
+single_ob_e
+single_ob_f"
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################
@@ -112,8 +122,8 @@ export run_dirac_full_regrid_local=false
 
 # Variational runs
 export run_variational_3dvar=false
-export run_variational_3dvar_single_obs=false
 export run_variational_3dvar_regrid=false
+export run_variational_3dvar_specific_obs=false
 
 # Conversion
 export run_convert_background=false
@@ -279,7 +289,7 @@ if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" 
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_single_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" ; then
    # Variational runs
    ./variational.sh
 fi
@@ -507,16 +517,19 @@ if test "${run_variational_3dvar}" = "true"; then
    variational_3dvar_pid=:${pid}
 fi
 
-# Run 3dvar_single-obs
-if test "${run_variational_3dvar_single_obs}" = "true"; then
-   run_sbatch variational_3dvar_single-obs_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
-   variational_3dvar_single_obs_pid=:${pid}
-fi
-
 # Run 3dvar_regrid
 if test "${run_variational_3dvar_regrid}" = "true"; then
    run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
    variational_3dvar_regrid_pid=:${pid}
+fi
+
+# Run 3dvar_specific_obs
+if test "${run_variational_3dvar_specific_obs}" = "true"; then
+   variational_3dvar_specific_obs_pid=''
+   for obs in ${obs_xp} ; do
+      run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+      variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
+   done
 fi
 
 # Convert runs
