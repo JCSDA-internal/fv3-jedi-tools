@@ -22,7 +22,7 @@ obs_name+=(["single_ob_f"]="Radiosonde")
 
 # Observations simulated variables
 declare -A obs_vars
-obs_vars+=(["sondes"]="air_temperature,eastward_wind,northward_wind,specific_humidity,surface_pressure")
+obs_vars+=(["sondes"]="air_temperature,eastward_wind,northward_wind")
 obs_vars+=(["single_ob_a"]="air_temperature")
 obs_vars+=(["single_ob_b"]="air_temperature")
 obs_vars+=(["single_ob_c"]="air_temperature")
@@ -36,7 +36,7 @@ obs_vars+=(["single_ob_f"]="air_temperature")
 
 # Create directories
 mkdir -p ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_c384}/${bump_dir}/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # 3DVAR yaml
 yaml_name="variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -147,6 +147,8 @@ cost function:
       name: Aircraft
       obsdatain:
         obsfile: ${data_dir}/obs/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
+      obsdataout:
+        obsfile: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       simulated variables: [air_temperature]
     obs operator:
       name: VertInterp
@@ -183,7 +185,7 @@ final:
 
 output:
 #  filetype: gfs
-#  datapath: ${data_dir_c384}/${bump_dir}/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+#  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 #  filename_cplr: coupler.res
 #  filename_core: fv_core.res.nc
 #  filename_sfcw: fv_srf_wnd.res.nc
@@ -225,7 +227,7 @@ EOF
 
 # Create directories
 mkdir -p ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # 3DVAR yaml
 yaml_name="variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -336,6 +338,8 @@ cost function:
       name: Aircraft
       obsdatain:
         obsfile: ${data_dir}/obs/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
+      obsdataout:
+        obsfile: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       simulated variables: [air_temperature]
     obs operator:
       name: VertInterp
@@ -372,7 +376,7 @@ final:
 
 output:
 #  filetype: gfs
-#  datapath: ${data_dir_regrid}/${bump_dir}/3dvar_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
+#  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
 #  filename_cplr: coupler.res
 #  filename_core: fv_core.res.nc
 #  filename_sfcw: fv_srf_wnd.res.nc
@@ -415,7 +419,7 @@ EOF
 for obs in ${obs_xp} ; do
    # Create directories
    mkdir -p ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
-   mkdir -p ${data_dir_c384}/${bump_dir}/3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+   mkdir -p ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
    
    # 3DVAR yaml
    yaml_name="variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
@@ -526,6 +530,8 @@ cost function:
       name: ${obs_name[${obs}]}
       obsdatain:
         obsfile: /work/noaa/da/dholdawa/JediWork/Benchmarks/3dvar/Data/obs/${obs_file[${obs}]}.nc4
+      obsdataout:
+        obsfile: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/${obs_file[${obs}]}.nc4
       simulated variables: [${obs_vars[${obs}]}]
     obs operator:
       name: VertInterp
@@ -562,7 +568,7 @@ final:
 
 output:
 #  filetype: gfs
-#  datapath: ${data_dir_c384}/${bump_dir}/3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+#  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
 #  filename_cplr: coupler.res
 #  filename_core: fv_core.res.nc
 #  filename_sfcw: fv_srf_wnd.res.nc

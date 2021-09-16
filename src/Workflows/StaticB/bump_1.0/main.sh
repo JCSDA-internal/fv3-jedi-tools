@@ -75,6 +75,14 @@ single_ob_c
 single_ob_d
 single_ob_e
 single_ob_f"
+export obs_xp_full="
+sondes
+single_ob_a
+single_ob_b
+single_ob_c
+single_ob_d
+single_ob_e
+single_ob_f"
 
 ####################################################################
 # What should be run? ##############################################
