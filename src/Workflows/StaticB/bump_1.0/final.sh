@@ -128,8 +128,9 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: 1
   write_samp_global: 1
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
+  vbal_diag_reg: [1, 0,0, 0,0,0]
   vbal_pseudo_inv: 1
   vbal_pseudo_inv_var_th: 0.1
 EOF

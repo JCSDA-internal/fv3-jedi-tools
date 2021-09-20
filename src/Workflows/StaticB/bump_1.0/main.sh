@@ -51,8 +51,8 @@ export vars="psi chi t ps sphum liq_wat o3mr"
 # Number of ensemble members
 export nmem=80
 
-# List of dates for the training (january or july)
-export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
+# List of dates for the training (january or july or both)
+export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
 #export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
 
 # Background date
@@ -89,7 +89,9 @@ single_ob_f"
 ####################################################################
 
 # Get data
-export get_data=false
+export get_data_ensemble=false
+export get_data_background=false
+export get_data_observations=false
 
 # Daily runs
 export run_daily_vbal=false
@@ -205,7 +207,7 @@ mkdir -p ${work_dir}
 # Get data #########################################################
 ####################################################################
 
-if test "${get_data}" = "true"; then
+if test "${get_data_ensemble}" = "true"; then
    # Make data directory
    echo `date`": mkdir -p ${data_dir_c384}"
    mkdir -p ${data_dir_c384}
@@ -229,8 +231,18 @@ if test "${get_data}" = "true"; then
       rm -f bvars_ens_${yyyymmddhh}.tar
 
       # Create coupler files
-      ./coupler.sh ${yyyymmddhh}
+      ${script_dir}/coupler.sh ${yyyymmddhh}
    done
+fi
+
+if test "${get_data_background}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir_c384}"
+   mkdir -p ${data_dir_c384}
+
+   # Go to data directory
+   echo `date`": cd ${data_dir_c384}"
+   cd ${data_dir_c384}
 
    # Get background
    echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"
@@ -243,6 +255,12 @@ if test "${get_data}" = "true"; then
    # Remove archive
    echo `date`": rm -f bkg_${yyyymmddhh_bkg}.tar"
    rm -f bkg_${yyyymmddhh_bkg}.tar
+fi
+
+if test "${get_data_observations}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir}"
+   mkdir -p ${data_dir}
 
    # Go to data directory
    echo `date`": cd ${data_dir}"

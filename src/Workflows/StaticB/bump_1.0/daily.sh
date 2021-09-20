@@ -51,8 +51,9 @@ bump:
   write_samp_local: 1
   nc1: 5000
   nc2: 3500
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
+  vbal_diag_reg: [1, 0,0, 0,0,0]
   vbal_pseudo_inv: 1
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
@@ -139,7 +140,7 @@ bump:
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
   fname_vbal: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal
   load_samp_local: 1
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
 operators application:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
