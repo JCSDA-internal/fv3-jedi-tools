@@ -14,7 +14,7 @@ vars_generic+=(["ps"]="surface_pressure")
 # PSICHITOUV #######################################################
 ####################################################################
 
-# Create specific BUMP and work directories
+# Create directories
 mkdir -p ${data_dir_c384}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -82,7 +82,7 @@ EOF
 # VBAL #############################################################
 ####################################################################
 
-# Create specific BUMP and work directories
+# Create directories
 mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 
@@ -128,8 +128,9 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: 1
   write_samp_global: 1
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
+  vbal_diag_reg: [1, 0,0, 0,0,0]
   vbal_pseudo_inv: 1
   vbal_pseudo_inv_var_th: 0.1
 EOF
@@ -161,7 +162,7 @@ EOF
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
@@ -270,7 +271,7 @@ done
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
@@ -381,7 +382,7 @@ done
 ####################################################################
 
 for var in ${vars}; do
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
    mkdir -p ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 

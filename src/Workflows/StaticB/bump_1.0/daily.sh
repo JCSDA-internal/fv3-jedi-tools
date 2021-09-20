@@ -11,7 +11,7 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    # VBAL #############################################################
    ####################################################################
 
-   # Create specific BUMP and work directories
+   # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh}
    mkdir -p ${work_dir}/vbal_${yyyymmddhh}
 
@@ -51,8 +51,9 @@ bump:
   write_samp_local: 1
   nc1: 5000
   nc2: 3500
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
+  vbal_diag_reg: [1, 0,0, 0,0,0]
   vbal_pseudo_inv: 1
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
@@ -98,8 +99,12 @@ EOF
    # Unbal ############################################################
    ####################################################################
 
-   # Create specific BUMP and work directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/unbal_${yyyymmddhh}
+   # Create directories
+   mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
+      for imem in $(seq 1 1 ${nmem}); do
+      imemp=$(printf "%.3d" "${imem}")
+      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+   done
    mkdir -p ${work_dir}/unbal_${yyyymmddhh}
 
    # Unbal yaml
@@ -135,7 +140,7 @@ bump:
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
   fname_vbal: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal
   load_samp_local: 1
-  vbal_block: [1,1,0,1]
+  vbal_block: [1, 1,0, 1,0,0]
 operators application:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
@@ -188,7 +193,7 @@ EOF
    ####################################################################
 
    for var in ${vars}; do
-      # Create specific BUMP and work directories
+      # Create directories
       mkdir -p ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
       mkdir -p ${work_dir}/var-mom_${yyyymmddhh}_${var}
 

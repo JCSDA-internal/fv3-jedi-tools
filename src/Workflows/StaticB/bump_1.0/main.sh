@@ -51,8 +51,8 @@ export vars="psi chi t ps sphum liq_wat o3mr"
 # Number of ensemble members
 export nmem=80
 
-# List of dates for the training (january or july)
-export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000"
+# List of dates for the training (january or july or both)
+export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
 #export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
 
 # Background date
@@ -61,15 +61,37 @@ export yyyymmddhh_bkg="2020121500"
 # Observation date
 export yyyymmddhh_obs="2020121421"
 
+# Regridding layout and resolution
+export nlx=4
+export nly=4
+export cregrid=96
+
+# Specific observations experiments
+export obs_xp="
+sondes
+single_ob_a
+single_ob_b
+single_ob_c
+single_ob_d
+single_ob_e
+single_ob_f"
+export obs_xp_full="
+sondes
+single_ob_a
+single_ob_b
+single_ob_c
+single_ob_d
+single_ob_e
+single_ob_f"
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################
 
-# Create directories
-export create_directories=false
-
 # Get data
-export get_data=false
+export get_data_ensemble=false
+export get_data_background=false
+export get_data_observations=false
 
 # Daily runs
 export run_daily_vbal=false
@@ -87,16 +109,11 @@ export run_final_nicas=false
 export run_merge_varcor=false
 export run_merge_nicas=false
 
-# Split runs (for 7x7 procs on each tile)
-export run_split_psichitouv=false
-export nsplit=7
-export run_split_vbal=false
-export run_split_nicas=false
-
-# Regrid runs (at C192)
+# Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_background=false
 export run_regrid_first_member=false
 export run_regrid_psichitouv=false
+export run_regrid_vbal=false
 export run_regrid_varcor=false
 export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
@@ -110,12 +127,16 @@ export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
-export run_dirac_full_c192_local=false
-export run_dirac_full_7x7_local=false
 export run_dirac_full_global=false
+export run_dirac_full_regrid_local=false
 
 # Variational runs
 export run_variational_3dvar=false
+export run_variational_3dvar_regrid=false
+export run_variational_3dvar_specific_obs=false
+
+# Conversion
+export run_convert_background=false
 
 ####################################################################
 ####################################################################
@@ -156,7 +177,7 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 # Define directories
 echo `date`": define directories"
 export data_dir_c384=${data_dir}/c384
-export data_dir_c192=${data_dir}/c192
+export data_dir_regrid=${data_dir}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export bump_dir="bump_1.0"
@@ -167,38 +188,30 @@ export yaml_dir="${xp_dir}/${bump_dir}/yaml"
 # Local scripts directory
 export script_dir=`pwd`
 
+# Regridding
+export npx=$((cregrid+1))
+export npy=$((cregrid+1))
+export dirac_center=$((cregrid/2))
+
 ####################################################################
-# Create directories ###############################################
+# Create work directories ##########################################
 ####################################################################
 
-if test "${create_directories}" = "true"; then
-   # Create directories
-   echo `date`": create directories"
-   mkdir -p ${data_dir_c384}
-   mkdir -p ${data_dir_c192}
-   mkdir -p ${data_dir_c192}/${bkg_dir}
-   mkdir -p ${data_dir_c384}/${bump_dir}
-   mkdir -p ${data_dir_c192}/${bump_dir}
-   mkdir -p ${data_dir_c384}/${bump_dir}/geos
-   mkdir -p ${data_dir_c192}/${bump_dir}/geos
-   for yyyymmddhh in ${yyyymmddhh_list}; do
-      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
-      for imem in $(seq 1 1 ${nmem}); do
-         imemp=$(printf "%.3d" "${imem}")
-         mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-      done
-   done
-   mkdir -p ${data_dir_c192}/${first_member_dir}
-   mkdir -p ${yaml_dir}
-   mkdir -p ${sbatch_dir}
-   mkdir -p ${work_dir}
-fi
+# Create work directories
+echo `date`": create work directories"
+mkdir -p ${yaml_dir}
+mkdir -p ${sbatch_dir}
+mkdir -p ${work_dir}
 
 ####################################################################
 # Get data #########################################################
 ####################################################################
 
-if test "${get_data}" = "true"; then
+if test "${get_data_ensemble}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir_c384}"
+   mkdir -p ${data_dir_c384}
+
    # Go to data directory
    echo `date`": cd ${data_dir_c384}"
    cd ${data_dir_c384}
@@ -218,8 +231,18 @@ if test "${get_data}" = "true"; then
       rm -f bvars_ens_${yyyymmddhh}.tar
 
       # Create coupler files
-      ./coupler.sh ${yyyymmddhh}
+      ${script_dir}/coupler.sh ${yyyymmddhh}
    done
+fi
+
+if test "${get_data_background}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir_c384}"
+   mkdir -p ${data_dir_c384}
+
+   # Go to data directory
+   echo `date`": cd ${data_dir_c384}"
+   cd ${data_dir_c384}
 
    # Get background
    echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"
@@ -232,6 +255,12 @@ if test "${get_data}" = "true"; then
    # Remove archive
    echo `date`": rm -f bkg_${yyyymmddhh_bkg}.tar"
    rm -f bkg_${yyyymmddhh_bkg}.tar
+fi
+
+if test "${get_data_observations}" = "true"; then
+   # Make data directory
+   echo `date`": mkdir -p ${data_dir}"
+   mkdir -p ${data_dir}
 
    # Go to data directory
    echo `date`": cd ${data_dir}"
@@ -276,24 +305,24 @@ if test "${run_merge_varcor}" = "true" || test "${run_merge_nicas}" = "true"; th
    ./merge.sh
 fi
 
-if test "${run_split_psichitouv}" = "true" || "${run_split_vbal}" = "true" || "${run_split_nicas}" = "true" ; then
-   # Split runs
-   ./split.sh
-fi
-
-if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_varcor}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
+if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_vbal}" = "true" || "${run_regrid_varcor}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
    # Regrid runs
    ./regrid.sh
 fi
 
-if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || test "${run_dirac_full_c192_local}" = "true" || "${run_dirac_full_7x7_local}" = "true" || "${run_dirac_full_global}" = "true"; then
+if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" || "${run_dirac_cov_local}" = "true" || "${run_dirac_cov_global}" = "true" || test "${run_dirac_cov_multi_local}" = "true" || "${run_dirac_cov_multi_global}" = "true" || "${run_dirac_full_c2a_local}" = "true" || "${run_dirac_full_psichitouv_local}" = "true" || "${run_dirac_full_global}" = "true" || test "${run_dirac_full_regrid_local}" = "true" ; then
    # Dirac runs
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" ; then
    # Variational runs
    ./variational.sh
+fi
+
+if test "${run_convert_background}" = "true" ; then
+   # Convert runs
+   ./convert.sh
 fi
 
 ####################################################################
@@ -394,51 +423,36 @@ if test "${run_merge_nicas}" = "true"; then
    merge_nicas_pid=:${pid}
 fi
 
-# Split runs
-# ----------
-
-# Run vbal
-if test "${run_split_vbal}" = "true"; then
-   run_sbatch split_vbal_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}
-   split_vbal_pid=:${pid}
-fi
-
-# Run nicas
-if test "${run_split_nicas}" = "true"; then
-   run_sbatch split_nicas_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_global_pid}
-   split_nicas_pid=:${pid}
-fi
-
-# Run psichitouv
-if test "${run_split_psichitouv}" = "true"; then
-   run_sbatch split_psichitouv_${nsplit}x${nsplit}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}
-   split_psichitouv_pid=:${pid}
-fi
-
 # Regrid runs
 # -----------
 
 # Run background
 if test "${run_regrid_background}" = "true"; then
-   run_sbatch regrid_background.sh
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_background.sh
    regrid_background_pid=:${pid}
 fi
 
 # Run first member
 if test "${run_regrid_first_member}" = "true"; then
-   run_sbatch regrid_first_member_${yyyymmddhh_last}.sh
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}.sh
    regrid_first_member_pid=:${pid}
 fi
 
 # Run psichitouv
 if test "${run_regrid_psichitouv}" = "true"; then
-   run_sbatch regrid_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
    regrid_psichitouv_pid=:${pid}
+fi
+
+# Run vbal
+if test "${run_regrid_vbal}" = "true"; then
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}${regrid_first_member_pid}
+   regrid_vbal_pid=:${pid}
 fi
 
 # Run var-cor
 if test "${run_regrid_varcor}" = "true"; then
-   run_sbatch regrid_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}${regrid_first_member_pid}
    regrid_varcor_pid=:${pid}
 fi
 
@@ -446,14 +460,14 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regrid_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${final_nicas_pids}${regrid_first_member_pid}
+      run_sbatch regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_varcor_pid}${final_nicas_pids}${regrid_first_member_pid}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
 
 # Run merge nicas
 if test "${run_regrid_merge_nicas}" = "true"; then
-   run_sbatch regrid_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}
+   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}${regrid_first_member_pid}
    regrid_merge_nicas_pid=:${pid}
 fi
 
@@ -514,16 +528,10 @@ if test "${run_dirac_full_global}" = "true"; then
    dirac_full_global_pid=:${pid}
 fi
 
-# Run dirac_full_c192_local
-if test "${run_dirac_full_c192_local}" = "true"; then
-   run_sbatch dirac_full_c192_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${final_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
-   dirac_full_c192_local_pid=:${pid}
-fi
-
-# Run dirac_full_7x7_local
-if test "${run_dirac_full_7x7_local}" = "true"; then
-   run_sbatch dirac_full_7x7_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${split_nicas_pid}${merge_varcor_pid}${run_split_vbal}${run_split_psichitouv}
-   dirac_full_7x7_local_pid=:${pid}
+# Run dirac_full_regrid_local
+if test "${run_dirac_full_regrid_local}" = "true"; then
+   run_sbatch dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   dirac_full_regrid_local_pid=:${pid}
 fi
 
 # Variational runs
@@ -533,6 +541,30 @@ fi
 if test "${run_variational_3dvar}" = "true"; then
    run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
    variational_3dvar_pid=:${pid}
+fi
+
+# Run 3dvar_regrid
+if test "${run_variational_3dvar_regrid}" = "true"; then
+   run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   variational_3dvar_regrid_pid=:${pid}
+fi
+
+# Run 3dvar_specific_obs
+if test "${run_variational_3dvar_specific_obs}" = "true"; then
+   variational_3dvar_specific_obs_pid=''
+   for obs in ${obs_xp} ; do
+      run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+      variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
+   done
+fi
+
+# Convert runs
+# ------------
+
+# Run background
+if test "${run_convert_background}" = "true"; then
+   run_sbatch convert_background.sh
+   convert_background_pid=:${pid}
 fi
 
 exit 0

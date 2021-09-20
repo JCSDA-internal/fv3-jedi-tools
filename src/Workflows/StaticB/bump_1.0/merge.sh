@@ -4,7 +4,7 @@
 # VAR-COR ##########################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge VAR files
@@ -125,7 +125,7 @@ EOF
 # NICAS ############################################################
 ####################################################################
 
-# Create specific work directory
+# Create directories
 mkdir -p ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge NICAS files
