@@ -46,7 +46,7 @@ export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
 ####################################################################
 
 # Variables
-export vars="psi chi t ps sphum liq_wat o3mr"
+export vars="psi chi tv ps rh"
 
 # Number of ensemble members
 export nmem=80

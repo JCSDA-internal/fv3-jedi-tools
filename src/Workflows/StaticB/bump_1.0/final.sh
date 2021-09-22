@@ -4,10 +4,8 @@
 declare -A vars_generic
 vars_generic+=(["psi"]="stream_function")
 vars_generic+=(["chi"]="velocity_potential")
-vars_generic+=(["t"]="air_temperature")
-vars_generic+=(["sphum"]="specific_humidity")
-vars_generic+=(["liq_wat"]="cloud_liquid_water")
-vars_generic+=(["o3mr"]="ozone_mass_mixing_ratio")
+vars_generic+=(["tv"]="virtual_temperature")
+vars_generic+=(["rh"]="relative_humidity")
 vars_generic+=(["ps"]="surface_pressure")
 
 ####################################################################
@@ -34,13 +32,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
-input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+input variables: [psi,chi,tv,ps,rh]
 date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -102,13 +100,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
-input variables: [psi,chi,t,ps]
+input variables: [psi,chi,tv,ps]
 date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -182,7 +180,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -291,7 +289,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -402,7 +400,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc

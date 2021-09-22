@@ -31,13 +31,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
-input variables: [psi,chi,t,ps]
+input variables: [psi,chi,tv,ps]
 date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -123,7 +123,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
@@ -213,7 +213,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc

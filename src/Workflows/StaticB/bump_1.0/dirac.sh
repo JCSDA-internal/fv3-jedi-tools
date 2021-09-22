@@ -24,7 +24,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &active_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -42,7 +42,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -65,7 +65,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: [psi,psi,psi,psi,psi,psi,chi,chi,chi,chi,chi,chi,tv,tv,tv,tv,tv,tv,rh,rh,rh,rh,rh,rh,ps,ps,ps,ps,ps,ps]
 EOF
 
 # DIRAC_COR_LOCAL sbatch
@@ -114,7 +114,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &active_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -132,7 +132,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -155,7 +155,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: [psi,psi,psi,psi,psi,psi,chi,chi,chi,chi,chi,chi,tv,tv,tv,tv,tv,tv,rh,rh,rh,rh,rh,rh,ps,ps,ps,ps,ps,ps]
 EOF
 
 # DIRAC_COR_GLOBAL sbatch
@@ -204,7 +204,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -212,7 +212,7 @@ initial condition:
   filename_cplr: bvars.coupler.res
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -222,7 +222,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -236,14 +236,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -265,8 +265,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
-EOF
+  ifdir: [psi,psi,psi,psi,psi,psi,chi,chi,chi,chi,chi,chi,tv,tv,tv,tv,tv,tv,rh,rh,rh,rh,rh,rh,ps,ps,ps,ps,ps,ps]EOF
 
 # DIRAC_COV_LOCAL sbatch
 sbatch_name="dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
@@ -314,7 +313,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
@@ -323,7 +322,7 @@ initial condition:
   filename_cplr: bvars.coupler.res
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
@@ -332,7 +331,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -346,14 +345,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -375,7 +374,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: [psi,psi,psi,psi,psi,psi,chi,chi,chi,chi,chi,chi,tv,tv,tv,tv,tv,tv,rh,rh,rh,rh,rh,rh,ps,ps,ps,ps,ps,ps]
 EOF
 
 # DIRAC_COV_GLOBAL sbatch
@@ -424,7 +423,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -432,7 +431,7 @@ initial condition:
   filename_cplr: bvars.coupler.res
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -442,7 +441,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -456,14 +455,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -498,7 +497,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_COV_MULTI_LOCAL sbatch
@@ -547,7 +546,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -555,7 +554,7 @@ initial condition:
   filename_cplr: bvars.coupler.res
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -565,7 +564,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -579,14 +578,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -621,7 +620,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_COV_MULTI_GLOBAL sbatch
@@ -674,11 +673,11 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,tv,ps,rh]
   psinfile: true
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -688,7 +687,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -702,14 +701,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -747,7 +746,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_FULL_C2A_LOCAL sbatch
@@ -800,11 +799,11 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,tv,ps,rh]
   psinfile: true
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -814,7 +813,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -828,14 +827,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -880,7 +879,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_FULL_PSICHITOUV_LOCAL sbatch
@@ -933,11 +932,11 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,tv,ps,rh]
   psinfile: true
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_c384}/${bump_dir}
@@ -947,7 +946,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -961,14 +960,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -1013,7 +1012,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_FULL_GLOBAL sbatch
@@ -1066,11 +1065,11 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,tv,ps,rh]
   psinfile: true
 background error:
   covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  active variables: &active_vars [psi,chi,tv,ps,rh]
   bump:
     prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     datadir: ${data_dir_regrid}/${bump_dir}
@@ -1080,7 +1079,7 @@ background error:
     min_lev:
       liq_wat: 76
     grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
     - variables: [surface_pressure]
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -1094,14 +1093,14 @@ background error:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   variable changes:
   - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    input variables: &control_vars [psi,chi,tv,ps,rh]
     output variables: *control_vars
     active variables: *active_vars
     bump:
       verbosity: main
       universe_rad: 100.0e3
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
       - variables: [surface_pressure]
     input:
     - parameter: stddev
@@ -1146,7 +1145,7 @@ dirac:
   iydir: [${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center}]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: [tv,tv,tv,tv,tv,tv]
 EOF
 
 # DIRAC_FULL_REGRID_LOCAL sbatch

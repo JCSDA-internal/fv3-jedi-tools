@@ -46,7 +46,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,tv,ps,rh]
 
   geometry:
     fms initialization:
@@ -76,7 +76,7 @@ cost function:
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
@@ -86,7 +86,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -100,14 +100,14 @@ cost function:
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+      input variables: &control_vars [psi,chi,tv,ps,rh]
       output variables: *control_vars
       active variables: *active_vars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev
@@ -237,7 +237,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,tv,ps,rh]
 
   geometry:
     fms initialization:
@@ -267,7 +267,7 @@ cost function:
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_regrid}/${bump_dir}
@@ -277,7 +277,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -291,14 +291,14 @@ cost function:
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+      input variables: &control_vars [psi,chi,tv,ps,rh]
       output variables: *control_vars
       active variables: *active_vars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev
@@ -429,7 +429,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,tv,ps,rh]
 
   geometry:
     fms initialization:
@@ -459,7 +459,7 @@ cost function:
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
@@ -469,7 +469,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -483,14 +483,14 @@ cost function:
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+      input variables: &control_vars [psi,chi,tv,ps,rh]
       output variables: *control_vars
       active variables: *active_vars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev

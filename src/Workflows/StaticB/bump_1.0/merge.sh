@@ -30,11 +30,9 @@ cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 declare -A vars_files
 vars_files["psi"]="fv_core"
 vars_files["chi"]="fv_core"
-vars_files["t"]="fv_core"
+vars_files["tv"]="fv_core"
 vars_files["ps"]="fv_core"
-vars_files["sphum"]="fv_tracer"
-vars_files["liq_wat"]="fv_tracer"
-vars_files["o3mr"]="fv_tracer"
+vars_files["rh"]="fv_tracer"
 
 # VAR
 
