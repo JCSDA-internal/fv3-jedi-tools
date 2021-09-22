@@ -46,7 +46,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &stateVars [ua,va,T,ps,sphum,ice_wat,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -63,6 +63,8 @@ cost function:
 
   background:
     filetype: gfs
+    state variables: *stateVars
+    psinfile: 1
     datapath: ${data_dir_c384}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -70,13 +72,11 @@ cost function:
     filename_trcr: fv_tracer.res.nc
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
-    state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &controlVars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
@@ -86,7 +86,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -94,34 +94,33 @@ cost function:
       filetype: gfs
       psinfile: 1
       datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+      filename_core: cor_rh.fv_core.res.nc
+      filename_trcr: cor_rh.fv_tracer.res.nc
+      filename_cplr: cor_rh.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev
         filetype: gfs
         psinfile: 1
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - variable change: StatsVariableChange
-      input variables: *control_vars
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
+      active variables: [psi,chi,tv,ps]
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -131,16 +130,21 @@ cost function:
         fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
         load_samp_local: 1
         vbal_block: [1,1,0,1]
-    - variable change: PsiChiToUV
-      input variables: *control_vars
-      output variables: *vars
-      active variables: [psi,chi]
+    - variable change: StatsVariableChange
+      input variables: *controlVars
+      output variables: *controlVars
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
-        prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_wind_local: 1
+        load_vbal: 1
+        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        load_samp_local: 1
+        vbal_block: [1,1,0,1]
+    - variable change: Control2Analysis
+      input variables: *controlVars
+      output variables: *stateVars
 
   observations:
   - obs space:
@@ -237,7 +241,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &stateVars [ua,va,T,ps,sphum,ice_wat,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -254,6 +258,8 @@ cost function:
 
   background:
     filetype: gfs
+    state variables: *stateVars
+    psinfile: 1
     datapath: ${data_dir_regrid}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -261,13 +267,11 @@ cost function:
     filename_trcr: fv_tracer.res.nc
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
-    state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &controlVars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_regrid}/${bump_dir}
@@ -277,7 +281,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -285,34 +289,33 @@ cost function:
       filetype: gfs
       psinfile: 1
       datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+      filename_core: cor_rh.fv_core.res.nc
+      filename_trcr: cor_rh.fv_tracer.res.nc
+      filename_cplr: cor_rh.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev
         filetype: gfs
         psinfile: 1
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - variable change: StatsVariableChange
-      input variables: *control_vars
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
+      active variables: [psi,chi,tv,ps]
       bump:
         datadir: ${data_dir_regrid}/${bump_dir}
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -323,8 +326,8 @@ cost function:
         load_samp_local: 1
         vbal_block: [1,1,0,1]
     - variable change: PsiChiToUV
-      input variables: *control_vars
-      output variables: *vars
+      input variables: *controlVars
+      output variables: &stateVarsWithTvRh [ua,va,tv,ps,rh]
       active variables: [psi,chi]
       bump:
         datadir: ${data_dir_regrid}/${bump_dir}
@@ -332,6 +335,9 @@ cost function:
         verbosity: main
         universe_rad: 2000.0e3
         load_wind_local: 1
+    - variable change: Control2Analysis
+      input variables: *stateVarsWithTvRh
+      output variables: *stateVars
 
   observations:
   - obs space:
@@ -429,7 +435,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &stateVars [ua,va,T,ps,sphum,ice_wat,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -446,6 +452,8 @@ cost function:
 
   background:
     filetype: gfs
+    state variables: *stateVars
+    psinfile: 1
     datapath: ${data_dir_c384}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -453,13 +461,11 @@ cost function:
     filename_trcr: fv_tracer.res.nc
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
-    state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: BUMP
     full inverse: 1
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &controlVars [psi,chi,tv,ps,rh]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
@@ -469,7 +475,7 @@ cost function:
       min_lev:
         liq_wat: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
@@ -477,34 +483,33 @@ cost function:
       filetype: gfs
       psinfile: 1
       datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+      filename_core: cor_rh.fv_core.res.nc
+      filename_trcr: cor_rh.fv_tracer.res.nc
+      filename_cplr: cor_rh.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     variable changes:
     - variable change: StdDev
-      input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
       bump:
         verbosity: main
         universe_rad: 100.0e3
         grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        - variables: [stream_function,velocity_potential,virtual_temperature,relative_humidity]
         - variables: [surface_pressure]
       input:
       - parameter: stddev
         filetype: gfs
         psinfile: 1
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - variable change: StatsVariableChange
-      input variables: *control_vars
-      output variables: *control_vars
-      active variables: *active_vars
+      input variables: *controlVars
+      output variables: *controlVars
+      active variables: [psi,chi,tv,ps]
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -514,16 +519,21 @@ cost function:
         fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
         load_samp_local: 1
         vbal_block: [1,1,0,1]
-    - variable change: PsiChiToUV
-      input variables: *control_vars
-      output variables: *vars
-      active variables: [psi,chi]
+    - variable change: StatsVariableChange
+      input variables: *controlVars
+      output variables: *controlVars
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
-        prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_wind_local: 1
+        load_vbal: 1
+        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        load_samp_local: 1
+        vbal_block: [1,1,0,1]
+    - variable change: Control2Analysis
+      input variables: *controlVars
+      output variables: *stateVars
 
   observations:
   - obs space:

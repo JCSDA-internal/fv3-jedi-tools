@@ -46,7 +46,7 @@ export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
 ####################################################################
 
 # Variables
-export vars="psi chi t ps sphum liq_wat o3mr"
+export vars="psi chi tv ps rh"
 
 # Number of ensemble members
 export nmem=80
@@ -94,6 +94,7 @@ export get_data_background=false
 export get_data_observations=false
 
 # Daily runs
+export run_daily_varchange=false
 export run_daily_vbal=false
 export run_daily_unbal=false
 export run_daily_varmom=false
@@ -180,7 +181,7 @@ export data_dir_c384=${data_dir}/c384
 export data_dir_regrid=${data_dir}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
-export bump_dir="bump_1.0"
+export bump_dir="bump_1.1"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
@@ -230,7 +231,33 @@ if test "${get_data_ensemble}" = "true"; then
       echo `date`": rm -f bvars_ens_${yyyymmddhh}.tar"
       rm -f bvars_ens_${yyyymmddhh}.tar
 
+      # Get lighter NetCDF files
+      for imem in $(seq 1 ${nmem}); do
+         imemp=$(printf "%.3d" "${imem}")
+
+         # Rename member directory
+         echo `date`": mv ${data_dir_c384}/${yyyymmddhh}/mem${imemp} ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old"
+         mv ${data_dir_c384}/${yyyymmddhh}/mem${imemp} ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old
+
+         # Create new member directory
+         echo `date`": mkdir -p ${data_dir_c384}/${yyyymmddhh}/mem${imemp}"
+         mkdir -p ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
+
+         # Extract relevant variables
+         for tile in $(seq 1 6); do
+            echo `date`": ncks -v psi,chi,tv,ps ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_core.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_core.res.tile${tile}.nc"
+            ncks -v psi,chi,tv,ps ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_core.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_core.res.tile${tile}.nc
+            echo `date`": ncks -v sphum ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_tracer.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_tracer.res.tile${tile}.nc"
+            ncks -v sphum ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_tracer.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_tracer.res.tile${tile}.nc
+         done
+
+         # Remove old member directory
+         echo `date`": rm -fr ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old"
+         rm -fr ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old
+      done
+
       # Create coupler files
+      echo `date`": ${script_dir}/coupler.sh ${yyyymmddhh}"
       ${script_dir}/coupler.sh ${yyyymmddhh}
    done
 fi
@@ -290,7 +317,7 @@ cd ${script_dir}
 # Run generators
 echo `date`": run generators"
 
-if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
+if test "${run_daily_varchange}" = "true" || test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
    # Daily runs
    ./daily.sh
 fi
@@ -336,11 +363,20 @@ cd ${sbatch_dir}
 # Daily runs
 # ----------
 
+# Run varchange
+if test "${run_daily_varchange}" = "true"; then
+   daily_varchange_pids=""
+   for yyyymmddhh in ${yyyymmddhh_list}; do
+      run_sbatch varchange_${yyyymmddhh}.sh ""
+      daily_varchange_pids=${daily_varchange_pids}:${pid}
+   done
+fi
+
 # Run vbal
 if test "${run_daily_vbal}" = "true"; then
    daily_vbal_pids=""
    for yyyymmddhh in ${yyyymmddhh_list}; do
-      run_sbatch vbal_${yyyymmddhh}.sh ""
+      run_sbatch vbal_${yyyymmddhh}.sh  ${daily_varchange_pids}
       daily_vbal_pids=${daily_vbal_pids}:${pid}
    done
 fi

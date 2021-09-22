@@ -39,7 +39,7 @@ states:
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
-    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    state variables: [ua,va,tv,ps,rh]
     psinfile: true
   output:
     filetype: geos

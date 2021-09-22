@@ -4,10 +4,8 @@
 declare -A vars_generic
 vars_generic+=(["psi"]="stream_function")
 vars_generic+=(["chi"]="velocity_potential")
-vars_generic+=(["t"]="air_temperature")
-vars_generic+=(["sphum"]="specific_humidity")
-vars_generic+=(["liq_wat"]="cloud_liquid_water")
-vars_generic+=(["o3mr"]="ozone_mass_mixing_ratio")
+vars_generic+=(["tv"]="virtual_temperature")
+vars_generic+=(["rh"]="relative_humidity")
 vars_generic+=(["ps"]="surface_pressure")
 
 ####################################################################
@@ -34,13 +32,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
-input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+input variables: [psi,chi]
 date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -102,13 +100,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
-input variables: [psi,chi,t,ps]
+input variables: [psi,chi,tv,ps]
 date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -182,7 +180,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -211,19 +209,19 @@ EOF
 cat<< EOF >> ${yaml_dir}/${yaml_name}
 - parameter: var
   filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
   psinfile: 1
-  filename_core: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.coupler.res
+  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+  filename_core: var_${var}.fv_core.res.nc
+  filename_trcr: var_${var}.fv_tracer.res.nc
+  filename_cplr: var_${var}.coupler.res
   date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 - parameter: m4
   filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
   psinfile: 1
-  filename_core: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.coupler.res
+  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+  filename_core: m4_${var}.fv_core.res.nc
+  filename_trcr: m4_${var}.fv_tracer.res.nc
+  filename_cplr: m4_${var}.coupler.res
   date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
@@ -231,6 +229,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 output:
 - parameter: stddev
   filetype: gfs
+  prepend files with date: 0
   datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: stddev_${var}.fv_core.res.nc
   filename_trcr: stddev_${var}.fv_tracer.res.nc
@@ -291,7 +290,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -330,6 +329,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 output:
 - parameter: cor_rh
   filetype: gfs
+  prepend files with date: 0
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: cor_rh_${var}.fv_core.res.nc
   filename_trcr: cor_rh_${var}.fv_tracer.res.nc
@@ -337,6 +337,7 @@ output:
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - parameter: cor_rv
   filetype: gfs
+  prepend files with date: 0
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: cor_rv_${var}.fv_core.res.nc
   filename_trcr: cor_rv_${var}.fv_tracer.res.nc
@@ -402,7 +403,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
   datapath: ${data_dir_c384}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
@@ -426,26 +427,26 @@ universe radius:
   filetype: gfs
   psinfile: 1
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+  filename_core: cor_rh_${var}.fv_core.res.nc
+  filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+  filename_cplr: cor_rh_${var}.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 input:
 - parameter: cor_rh
   filetype: gfs
   psinfile: 1
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+  filename_core: cor_rh_${var}.fv_core.res.nc
+  filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+  filename_cplr: cor_rh_${var}.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - parameter: cor_rv
   filetype: gfs
   psinfile: 1
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.coupler.res
+  filename_core: cor_rv_${var}.fv_core.res.nc
+  filename_trcr: cor_rv_${var}.fv_tracer.res.nc
+  filename_cplr: cor_rv_${var}.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
