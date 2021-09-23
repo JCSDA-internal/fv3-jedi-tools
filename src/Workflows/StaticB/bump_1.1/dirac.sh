@@ -26,7 +26,7 @@ initial condition:
   filetype: gfs
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -115,7 +115,7 @@ initial condition:
   filetype: gfs
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -204,7 +204,7 @@ initial condition:
   filetype: gfs
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -312,7 +312,7 @@ initial condition:
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -419,7 +419,7 @@ initial condition:
   filetype: gfs
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -539,7 +539,7 @@ initial condition:
   filetype: gfs
   state variables: &controlVars [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res

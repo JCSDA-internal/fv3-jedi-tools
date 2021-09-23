@@ -78,7 +78,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_regrid}/${first_member_dir}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${first_member_dir}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}
 
 # FIRST_MEMBER yaml
@@ -111,14 +111,14 @@ states:
     filetype: gfs
     state variables: [psi,chi,tv,ps,rh]
     psinfile: 1
-    datapath: ${data_dir_c384}/${first_member_dir}
+    datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
     filename_cplr: bvars.coupler.res
   output:
     filetype: gfs
     prepend files with date: 0
-    datapath: ${data_dir_regrid}/${first_member_dir}
+    datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
     filename_cplr: bvars.coupler.res
@@ -173,7 +173,7 @@ background:
   filetype: gfs
   state variables: stateVars[psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -246,7 +246,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -411,7 +411,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res

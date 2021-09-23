@@ -94,7 +94,6 @@ export get_data_background=false
 export get_data_observations=false
 
 # Daily runs
-export run_daily_varchange=false
 export run_daily_vbal=false
 export run_daily_unbal=false
 export run_daily_varmom=false
@@ -231,34 +230,12 @@ if test "${get_data_ensemble}" = "true"; then
       echo `date`": rm -f bvars_ens_${yyyymmddhh}.tar"
       rm -f bvars_ens_${yyyymmddhh}.tar
 
-      # Get lighter NetCDF files
-      for imem in $(seq 1 ${nmem}); do
-         imemp=$(printf "%.3d" "${imem}")
-
-         # Rename member directory
-         echo `date`": mv ${data_dir_c384}/${yyyymmddhh}/mem${imemp} ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old"
-         mv ${data_dir_c384}/${yyyymmddhh}/mem${imemp} ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old
-
-         # Create new member directory
-         echo `date`": mkdir -p ${data_dir_c384}/${yyyymmddhh}/mem${imemp}"
-         mkdir -p ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
-
-         # Extract relevant variables
-         for tile in $(seq 1 6); do
-            echo `date`": ncks -v psi,chi,tv,ps ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_core.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_core.res.tile${tile}.nc"
-            ncks -v psi,chi,tv,ps ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_core.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_core.res.tile${tile}.nc
-            echo `date`": ncks -v sphum ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_tracer.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_tracer.res.tile${tile}.nc"
-            ncks -v sphum ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old/bvars.fv_tracer.res.tile${tile}.nc ${data_dir_c384}/${yyyymmddhh}/mem${imemp}/bvars.fv_tracer.res.tile${tile}.nc
-         done
-
-         # Remove old member directory
-         echo `date`": rm -fr ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old"
-         rm -fr ${data_dir_c384}/${yyyymmddhh}/mem${imemp}_old
-      done
-
       # Create coupler files
       echo `date`": ${script_dir}/coupler.sh ${yyyymmddhh}"
       ${script_dir}/coupler.sh ${yyyymmddhh}
+
+      # Change variables
+      ${script_dir}/varchange.sh ${yyyymmddhh}
    done
 fi
 
@@ -317,7 +294,7 @@ cd ${script_dir}
 # Run generators
 echo `date`": run generators"
 
-if test "${run_daily_varchange}" = "true" || test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
+if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
    # Daily runs
    ./daily.sh
 fi
@@ -363,20 +340,11 @@ cd ${sbatch_dir}
 # Daily runs
 # ----------
 
-# Run varchange
-if test "${run_daily_varchange}" = "true"; then
-   daily_varchange_pids=""
-   for yyyymmddhh in ${yyyymmddhh_list}; do
-      run_sbatch varchange_${yyyymmddhh}.sh ""
-      daily_varchange_pids=${daily_varchange_pids}:${pid}
-   done
-fi
-
 # Run vbal
 if test "${run_daily_vbal}" = "true"; then
    daily_vbal_pids=""
    for yyyymmddhh in ${yyyymmddhh_list}; do
-      run_sbatch vbal_${yyyymmddhh}.sh  ${daily_varchange_pids}
+      run_sbatch vbal_${yyyymmddhh}.sh
       daily_vbal_pids=${daily_vbal_pids}:${pid}
    done
 fi
@@ -440,7 +408,7 @@ fi
 
 # Run psichitouv
 if test "${run_final_psichitouv}" = "true"; then
-   run_sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ""
+   run_sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh
    final_psichitouv_pid=:${pid}
 fi
 

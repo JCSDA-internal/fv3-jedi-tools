@@ -34,7 +34,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -102,7 +102,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -182,7 +182,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -292,7 +292,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -405,7 +405,7 @@ background:
   filetype: gfs
   state variables: [psi,chi,tv,ps,rh]
   psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
