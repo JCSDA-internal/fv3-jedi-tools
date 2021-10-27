@@ -25,8 +25,8 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -38,7 +38,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -48,7 +48,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -115,8 +115,8 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -128,7 +128,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_global: 1
+    load_nicas_global: true
     min_lev:
       liq_wat: 76
     grids:
@@ -138,7 +138,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -205,8 +205,8 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -218,7 +218,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -228,7 +228,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -248,7 +248,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -315,9 +315,9 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: 1
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -328,7 +328,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_global: 1
+    load_nicas_global: true
     min_lev:
       liq_wat: 76
     grids:
@@ -338,7 +338,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -358,7 +358,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -425,8 +425,8 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -438,7 +438,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -448,7 +448,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -468,7 +468,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -483,9 +483,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_local: 1
+      load_samp_local: true
       vbal_block: [1,1,0,1]
 output B:
   filetype: geos
@@ -548,8 +548,8 @@ geometry:
 initial condition:
   filetype: gfs
   state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -561,7 +561,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_global: 1
+    load_nicas_global: true
     min_lev:
       liq_wat: 76
     grids:
@@ -571,7 +571,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -591,7 +591,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -606,9 +606,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_global: 1
+      load_samp_global: true
       vbal_block: [1,1,0,1]
 output B:
   filetype: geos
@@ -670,7 +670,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -684,7 +684,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -694,7 +694,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -714,7 +714,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -729,9 +729,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_local: 1
+      load_samp_local: true
       vbal_block: [1,1,0,1]
   - variable change: Control2Analysis
     input variables: *control_vars
@@ -796,7 +796,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -810,7 +810,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -820,7 +820,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -840,7 +840,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -855,9 +855,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_local: 1
+      load_samp_local: true
       vbal_block: [1,1,0,1]
   - variable change: PsiChiToUV
     input variables: *control_vars
@@ -868,7 +868,7 @@ background error:
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_wind_local: 1
+      load_wind_local: true
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
@@ -929,7 +929,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_c384}/${bkg_dir}
+  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -943,7 +943,7 @@ background error:
     datadir: ${data_dir_c384}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_global: 1
+    load_nicas_global: true
     min_lev:
       liq_wat: 76
     grids:
@@ -953,7 +953,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -973,7 +973,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -988,9 +988,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_global: 1
+      load_samp_global: true
       vbal_block: [1,1,0,1]
   - variable change: PsiChiToUV
     input variables: *control_vars
@@ -1001,7 +1001,7 @@ background error:
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_wind_local: 1
+      load_wind_local: true
 output B:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
@@ -1062,7 +1062,7 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  datapath: ${data_dir_regrid}/${bkg_dir}
+  datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
@@ -1076,7 +1076,7 @@ background error:
     datadir: ${data_dir_regrid}/${bump_dir}
     verbosity: main
     strategy: specific_univariate
-    load_nicas_local: 1
+    load_nicas_local: true
     min_lev:
       liq_wat: 76
     grids:
@@ -1086,7 +1086,7 @@ background error:
       fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
   universe radius:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -1106,7 +1106,7 @@ background error:
     input:
     - parameter: stddev
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -1121,9 +1121,9 @@ background error:
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_vbal: 1
+      load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-      load_samp_local: 1
+      load_samp_local: true
       vbal_block: [1,1,0,1]
   - variable change: PsiChiToUV
     input variables: *control_vars
@@ -1134,7 +1134,7 @@ background error:
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
-      load_wind_local: 1
+      load_wind_local: true
 output B:
   filetype: geos
   datapath: ${data_dir_regrid}/${bump_dir}/geos

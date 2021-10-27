@@ -210,12 +210,12 @@ mkdir -p ${work_dir}
 
 if test "${get_data_ensemble}" = "true"; then
    # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}"
-   mkdir -p ${data_dir_c384}
+   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
+   mkdir -p ${data_dir_c384}/${bump_dir}
 
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}"
-   cd ${data_dir_c384}
+   echo `date`": cd ${data_dir_c384}/${bump_dir}"
+   cd ${data_dir_c384}/${bump_dir}
 
    # Get ensemble for regression
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -238,12 +238,12 @@ fi
 
 if test "${get_data_background}" = "true"; then
    # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}"
-   mkdir -p ${data_dir_c384}
+   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
+   mkdir -p ${data_dir_c384}/${bump_dir}
 
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}"
-   cd ${data_dir_c384}
+   echo `date`": cd ${data_dir_c384}/${bump_dir}"
+   cd ${data_dir_c384}/${bump_dir}
 
    # Get background
    echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"

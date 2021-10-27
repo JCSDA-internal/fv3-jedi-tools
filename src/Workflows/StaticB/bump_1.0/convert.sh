@@ -35,15 +35,15 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_dir}
+    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
-    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
-    psinfile: true
   output:
     filetype: geos
-    datapath: ${data_dir_c384}/${bkg_dir}
+    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_bkgd: bkg.nc4
 EOF
 

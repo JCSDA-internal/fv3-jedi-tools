@@ -32,7 +32,7 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
@@ -44,17 +44,17 @@ bump:
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
-  update_vbal_cov: 1
-  write_vbal_cov: 1
-  new_vbal: 1
-  write_vbal: 1
-  write_samp_local: 1
+  update_vbal_cov: true
+  write_vbal_cov: true
+  new_vbal: true
+  write_vbal: true
+  write_samp_local: true
   nc1: 5000
   nc2: 3500
   vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
   vbal_diag_reg: [1, 0,0, 0,0,0]
-  vbal_pseudo_inv: 1
+  vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
     members:
@@ -64,7 +64,7 @@ EOF
 cat<< EOF >> ${yaml_dir}/${yaml_name}
     - filetype: gfs
       state variables: *stateVars
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
       filename_core: bvars.fv_core.res.nc
       filename_trcr: bvars.fv_tracer.res.nc
@@ -124,7 +124,7 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
@@ -136,10 +136,10 @@ bump:
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
-  load_vbal: 1
+  load_vbal: true
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
   fname_vbal: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal
-  load_samp_local: 1
+  load_samp_local: true
   vbal_block: [1, 1,0, 1,0,0]
 operators application:
 EOF
@@ -149,7 +149,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 - input:
     filetype: gfs
     state variables: *stateVars
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
@@ -214,7 +214,7 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc
   filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc
@@ -228,18 +228,18 @@ bump:
   universe_rad: 4000.0e3
   method: cor
   strategy: specific_univariate
-  update_var: 1
-  update_mom: 1
-  write_mom: 1
-  new_hdiag: 1
-  write_hdiag: 1
-  write_samp_local: 1
+  update_var: true
+  update_mom: true
+  write_mom: true
+  new_hdiag: true
+  write_hdiag: true
+  write_samp_local: true
   nc1: 5000
   nc2: 1000
   nc3: 50
   dc: 75.0e3
   nl0r: 15
-  local_diag: 1
+  local_diag: true
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ensemble:
@@ -250,7 +250,7 @@ EOF
 cat<< EOF >> ${yaml_dir}/${yaml_name}
     - filetype: gfs
       state variables: *stateVars
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc
       filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc

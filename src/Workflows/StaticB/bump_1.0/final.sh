@@ -35,8 +35,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -47,8 +47,8 @@ bump:
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
-  new_wind: 1
-  write_wind_local: 1
+  new_wind: true
+  write_wind_local: true
   wind_nlon: 400
   wind_nlat: 200
   wind_nsg: 5
@@ -103,8 +103,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -115,9 +115,9 @@ bump:
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
-  load_vbal_cov: 1
-  new_vbal: 1
-  write_vbal: 1
+  load_vbal_cov: true
+  new_vbal: true
+  write_vbal: true
   fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
   fname_vbal_cov:
 EOF
@@ -126,12 +126,12 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
 done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
   ens1_nsub: ${yyyymmddhh_size}
-  load_samp_local: 1
-  write_samp_global: 1
+  load_samp_local: true
+  write_samp_global: true
   vbal_block: [1, 1,0, 1,0,0]
   vbal_rad: 2000.0e3
   vbal_diag_reg: [1, 0,0, 0,0,0]
-  vbal_pseudo_inv: 1
+  vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
 EOF
 
@@ -183,8 +183,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -196,7 +196,7 @@ bump:
   verbosity: main
   universe_rad: 3000.0e3
   ens1_nsub: ${yyyymmddhh_size}
-  var_filter: 1
+  var_filter: true
   var_niter: 1
   var_rhflt:
     ${vars_generic[${var}]}: [3000.0e3]
@@ -212,7 +212,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 - parameter: var
   filetype: gfs
   datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  psinfile: 1
+  psinfile: true
   filename_core: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_core.res.nc
   filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_tracer.res.nc
   filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.coupler.res
@@ -220,7 +220,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 - parameter: m4
   filetype: gfs
   datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  psinfile: 1
+  psinfile: true
   filename_core: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_core.res.nc
   filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_tracer.res.nc
   filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.coupler.res
@@ -292,8 +292,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -306,9 +306,9 @@ bump:
   method: cor
   strategy: specific_univariate
   universe_rad: 4000.0e3
-  load_mom: 1
-  new_hdiag: 1
-  write_diag: 1
+  load_mom: true
+  new_hdiag: true
+  write_diag: true
   fname_mom:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -317,13 +317,13 @@ EOF
 cat<< EOF >> ${yaml_dir}/${yaml_name}
   fname_samp: var-mom_${yyyymmddhh_last}/var-mom_${yyyymmddhh_last}_${var}_sampling
   ens1_nsub: ${yyyymmddhh_size}
-  load_samp_local: 1
+  load_samp_local: true
   nc1: 5000
   nc2: 1000
   nc3: 50
   dc: 75.0e3
   nl0r: 15
-  local_diag: 1
+  local_diag: true
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ne: $((nmem*yyyymmddhh_size))
@@ -403,8 +403,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -415,16 +415,16 @@ bump:
   datadir: ${data_dir_c384}/${bump_dir}
   verbosity: main
   strategy: specific_univariate
-  new_nicas: 1
-  write_nicas_local: 1
-  write_nicas_global: 1
+  new_nicas: true
+  write_nicas_local: true
+  write_nicas_global: true
   resol: 10.0
   nc1max: 50000
   min_lev:
     liq_wat: 76
 universe radius:
   filetype: gfs
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
@@ -433,7 +433,7 @@ universe radius:
 input:
 - parameter: cor_rh
   filetype: gfs
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
@@ -441,7 +441,7 @@ input:
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - parameter: cor_rv
   filetype: gfs
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_tracer.res.nc

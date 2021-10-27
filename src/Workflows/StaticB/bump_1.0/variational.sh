@@ -63,7 +63,7 @@ cost function:
 
   background:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_dir}
+    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -75,14 +75,14 @@ cost function:
 
   background error:
     covariance model: BUMP
-    full inverse: 1
+    full inverse: true
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
-      load_nicas_local: 1
+      load_nicas_local: true
       min_lev:
         liq_wat: 76
       grids:
@@ -92,7 +92,7 @@ cost function:
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
     universe radius:
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -112,7 +112,7 @@ cost function:
       input:
       - parameter: stddev
         filetype: gfs
-        psinfile: 1
+        psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
         filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -127,9 +127,9 @@ cost function:
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_vbal: 1
+        load_vbal: true
         fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-        load_samp_local: 1
+        load_samp_local: true
         vbal_block: [1,1,0,1]
     - variable change: PsiChiToUV
       input variables: *control_vars
@@ -140,7 +140,7 @@ cost function:
         prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_wind_local: 1
+        load_wind_local: true
 
   observations:
   - obs space:
@@ -254,7 +254,7 @@ cost function:
 
   background:
     filetype: gfs
-    datapath: ${data_dir_regrid}/${bkg_dir}
+    datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -266,14 +266,14 @@ cost function:
 
   background error:
     covariance model: BUMP
-    full inverse: 1
+    full inverse: true
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_regrid}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
-      load_nicas_local: 1
+      load_nicas_local: true
       min_lev:
         liq_wat: 76
       grids:
@@ -283,7 +283,7 @@ cost function:
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
     universe radius:
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -303,7 +303,7 @@ cost function:
       input:
       - parameter: stddev
         filetype: gfs
-        psinfile: 1
+        psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
         filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -318,9 +318,9 @@ cost function:
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_vbal: 1
+        load_vbal: true
         fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-        load_samp_local: 1
+        load_samp_local: true
         vbal_block: [1,1,0,1]
     - variable change: PsiChiToUV
       input variables: *control_vars
@@ -331,7 +331,7 @@ cost function:
         prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_wind_local: 1
+        load_wind_local: true
 
   observations:
   - obs space:
@@ -446,7 +446,7 @@ cost function:
 
   background:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_dir}
+    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -458,14 +458,14 @@ cost function:
 
   background error:
     covariance model: BUMP
-    full inverse: 1
+    full inverse: true
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
-      load_nicas_local: 1
+      load_nicas_local: true
       min_lev:
         liq_wat: 76
       grids:
@@ -475,7 +475,7 @@ cost function:
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
     universe radius:
       filetype: gfs
-      psinfile: 1
+      psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -495,7 +495,7 @@ cost function:
       input:
       - parameter: stddev
         filetype: gfs
-        psinfile: 1
+        psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
         filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -510,9 +510,9 @@ cost function:
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_vbal: 1
+        load_vbal: true
         fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
-        load_samp_local: 1
+        load_samp_local: true
         vbal_block: [1,1,0,1]
     - variable change: PsiChiToUV
       input variables: *control_vars
@@ -523,7 +523,7 @@ cost function:
         prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
-        load_wind_local: 1
+        load_wind_local: true
 
   observations:
   - obs space:

@@ -5,7 +5,7 @@
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_regrid}/${bkg_dir}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${bkg_dir}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_background
 
 # BACKGROUND yaml
@@ -36,15 +36,15 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    datapath: ${data_dir_c384}/${bkg_dir}
+    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
-    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
-    psinfile: true
   output:
     filetype: gfs
-    datapath: ${data_dir_regrid}/${bkg_dir}
+    datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -71,10 +71,10 @@ mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_na
 
 for i in \$(seq 1 6); do
    # Rename background files
-   mv ${data_dir_regrid}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${bkg_dir}/fv_core.res.tile\${i}.nc
-   mv ${data_dir_regrid}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${bkg_dir}/fv_tracer.res.tile\${i}.nc
+   mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${bkg_dir}/fv_core.res.tile\${i}.nc
+   mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${bkg_dir}/fv_tracer.res.tile\${i}.nc
 done
-mv ${data_dir_regrid}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.coupler.res ${data_dir_regrid}/${bkg_dir}/coupler.res
+mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.coupler.res ${data_dir_regrid}/${bump_dir}/${bkg_dir}/coupler.res
 
 exit 0
 EOF
@@ -84,7 +84,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_regrid}/${first_member_dir}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${first_member_dir}
 mkdir -p ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}
 
 # FIRST_MEMBER yaml
@@ -117,13 +117,13 @@ states:
     filetype: gfs
     state variables: [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
     psinfile: true
-    datapath: ${data_dir_c384}/${first_member_dir}
+    datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
     filename_cplr: bvars.coupler.res
   output:
     filetype: gfs
-    datapath: ${data_dir_regrid}/${first_member_dir}
+    datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
     filename_cplr: bvars.coupler.res
@@ -150,10 +150,10 @@ mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_na
 
 for i in \$(seq 1 6); do
    # Rename first member files
-   mv ${data_dir_regrid}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${first_member_dir}/bvars.fv_core.res.tile\${i}.nc
-   mv ${data_dir_regrid}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${first_member_dir}/bvars.fv_tracer.res.tile\${i}.nc
+   mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.fv_core.res.tile\${i}.nc
+   mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.fv_tracer.res.tile\${i}.nc
 done
-mv ${data_dir_regrid}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.coupler.res ${data_dir_regrid}/${first_member_dir}/bvars.coupler.res
+mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.coupler.res ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.coupler.res
 
 exit 0
 EOF
@@ -184,8 +184,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -196,8 +196,8 @@ bump:
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
-  new_wind: 1
-  write_wind_local: 1
+  new_wind: true
+  write_wind_local: true
   wind_nlon: 400
   wind_nlat: 200
   wind_nsg: 5
@@ -257,8 +257,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -269,12 +269,12 @@ bump:
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
-  load_vbal: 1
-  write_vbal: 1
+  load_vbal: true
+  write_vbal: true
   fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
   ens1_nsub: ${yyyymmddhh_size}
-  load_samp_global: 1
-  write_samp_local: 1
+  load_samp_global: true
+  write_samp_local: true
   vbal_block: [1,1,0,1]
 EOF
 
@@ -338,7 +338,7 @@ states:
 - input:
     filetype: gfs
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
@@ -346,7 +346,7 @@ states:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
@@ -355,7 +355,7 @@ states:
 - input:
     filetype: gfs
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
@@ -363,7 +363,7 @@ states:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -372,7 +372,7 @@ states:
 - input:
     filetype: gfs
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_core.res.nc
     filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_tracer.res.nc
@@ -380,7 +380,7 @@ states:
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: 1
+    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
@@ -439,8 +439,8 @@ geometry:
 background:
   filetype: gfs
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_regrid}/${first_member_dir}
+  psinfile: true
+  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
@@ -451,13 +451,13 @@ bump:
   datadir: ${data_dir_regrid}/${bump_dir}
   verbosity: main
   strategy: specific_univariate
-  load_nicas_global: 1
-  write_nicas_local: 1
+  load_nicas_global: true
+  write_nicas_local: true
   min_lev:
     liq_wat: 76
 universe radius:
   filetype: gfs
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
   filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
