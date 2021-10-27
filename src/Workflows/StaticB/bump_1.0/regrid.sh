@@ -116,6 +116,7 @@ states:
 - input:
     filetype: gfs
     state variables: [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    psinfile: true
     datapath: ${data_dir_c384}/${first_member_dir}
     filename_core: bvars.fv_core.res.nc
     filename_trcr: bvars.fv_tracer.res.nc
@@ -367,6 +368,23 @@ states:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+- input:
+    filetype: gfs
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    psinfile: 1
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_core.res.nc
+    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_tracer.res.nc
+    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+    filetype: gfs
+    psinfile: 1
+    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 

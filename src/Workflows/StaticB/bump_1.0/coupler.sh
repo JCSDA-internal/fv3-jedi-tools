@@ -3,9 +3,6 @@
 # Date
 yyyymmddhh=$1
 
-# Input file
-input_file=${data_dir}/coupler/coupler.res
-
 # Internal parameters
 yyyy=${yyyymmddhh:0:4}
 mm=${yyyymmddhh:4:2}
