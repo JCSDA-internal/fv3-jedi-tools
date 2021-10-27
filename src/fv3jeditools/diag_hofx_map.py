@@ -177,7 +177,10 @@ def hofx_map(datetime, conf):
         field_savename = field_savename+"-channel"+str(chan)
     savename = os.path.join(output_path, field_savename+"_"+metric+"_"+datetime.strftime("%Y%m%d_%H%M%S")+"."+plotformat)
 
-
+    # Set missing values to nans
+    missing = 9.0e+30
+    odat = np.where(np.abs(odat) < missing, odat, float("NaN"))
+    
     numobs = len(odat)
 
     obarray = np.empty([numobs, 3])
