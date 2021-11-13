@@ -38,7 +38,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
@@ -51,9 +50,9 @@ bump:
   write_samp_local: true
   nc1: 5000
   nc2: 3500
-  vbal_block: [1, 1,0, 1,0,0]
+  vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [1, 0,0, 0,0,0]
+  vbal_diag_reg: [true, false,false, false,false,false]
   vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
@@ -130,7 +129,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: *stateVars
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
@@ -140,28 +138,28 @@ bump:
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
   fname_vbal: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal
   load_samp_local: true
-  vbal_block: [1, 1,0, 1,0,0]
-operators application:
+  vbal_block: [true, true,false, true,false,false]
+  operators application:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-- input:
-    filetype: gfs
-    state variables: *stateVars
-    psinfile: true
-    datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
-    filename_core: bvars.fv_core.res.nc
-    filename_trcr: bvars.fv_tracer.res.nc
-    filename_cplr: bvars.coupler.res
-  bump operators: [multiplyVbalInv]
-  output:
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-    filename_core: unbal.fv_core.res.nc
-    filename_trcr: unbal.fv_tracer.res.nc
-    filename_cplr: unbal.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - input:
+      filetype: gfs
+      state variables: *stateVars
+      psinfile: true
+      datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
+      filename_core: bvars.fv_core.res.nc
+      filename_trcr: bvars.fv_tracer.res.nc
+      filename_cplr: bvars.coupler.res
+    bump operators: [multiplyVbalInv]
+    output:
+      filetype: gfs
+      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      filename_core: unbal.fv_core.res.nc
+      filename_trcr: unbal.fv_tracer.res.nc
+      filename_cplr: unbal.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
 
@@ -220,7 +218,6 @@ background:
   filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc
   filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.unbal.coupler.res
 input variables: [${var}]
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   prefix: var-mom_${yyyymmddhh}/var-mom_${yyyymmddhh}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
@@ -259,55 +256,55 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
 EOF
       done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-output:
-- parameter: var
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: var_${var}.fv_core.res.nc
-  filename_trcr: var_${var}.fv_tracer.res.nc
-  filename_cplr: var_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: m4
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: m4_${var}.fv_core.res.nc
-  filename_trcr: m4_${var}.fv_tracer.res.nc
-  filename_cplr: m4_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rh
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: cor_rh_${var}.fv_core.res.nc
-  filename_trcr: cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rh_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rv
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: cor_rv_${var}.fv_core.res.nc
-  filename_trcr: cor_rv_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rv_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: var
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: var_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: m4
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: m4_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rh
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rh_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rv
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rv_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  output:
+  - parameter: var
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filename_core: var_${var}.fv_core.res.nc
+    filename_trcr: var_${var}.fv_tracer.res.nc
+    filename_cplr: var_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: m4
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filename_core: m4_${var}.fv_core.res.nc
+    filename_trcr: m4_${var}.fv_tracer.res.nc
+    filename_cplr: m4_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rh
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filename_core: cor_rh_${var}.fv_core.res.nc
+    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rv
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filename_core: cor_rv_${var}.fv_core.res.nc
+    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: var
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: var_${yyyymmddhh}_${var}.nc4
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: m4
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: m4_${yyyymmddhh}_${var}.nc4
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rh
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: cor_rh_${yyyymmddhh}_${var}.nc4
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rv
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: cor_rv_${yyyymmddhh}_${var}.nc4
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch

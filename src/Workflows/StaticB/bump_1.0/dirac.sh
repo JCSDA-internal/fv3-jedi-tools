@@ -31,33 +31,37 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: *active_vars
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-output B:
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *active_vars
+    output variables: *active_vars
+    bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
+      verbosity: main
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
+      grids:
+      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
+      - variables: [surface_pressure]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -121,33 +125,37 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: *active_vars
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_global: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-output B:
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *active_vars
+    output variables: *active_vars
+    bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
+      verbosity: main
+      strategy: specific_univariate
+      load_nicas_global: true
+      min_lev:
+        liq_wat: 76
+      grids:
+      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
+      - variables: [surface_pressure]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -211,42 +219,39 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -254,10 +259,10 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -322,41 +327,39 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_global: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_global: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -364,10 +367,10 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -431,42 +434,39 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -474,7 +474,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -486,11 +486,11 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_local: true
-      vbal_block: [1,1,0,1]
-output B:
+      vbal_block: [true, true,false, true,false,false]
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
@@ -554,42 +554,39 @@ initial condition:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_global: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_global: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -597,7 +594,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -609,11 +606,11 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_global: true
-      vbal_block: [1,1,0,1]
-output B:
+      vbal_block: [true, true,false, true,false,false]
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filename_bkgd: dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
@@ -677,42 +674,39 @@ initial condition:
   state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: true
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -720,7 +714,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -732,15 +726,16 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_local: true
-      vbal_block: [1,1,0,1]
+      vbal_block: [true, true,false, true,false,false]
+  variable changes:
   - variable change: Control2Analysis
     input variables: *control_vars
     output variables: *state_vars
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+  filename_bkgd: dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -803,42 +798,39 @@ initial condition:
   state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: true
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -846,7 +838,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -858,22 +850,22 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_local: true
-      vbal_block: [1,1,0,1]
-  - variable change: PsiChiToUV
+      vbal_block: [true, true,false, true,false,false]
+  - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi]
+    active variables: [psi,chi,ua,va]
     bump:
       datadir: ${data_dir_c384}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: true
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+  filename_bkgd: dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -936,42 +928,39 @@ initial condition:
   state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: true
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_c384}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_global: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_c384}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_global: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -979,7 +968,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -991,22 +980,22 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_global: true
-      vbal_block: [1,1,0,1]
-  - variable change: PsiChiToUV
+      vbal_block: [true, true,false, true,false,false]
+  - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi]
+    active variables: [psi,chi,ua,va]
     bump:
       datadir: ${data_dir_c384}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: true
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+  filename_bkgd: dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -1069,42 +1058,39 @@ initial condition:
   state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
   psinfile: true
 background error:
-  covariance model: BUMP
-  active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  bump:
-    prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-    datadir: ${data_dir_regrid}/${bump_dir}
-    verbosity: main
-    strategy: specific_univariate
-    load_nicas_local: true
-    min_lev:
-      liq_wat: 76
-    grids:
-    - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-    - variables: [surface_pressure]
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
-  universe radius:
-    filetype: gfs
-    psinfile: true
-    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  variable changes:
-  - variable change: StdDev
-    input variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  covariance model: SABER
+  saber blocks:
+  - saber block name: BUMP_NICAS
+    saber central block: true
+    input variables: *control_vars
     output variables: *control_vars
-    active variables: *active_vars
+    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datadir: ${data_dir_regrid}/${bump_dir}
       verbosity: main
-      universe_rad: 100.0e3
+      strategy: specific_univariate
+      load_nicas_local: true
+      min_lev:
+        liq_wat: 76
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
       - variables: [surface_pressure]
-    input:
-    - parameter: stddev
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+      universe radius:
+        filetype: gfs
+        psinfile: true
+        datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
+        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
+        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - saber block name: StdDev
+    input variables: *control_vars
+    output variables: *control_vars
+    active variables: *active_vars
+    file:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -1112,7 +1098,7 @@ background error:
       filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
       filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - variable change: StatsVariableChange
+  - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
     active variables: *active_vars
@@ -1124,18 +1110,18 @@ background error:
       load_vbal: true
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_local: true
-      vbal_block: [1,1,0,1]
-  - variable change: PsiChiToUV
+      vbal_block: [true, true,false, true,false,false]
+  - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi]
+    active variables: [psi,chi,ua,va]
     bump:
       datadir: ${data_dir_regrid}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: true
-output B:
+output dirac:
   filetype: geos
   datapath: ${data_dir_regrid}/${bump_dir}/geos
   filename_bkgd: dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4

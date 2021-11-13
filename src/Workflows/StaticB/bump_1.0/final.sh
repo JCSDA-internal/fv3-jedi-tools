@@ -41,7 +41,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -109,7 +108,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
-date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -128,9 +126,9 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: true
   write_samp_global: true
-  vbal_block: [1, 1,0, 1,0,0]
+  vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [1, 0,0, 0,0,0]
+  vbal_diag_reg: [true, false,false, false,false,false]
   vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
 EOF
@@ -189,7 +187,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [${var}]
-date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
@@ -201,7 +198,7 @@ bump:
   var_rhflt:
     ${vars_generic[${var}]}: [3000.0e3]
   ne: $((nmem*yyyymmddhh_size))
-input:
+  input:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
       yyyy=${yyyymmddhh:0:4}
@@ -209,38 +206,38 @@ EOF
       dd=${yyyymmddhh:6:2}
       hh=${yyyymmddhh:8:2}
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-- parameter: var
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  psinfile: true
-  filename_core: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: m4
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  psinfile: true
-  filename_core: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: var
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    psinfile: true
+    filename_core: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_core.res.nc
+    filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_tracer.res.nc
+    filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: m4
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    psinfile: true
+    filename_core: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_core.res.nc
+    filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_tracer.res.nc
+    filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-output:
-- parameter: stddev
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: stddev_${var}.fv_core.res.nc
-  filename_trcr: stddev_${var}.fv_tracer.res.nc
-  filename_cplr: stddev_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- parameter: stddev
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: stddev_${var}_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+  - parameter: stddev
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: stddev_${var}.fv_core.res.nc
+    filename_trcr: stddev_${var}.fv_tracer.res.nc
+    filename_cplr: stddev_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - parameter: stddev
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: stddev_${var}_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # VAR sbatch
@@ -298,7 +295,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [${var}]
-date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
@@ -327,31 +323,31 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ne: $((nmem*yyyymmddhh_size))
-output:
-- parameter: cor_rh
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: cor_rh_${var}.fv_core.res.nc
-  filename_trcr: cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rh_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- parameter: cor_rv
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: cor_rv_${var}.fv_core.res.nc
-  filename_trcr: cor_rv_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rv_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- parameter: cor_rh
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rh_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- parameter: cor_rv
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rv_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+  - parameter: cor_rh
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: cor_rh_${var}.fv_core.res.nc
+    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - parameter: cor_rv
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: cor_rv_${var}.fv_core.res.nc
+    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - parameter: cor_rh
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: cor_rh_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - parameter: cor_rv
+    filetype: geos
+    datapath: ${data_dir_c384}/${bump_dir}/geos
+    filename_bkgd: cor_rv_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # COR sbatch
@@ -409,7 +405,6 @@ background:
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [${var}]
-date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
@@ -422,31 +417,31 @@ bump:
   nc1max: 50000
   min_lev:
     liq_wat: 76
-universe radius:
-  filetype: gfs
-  psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-input:
-- parameter: cor_rh
-  filetype: gfs
-  psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- parameter: cor_rv
-  filetype: gfs
-  psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_core.res.nc
-  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_tracer.res.nc
-  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  universe radius:
+    filetype: gfs
+    psinfile: true
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
+    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  input:
+  - parameter: cor_rh
+    filetype: gfs
+    psinfile: true
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
+    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  - parameter: cor_rv
+    filetype: gfs
+    psinfile: true
+    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_core.res.nc
+    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_tracer.res.nc
+    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # NICAS sbatch
