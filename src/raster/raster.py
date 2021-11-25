@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+@author: Benjamin Menetrier
+@description: plotting facility for FV3
+"""
+
+# (C) Copyright 2021 UCAR
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 import os
 import argparse
@@ -37,8 +46,8 @@ parser.add_argument("--gfs", dest="gfs", action="store_true", help="GFS input fi
 # File path
 parser.add_argument("--filepath", "-f", help="File path")
 
-# Base file path (to compute a difference)
-parser.add_argument("--basefilepath", "-bf", help="Base file path", default=None)
+# Base file path to compute a difference (optional)
+parser.add_argument("--basefilepath", "-bf", help="Base file path")
 
 # Variable
 parser.add_argument("--variable", "-v", help="Variable")
@@ -49,11 +58,11 @@ parser.add_argument("--level", "-l", type=int, help="Level")
 # Averaging size (optional, default=1)
 parser.add_argument("--average", "-a", type=int, nargs="?", help="Averaging size", default=1)
 
-# Averaging size (optional, default=0.0)
+# Threshold (optional, default=0.0)
 parser.add_argument("--threshold", "-th", type=float, nargs="?", help="Value threshold", default=0.0)
 
-# Color map
-parser.add_argument("--colormap", "-cm", nargs="?", help="Colormap", default="jet")
+# Color map (optional, default=jet)
+parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Colormap")
 
 # Output file path
 parser.add_argument("--output", "-o", help="Output file path")
@@ -62,6 +71,10 @@ parser.add_argument("--output", "-o", help="Output file path")
 
 # Parse arguments
 args = parser.parse_args()
+
+# Set default string values
+if args.colormap is None:
+    args.colormap = "jet"
 
 # Print arguments
 print("Parameters:")
