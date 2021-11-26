@@ -12,12 +12,18 @@
 import os
 import argparse
 import sys
+import time
 from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.cm as cm
 import numpy as np
 import cartopy.crs as ccrs
+
+# -----------------------------------------------------------------------------
+
+# Initial time
+initial_time = time.perf_counter()
 
 # -----------------------------------------------------------------------------
 
@@ -39,7 +45,7 @@ projection = ccrs.Robinson()
 # Parser
 parser = argparse.ArgumentParser()
 
-# GEOS / GFS flag
+# GEOS / GFS input file
 parser.add_argument("--geos", dest="geos", action="store_true", help="GEOS input file")
 parser.add_argument("--gfs", dest="gfs", action="store_true", help="GFS input file")
 
@@ -47,7 +53,7 @@ parser.add_argument("--gfs", dest="gfs", action="store_true", help="GFS input fi
 parser.add_argument("--filepath", "-f", help="File path")
 
 # Base file path to compute a difference (optional)
-parser.add_argument("--basefilepath", "-bf", help="Base file path")
+parser.add_argument("--basefilepath", "-bf", help="Base file path to compute a difference (optional)")
 
 # Variable
 parser.add_argument("--variable", "-v", help="Variable")
@@ -56,13 +62,16 @@ parser.add_argument("--variable", "-v", help="Variable")
 parser.add_argument("--level", "-l", type=int, help="Level")
 
 # Averaging size (optional, default=1)
-parser.add_argument("--average", "-a", type=int, nargs="?", help="Averaging size", default=1)
+parser.add_argument("--average", "-a", type=int, nargs="?", help="Averaging size (optional, default=1)", default=1)
 
-# Threshold (optional, default=0.0)
-parser.add_argument("--threshold", "-th", type=float, nargs="?", help="Value threshold", default=0.0)
+# Value threshold (optional, default=0.0)
+parser.add_argument("--threshold", "-th", type=float, nargs="?", help="Value threshold (optional, default=0.0)", default=0.0)
 
-# Color map (optional, default=jet)
-parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Colormap")
+# Color map (optional, default=jet or coolwarm)
+parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Color map (optional, default=jet or coolwarm)")
+
+# Centered color map
+parser.add_argument("--centered", dest="centered", action="store_true", help="Centered color map")
 
 # Output file path
 parser.add_argument("--output", "-o", help="Output file path")
@@ -74,7 +83,10 @@ args = parser.parse_args()
 
 # Set default string values
 if args.colormap is None:
-    args.colormap = "jet"
+    if args.centered:
+        args.colormap = "coolwarm"
+    else:
+        args.colormap = "jet"
 
 # Print arguments
 print("Parameters:")
@@ -202,8 +214,12 @@ elif lat_test:
     print(np.max(np.abs(fld-flats)))
 
 # Compute min/max
-vmin = np.min(fld)
-vmax = np.max(fld)
+if args.centered:
+    vmax = np.max(np.abs(fld))
+    vmin = -vmax
+else:
+    vmin = np.min(fld)
+    vmax = np.max(fld)
 norm = plt.Normalize(vmin=vmin, vmax=vmax)
 
 # Compute averaging norm
@@ -254,3 +270,12 @@ plt.colorbar(sm, orientation="horizontal", pad=0.06)
 # Save and close figure
 plt.savefig(args.output + ".jpg", format="jpg", dpi=300)
 plt.close()
+print(" -> plot produced: " + args.output + ".jpg")
+
+# -----------------------------------------------------------------------------
+
+# Final time
+final_time = time.perf_counter()
+
+# Print timing
+print(f"raster.py executed in {final_time - initial_time:0.4f} seconds")
