@@ -36,7 +36,7 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    state variables: [ua,va,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
@@ -45,6 +45,7 @@ states:
   output:
     filetype: gfs
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
+    prepend files with date: false
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_trcr: fv_tracer.res.nc
@@ -65,16 +66,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_background/regrid_c${cregrid}_${nlx}x${nly}_background.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_background
 mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
-
-for i in \$(seq 1 6); do
-   # Rename background files
-   mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${bkg_dir}/fv_core.res.tile\${i}.nc
-   mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${bkg_dir}/fv_tracer.res.tile\${i}.nc
-done
-mv ${data_dir_regrid}/${bump_dir}/${bkg_dir}/${yyyy_bkg}${mm_bkg}${dd_bkg}.${hh_bkg}0000.coupler.res ${data_dir_regrid}/${bump_dir}/${bkg_dir}/coupler.res
 
 exit 0
 EOF
@@ -115,18 +110,19 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    state variables: [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-    filename_core: bvars.fv_core.res.nc
-    filename_trcr: bvars.fv_tracer.res.nc
-    filename_cplr: bvars.coupler.res
+    filename_core: unbal.fv_core.res.nc
+    filename_trcr: unbal.fv_tracer.res.nc
+    filename_cplr: unbal.coupler.res
   output:
     filetype: gfs
     datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-    filename_core: bvars.fv_core.res.nc
-    filename_trcr: bvars.fv_tracer.res.nc
-    filename_cplr: bvars.coupler.res
+    prepend files with date: false
+    filename_core: unbal.fv_core.res.nc
+    filename_trcr: unbal.fv_tracer.res.nc
+    filename_cplr: unbal.coupler.res
 EOF
 
 # FIRST_MEMBER sbatch
@@ -144,16 +140,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}
 mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
-
-for i in \$(seq 1 6); do
-   # Rename first member files
-   mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_core.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.fv_core.res.tile\${i}.nc
-   mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.fv_tracer.res.tile\${i}.nc ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.fv_tracer.res.tile\${i}.nc
-done
-mv ${data_dir_regrid}/${bump_dir}/${first_member_dir}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.bvars.coupler.res ${data_dir_regrid}/${bump_dir}/${first_member_dir}/bvars.coupler.res
 
 exit 0
 EOF
@@ -186,9 +176,9 @@ background:
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
 bump:
   datadir: ${data_dir_regrid}/${bump_dir}
@@ -217,11 +207,11 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-export OMP_NUM_THREADS=2
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -258,9 +248,9 @@ background:
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps]
 bump:
   datadir: ${data_dir_regrid}/${bump_dir}
@@ -291,9 +281,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -338,14 +329,14 @@ states:
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+    filename_core: stddev.fv_core.res.nc
+    filename_trcr: stddev.fv_tracer.res.nc
+    filename_cplr: stddev.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
     filename_cplr: stddev.coupler.res
@@ -355,14 +346,14 @@ states:
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -372,14 +363,14 @@ states:
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.coupler.res
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: gfs
-    psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
@@ -401,6 +392,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
@@ -439,9 +431,9 @@ background:
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -456,9 +448,9 @@ bump:
     filetype: gfs
     psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
@@ -476,11 +468,11 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
 
-export OMP_NUM_THREADS=2
 source ${env_script}
+export OMP_NUM_THREADS=2
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -508,6 +500,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 module load nco
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
