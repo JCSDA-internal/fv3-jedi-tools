@@ -34,12 +34,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -68,11 +68,11 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-export OMP_NUM_THREADS=2
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -104,9 +104,9 @@ background:
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps]
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
@@ -148,9 +148,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -180,12 +181,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -210,17 +211,17 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
     filetype: gfs
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     psinfile: true
-    filename_core: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_core.res.nc
-    filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.fv_tracer.res.nc
-    filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.var_${var}.coupler.res
+    filename_core: var_${var}.fv_core.res.nc
+    filename_trcr: var_${var}.fv_tracer.res.nc
+    filename_cplr: var_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
     filetype: gfs
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     psinfile: true
-    filename_core: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_core.res.nc
-    filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.fv_tracer.res.nc
-    filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.m4_${var}.coupler.res
+    filename_core: m4_${var}.fv_core.res.nc
+    filename_trcr: m4_${var}.fv_tracer.res.nc
+    filename_cplr: m4_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
@@ -229,6 +230,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   - parameter: stddev
     filetype: gfs
     datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: stddev_${var}.fv_core.res.nc
     filename_trcr: stddev_${var}.fv_tracer.res.nc
     filename_cplr: stddev_${var}.coupler.res
@@ -255,9 +257,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -288,12 +291,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -327,6 +330,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   - parameter: cor_rh
     filetype: gfs
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: cor_rh_${var}.fv_core.res.nc
     filename_trcr: cor_rh_${var}.fv_tracer.res.nc
     filename_cplr: cor_rh_${var}.coupler.res
@@ -334,6 +338,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
   - parameter: cor_rv
     filetype: gfs
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
     filename_core: cor_rv_${var}.fv_core.res.nc
     filename_trcr: cor_rv_${var}.fv_tracer.res.nc
     filename_cplr: cor_rv_${var}.coupler.res
@@ -365,9 +370,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=2
 
 cd ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -398,12 +404,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
   filetype: gfs
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -421,26 +427,26 @@ bump:
     filetype: gfs
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+    filename_core: cor_rh_${var}.fv_core.res.nc
+    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   input:
   - parameter: cor_rh
     filetype: gfs
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_${var}.coupler.res
+    filename_core: cor_rh_${var}.fv_core.res.nc
+    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - parameter: cor_rv
     filetype: gfs
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_core.res.nc
-    filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.fv_tracer.res.nc
-    filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_${var}.coupler.res
+    filename_core: cor_rv_${var}.fv_core.res.nc
+    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
@@ -458,11 +464,11 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
 
-export OMP_NUM_THREADS=2
 source ${env_script}
+export OMP_NUM_THREADS=2
 
 cd ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF

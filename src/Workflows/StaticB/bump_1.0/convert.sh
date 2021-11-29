@@ -35,7 +35,7 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    state variables: [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+    state variables: [ua,va,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res

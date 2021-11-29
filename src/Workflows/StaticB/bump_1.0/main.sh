@@ -29,6 +29,7 @@ export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
 
 # JEDI binaries directory
 export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
+#export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 
 # Experiments directory
 export xp_dir="${HOME}/xp"
@@ -49,12 +50,11 @@ export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
 export vars="psi chi t ps sphum liq_wat o3mr"
 
 # Number of ensemble members
-export nmem=1
+export nmem=80
 
 # List of dates for the training (january or july or both)
-#export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
-export yyyymmddhh_list="2020013100"
-#export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
+export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
+#export yyyymmddhh_list="2020013100"
 
 # Background date
 export yyyymmddhh_bkg="2020121500"
@@ -112,7 +112,7 @@ export run_merge_nicas=false
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_background=false
-export run_regrid_first_member=true
+export run_regrid_first_member=false
 export run_regrid_psichitouv=false
 export run_regrid_vbal=false
 export run_regrid_varcor=false
@@ -126,7 +126,7 @@ export run_dirac_cov_local=false
 export run_dirac_cov_global=false
 export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
-export run_dirac_full_c2a_local=false
+export run_dirac_full_c2a_local=true
 export run_dirac_full_psichitouv_local=false
 export run_dirac_full_global=false
 export run_dirac_full_regrid_local=false
@@ -185,9 +185,7 @@ export bump_dir="bump_1.0"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
-
-# Local scripts directory
-export script_dir=`pwd`
+export script_dir="${xp_dir}/${bump_dir}/script"
 
 # Regridding
 export npx=$((cregrid+1))
@@ -232,7 +230,10 @@ if test "${get_data_ensemble}" = "true"; then
       rm -f bvars_ens_${yyyymmddhh}.tar
 
       # Create coupler files
-      ${script_dir}/coupler.sh ${yyyymmddhh}
+      for imem in $(seq 1 1 ${nmem}); do
+         imemp=$(printf "%.3d" "${imem}")
+         ${script_dir}/coupler.sh ${yyyymmddhh} ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
+      done
    done
 fi
 
@@ -495,7 +496,7 @@ fi
 
 # Run dirac_cov_global
 if test "${run_dirac_cov_global}" = "true"; then
-   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
+   run_sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
    dirac_cov_global_pid=:${pid}
 fi
 

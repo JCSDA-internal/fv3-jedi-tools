@@ -46,7 +46,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,t,ps,sphum,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -79,7 +79,7 @@ cost function:
     saber blocks:
     - saber block name: BUMP_NICAS
       saber central block: true
-      input variables: *control_vars
+      input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       output variables: *control_vars
       active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       bump:
@@ -99,9 +99,9 @@ cost function:
           filetype: gfs
           psinfile: true
           datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-          filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-          filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-          filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+          filename_core: cor_rh.fv_core.res.nc
+          filename_trcr: cor_rh.fv_tracer.res.nc
+          filename_cplr: cor_rh.coupler.res
           date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: StdDev
       input variables: *control_vars
@@ -111,9 +111,9 @@ cost function:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: BUMP_VerticalBalance
       input variables: *control_vars
@@ -130,7 +130,7 @@ cost function:
         vbal_block: [true, true,false, true,false,false]
     - saber block name: BUMP_PsiChiToUV
       input variables: *control_vars
-      output variables: *3dvars
+      output variables: *vars
       active variables: [psi,chi,ua,va]
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
@@ -206,11 +206,12 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:20:00
+#SBATCH --time=00:40:00
 #SBATCH -e ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
@@ -234,7 +235,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,t,ps,sphum,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -267,7 +268,7 @@ cost function:
     saber blocks:
     - saber block name: BUMP_NICAS
       saber central block: true
-      input variables: *control_vars
+      input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       output variables: *control_vars
       active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       bump:
@@ -287,9 +288,9 @@ cost function:
           filetype: gfs
           psinfile: true
           datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-          filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-          filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-          filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+          filename_core: cor_rh.fv_core.res.nc
+          filename_trcr: cor_rh.fv_tracer.res.nc
+          filename_cplr: cor_rh.coupler.res
           date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: StdDev
       input variables: *control_vars
@@ -299,9 +300,9 @@ cost function:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: BUMP_VerticalBalance
       input variables: *control_vars
@@ -318,7 +319,7 @@ cost function:
         vbal_block: [true, true,false, true,false,false]
     - saber block name: BUMP_PsiChiToUV
       input variables: *control_vars
-      output variables: *3dvars
+      output variables: *vars
       active variables: [psi,chi,ua,va]
       bump:
         datadir: ${data_dir_regrid}/${bump_dir}
@@ -399,6 +400,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
@@ -423,7 +425,7 @@ cost function:
   cost type: 3D-Var
   window begin: ${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z
   window length: PT6H
-  analysis variables: &vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  analysis variables: &vars [ua,va,t,ps,sphum,liq_wat,o3mr]
 
   geometry:
     fms initialization:
@@ -456,7 +458,7 @@ cost function:
     saber blocks:
     - saber block name: BUMP_NICAS
       saber central block: true
-      input variables: *control_vars
+      input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       output variables: *control_vars
       active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       bump:
@@ -476,9 +478,9 @@ cost function:
           filetype: gfs
           psinfile: true
           datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-          filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-          filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-          filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+          filename_core: cor_rh.fv_core.res.nc
+          filename_trcr: cor_rh.fv_tracer.res.nc
+          filename_cplr: cor_rh.coupler.res
           date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: StdDev
       input variables: *control_vars
@@ -488,9 +490,9 @@ cost function:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+        filename_core: stddev.fv_core.res.nc
+        filename_trcr: stddev.fv_tracer.res.nc
+        filename_cplr: stddev.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     - saber block name: BUMP_VerticalBalance
       input variables: *control_vars
@@ -507,7 +509,7 @@ cost function:
         vbal_block: [true, true,false, true,false,false]
     - saber block name: BUMP_PsiChiToUV
       input variables: *control_vars
-      output variables: *3dvars
+      output variables: *vars
       active variables: [psi,chi,ua,va]
       bump:
         datadir: ${data_dir_c384}/${bump_dir}
@@ -583,11 +585,12 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --ntasks=216
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
+#SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}

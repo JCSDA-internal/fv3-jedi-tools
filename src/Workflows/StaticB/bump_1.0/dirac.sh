@@ -27,9 +27,9 @@ initial condition:
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -54,9 +54,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: geos
@@ -87,6 +87,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -121,9 +122,9 @@ initial condition:
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -148,9 +149,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: geos
@@ -175,12 +176,13 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -212,12 +214,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -243,9 +245,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -255,9 +257,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: geos
@@ -288,6 +290,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -319,13 +322,13 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -351,9 +354,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -363,9 +366,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: geos
@@ -390,12 +393,13 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -427,12 +431,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -458,9 +462,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -470,9 +474,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -516,6 +520,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -547,12 +552,12 @@ geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
   filetype: gfs
-  state variables: &control_vars [psi,chi,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
-  filename_core: bvars.fv_core.res.nc
-  filename_trcr: bvars.fv_tracer.res.nc
-  filename_cplr: bvars.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 background error:
   covariance model: SABER
   saber blocks:
@@ -578,9 +583,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -590,9 +595,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -630,12 +635,13 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -671,14 +677,14 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: *control_vars
+    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     output variables: *control_vars
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
@@ -698,9 +704,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -710,9 +716,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -760,6 +766,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -795,14 +802,14 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: *control_vars
+    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     output variables: *control_vars
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
@@ -822,9 +829,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -834,9 +841,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -890,6 +897,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -925,14 +933,14 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: *control_vars
+    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     output variables: *control_vars
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
@@ -952,9 +960,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -964,9 +972,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -1014,12 +1022,13 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n 216 ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
@@ -1055,14 +1064,14 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,ice_wat,liq_wat,o3mr]
+  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: *control_vars
+    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     output variables: *control_vars
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
@@ -1082,9 +1091,9 @@ background error:
         filetype: gfs
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-        filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.nc
-        filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.nc
-        filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
+        filename_core: cor_rh.fv_core.res.nc
+        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -1094,9 +1103,9 @@ background error:
       filetype: gfs
       psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-      filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.nc
-      filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.nc
-      filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
+      filename_core: stddev.fv_core.res.nc
+      filename_trcr: stddev.fv_tracer.res.nc
+      filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
@@ -1150,6 +1159,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}

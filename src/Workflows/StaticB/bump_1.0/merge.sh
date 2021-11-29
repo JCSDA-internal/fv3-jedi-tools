@@ -22,6 +22,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 module load nco
 
 cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -41,141 +42,69 @@ vars_files["o3mr"]="fv_tracer"
 # NetCDF files
 for itile in \$(seq 1 6); do
    # Modifiy ps file axis
-   filename_var=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev_ps.fv_core.res.tile\${itile}.nc
+   filename_var=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev_ps.fv_core.res.tile\${itile}.nc
    ncrename -d zaxis_1,zaxis_2 \${filename_var}
 
    # Append files
-   filename_core=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_core.res.tile\${itile}.nc
-   filename_tracer=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.fv_tracer.res.tile\${itile}.nc
+   filename_core=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev.fv_core.res.tile\${itile}.nc
+   filename_tracer=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev.fv_tracer.res.tile\${itile}.nc
    rm -f \${filename_core} \${filename_tracer}
    for var in ${vars}; do
-      filename_full=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.\${vars_files[\${var}]}.res.tile\${itile}.nc
-      filename_var=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_full=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_var=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}"
       ncks -A \${filename_var} \${filename_full}
    done
 done
 
-# Create template coupler file
-output_file=${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.stddev.coupler.res
-cat<< EOFc > \${output_file}
-     0        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
-     0     0     0     0     0     0        Model start time:   year, month, day, hour, minute, second
-  _YYYY_    _M_    _D_    _H_     0     0        Current model time: year, month, day, hour, minute, second
-EOFc
-
-# Coupler file
-echo -e "Create coupler file \${output_file}"
-sed -i -e s/"_YYYY_"/${yyyy_last}/g \${output_file}
-if test "${m_last}" -le "9" ; then
-   sed -i -e s/"_M_"/" "${m_last}/g \${output_file}
-else
-   sed -i -e s/"_M_"/${m_last}/g \${output_file}
-fi
-if test "${d_last}" -le "9" ; then
-   sed -i -e s/"_D_"/" "${d_last}/g \${output_file}
-else
-   sed -i -e s/"_D_"/${d_last}/g \${output_file}
-fi
-if test "${h_last}" -le "9" ; then
-   sed -i -e s/"_H_"/" "${h_last}/g \${output_file}
-else
-   sed -i -e s/"_H_"/${h_last}/g \${output_file}
-fi
+# Create coupler file
+${script_dir}/coupler.sh ${yyyymmddhh_last} ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}/stddev.coupler.res
 
 # COR - RH
 
 # NetCDF files
 for itile in \$(seq 1 6); do
    # Modifiy ps file axis
-   filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_ps.fv_core.res.tile\${itile}.nc
+   filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh_ps.fv_core.res.tile\${itile}.nc
    ncrename -d zaxis_1,zaxis_2 \${filename_var}
 
    # Append files
-   filename_core=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_core.res.tile\${itile}.nc
-   filename_tracer=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.fv_tracer.res.tile\${itile}.nc
+   filename_core=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh.fv_core.res.tile\${itile}.nc
+   filename_tracer=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh.fv_tracer.res.tile\${itile}.nc
    rm -f \${filename_core} \${filename_tracer}
    for var in ${vars}; do
-      filename_full=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.\${vars_files[\${var}]}.res.tile\${itile}.nc
-      filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_full=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}"
       ncks -A \${filename_var} \${filename_full}
    done
 done
 
-# Create template coupler file
-output_file=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rh.coupler.res
-cat<< EOFc > \${output_file}
-     0        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
-     0     0     0     0     0     0        Model start time:   year, month, day, hour, minute, second
-  _YYYY_    _M_    _D_    _H_     0     0        Current model time: year, month, day, hour, minute, second
-EOFc
-
-# Coupler file
-echo -e "Create coupler file \${output_file}"
-sed -i -e s/"_YYYY_"/${yyyy_last}/g \${output_file}
-if test "${m_last}" -le "9" ; then
-   sed -i -e s/"_M_"/" "${m_last}/g \${output_file}
-else
-   sed -i -e s/"_M_"/${m_last}/g \${output_file}
-fi
-if test "${d_last}" -le "9" ; then
-   sed -i -e s/"_D_"/" "${d_last}/g \${output_file}
-else
-   sed -i -e s/"_D_"/${d_last}/g \${output_file}
-fi
-if test "${h_last}" -le "9" ; then
-   sed -i -e s/"_H_"/" "${h_last}/g \${output_file}
-else
-   sed -i -e s/"_H_"/${h_last}/g \${output_file}
-fi
+# Create coupler file
+${script_dir}/coupler.sh ${yyyymmddhh_last} ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rh.coupler.res
 
 # COR - RV
 
 # NetCDF files
 for itile in \$(seq 1 6); do
    # Modifiy ps file axis
-   filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_ps.fv_core.res.tile\${itile}.nc
+   filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv_ps.fv_core.res.tile\${itile}.nc
    ncrename -d zaxis_1,zaxis_2 \${filename_var}
 
    # Append files
-   filename_core=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_core.res.tile\${itile}.nc
-   filename_tracer=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.fv_tracer.res.tile\${itile}.nc
+   filename_core=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv.fv_core.res.tile\${itile}.nc
+   filename_tracer=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv.fv_tracer.res.tile\${itile}.nc
    rm -f \${filename_core} \${filename_tracer}
    for var in ${vars}; do
-      filename_full=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.\${vars_files[\${var}]}.res.tile\${itile}.nc
-      filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_full=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv.\${vars_files[\${var}]}.res.tile\${itile}.nc
+      filename_var=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv_\${var}.\${vars_files[\${var}]}.res.tile\${itile}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}"
       ncks -A \${filename_var} \${filename_full}
    done
 done
 
-# Create template coupler file
-output_file=${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.cor_rv.coupler.res
-cat<< EOFc > \${output_file}
-     0        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
-     0     0     0     0     0     0        Model start time:   year, month, day, hour, minute, second
-  _YYYY_    _M_    _D_    _H_     0     0        Current model time: year, month, day, hour, minute, second
-EOFc
-
-# Coupler file
-echo -e "Create coupler file \${output_file}"
-sed -i -e s/"_YYYY_"/${yyyy_last}/g \${output_file}
-if test "${m_last}" -le "9" ; then
-   sed -i -e s/"_M_"/" "${m_last}/g \${output_file}
-else
-   sed -i -e s/"_M_"/${m_last}/g \${output_file}
-fi
-if test "${d_last}" -le "9" ; then
-   sed -i -e s/"_D_"/" "${d_last}/g \${output_file}
-else
-   sed -i -e s/"_D_"/${d_last}/g \${output_file}
-fi
-if test "${h_last}" -le "9" ; then
-   sed -i -e s/"_H_"/" "${h_last}/g \${output_file}
-else
-   sed -i -e s/"_H_"/${h_last}/g \${output_file}
-fi
+# Create coupler file
+${script_dir}/coupler.sh ${yyyymmddhh_last} ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv.coupler.res
 
 exit 0
 EOF
@@ -202,6 +131,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 module load nco
 
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
