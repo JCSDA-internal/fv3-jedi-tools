@@ -315,6 +315,7 @@ EOF
    done
 cat<< EOF >> ${yaml_dir}/${yaml_name}
   fname_samp: var-mom_${yyyymmddhh_last}/var-mom_${yyyymmddhh_last}_${var}_sampling
+  ens1_ne: $((nmem*yyyymmddhh_size))
   ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: true
   nc1: 5000
