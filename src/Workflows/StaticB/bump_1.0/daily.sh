@@ -56,21 +56,19 @@ bump:
   vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
-    members:
-EOF
-   for imem in $(seq 1 1 ${nmem}); do
-      imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
-    - filetype: gfs
-      state variables: *stateVars
-      psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-      filename_core: bvars.fv_core.res.nc
-      filename_trcr: bvars.fv_tracer.res.nc
-      filename_cplr: bvars.coupler.res
-      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-EOF
-   done
+    members from template:
+      template:
+        filetype: gfs
+        state variables: *stateVars
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        filename_core: bvars.fv_core.res.nc
+        filename_trcr: bvars.fv_tracer.res.nc
+        filename_cplr: bvars.coupler.res
+        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      pattern: %mem%
+      nmembers: ${nmem}
+      zero padding: 3
 
    # VBAL sbatch
    sbatch_name="vbal_${yyyymmddhh}.sh"
@@ -243,22 +241,19 @@ bump:
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ensemble:
-    members:
-EOF
-      for imem in $(seq 1 1 ${nmem}); do
-         imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
-    - filetype: gfs
-      state variables: *stateVars
-      psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-      filename_core: unbal.fv_core.res.nc
-      filename_trcr: unbal.fv_tracer.res.nc
-      filename_cplr: unbal.coupler.res
-      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-EOF
-      done
-cat<< EOF >> ${yaml_dir}/${yaml_name}
+    members from template:
+      template:
+        filetype: gfs
+        state variables: *stateVars
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        filename_core: unbal.fv_core.res.nc
+        filename_trcr: unbal.fv_tracer.res.nc
+        filename_cplr: unbal.coupler.res
+        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      pattern: %mem%
+      nmembers: ${nmem}
+      zero padding: 3
   output:
   - parameter: var
     filetype: gfs
