@@ -24,6 +24,9 @@ run_sbatch () {
 # Data directory
 export data_dir="/work/noaa/da/menetrie/StaticBTraining"
 
+# Data directory for regridded data
+export data_dir_regrid_base="/work/noaa/da/menetrie/regridded"
+
 # FV3-JEDI source directory
 export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
 
@@ -54,7 +57,6 @@ export nmem=80
 
 # List of dates for the training (january or july or both)
 export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
-#export yyyymmddhh_list="2020013100"
 
 # Background date
 export yyyymmddhh_bkg="2020121500"
@@ -178,7 +180,7 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 # Define directories
 echo `date`": define directories"
 export data_dir_c384=${data_dir}/c384
-export data_dir_regrid=${data_dir}/c${cregrid}
+export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export bump_dir="bump_1.0"
