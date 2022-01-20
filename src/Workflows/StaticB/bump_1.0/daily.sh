@@ -287,26 +287,6 @@ bump:
     filename_trcr: cor_rv_${var}.fv_tracer.res.nc
     filename_cplr: cor_rv_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-  - parameter: var
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: var_${yyyymmddhh}_${var}.nc4
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-  - parameter: m4
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: m4_${yyyymmddhh}_${var}.nc4
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-  - parameter: cor_rh
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: cor_rh_${yyyymmddhh}_${var}.nc4
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-  - parameter: cor_rv
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: cor_rv_${yyyymmddhh}_${var}.nc4
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch

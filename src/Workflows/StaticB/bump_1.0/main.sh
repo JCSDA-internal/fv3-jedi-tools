@@ -25,7 +25,7 @@ run_sbatch () {
 export data_dir="/work/noaa/da/menetrie/StaticBTraining"
 
 # Data directory for regridded data
-export data_dir_regrid_base="/work/noaa/da/menetrie/regridded"
+export data_dir_regrid_base="/work/noaa/da/menetrie/regrid"
 
 # FV3-JEDI source directory
 export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
@@ -65,9 +65,9 @@ export yyyymmddhh_bkg="2020121500"
 export yyyymmddhh_obs="2020121421"
 
 # Regridding layout and resolution
-export nlx=4
-export nly=4
-export cregrid=96
+export nlx=20
+export nly=20
+export cregrid=384
 
 # Specific observations experiments
 export obs_xp="
@@ -128,7 +128,7 @@ export run_dirac_cov_local=false
 export run_dirac_cov_global=false
 export run_dirac_cov_multi_local=false
 export run_dirac_cov_multi_global=false
-export run_dirac_full_c2a_local=true
+export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
 export run_dirac_full_global=false
 export run_dirac_full_regrid_local=false
@@ -138,8 +138,8 @@ export run_variational_3dvar=false
 export run_variational_3dvar_regrid=false
 export run_variational_3dvar_specific_obs=false
 
-# Conversion
-export run_convert_background=false
+# Prepare scripts only (do not run sbatch)
+export prepare_scripts_only=false
 
 ####################################################################
 ####################################################################
@@ -162,6 +162,7 @@ export dd_last=${yyyymmddhh_last:6:2}
 export hh_last=${yyyymmddhh_last:8:2}
 export m_last=${mm_last##0}
 export d_last=${dd_last##0}
+
 export h_last=${hh_last##0}
 export yyyy_bkg=${yyyymmddhh_bkg:0:4}
 export mm_bkg=${yyyymmddhh_bkg:4:2}
@@ -292,7 +293,7 @@ echo `date`": cd ${script_dir}"
 cd ${script_dir}
 
 # Run generators
-echo `date`": run generators"
+echo `date`": run yamls and sbatch scripts generators"
 
 if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
    # Daily runs
@@ -324,14 +325,13 @@ if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}"
    ./variational.sh
 fi
 
-if test "${run_convert_background}" = "true" ; then
-   # Convert runs
-   ./convert.sh
-fi
-
 ####################################################################
 # Run sbatch #######################################################
 ####################################################################
+
+if test "${prepare_scripts_only}" = "true"; then
+   exit 0
+fi
 
 # Go to sbatch directory
 echo `date`": cd ${sbatch_dir}"
@@ -560,15 +560,6 @@ if test "${run_variational_3dvar_specific_obs}" = "true"; then
       run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
       variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
    done
-fi
-
-# Convert runs
-# ------------
-
-# Run background
-if test "${run_convert_background}" = "true"; then
-   run_sbatch convert_background.sh
-   convert_background_pid=:${pid}
 fi
 
 exit 0

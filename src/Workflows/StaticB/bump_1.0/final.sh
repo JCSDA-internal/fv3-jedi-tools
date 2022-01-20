@@ -235,11 +235,6 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
     filename_trcr: stddev_${var}.fv_tracer.res.nc
     filename_cplr: stddev_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - parameter: stddev
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: stddev_${var}_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # VAR sbatch
@@ -343,16 +338,6 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
     filename_core: cor_rv_${var}.fv_core.res.nc
     filename_trcr: cor_rv_${var}.fv_tracer.res.nc
     filename_cplr: cor_rv_${var}.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - parameter: cor_rh
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: cor_rh_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - parameter: cor_rv
-    filetype: geos
-    datapath: ${data_dir_c384}/${bump_dir}/geos
-    filename_bkgd: cor_rv_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.nc4
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 

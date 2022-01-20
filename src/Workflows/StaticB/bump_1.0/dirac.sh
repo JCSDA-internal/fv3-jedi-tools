@@ -5,7 +5,7 @@
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COR_LOCAL yaml
@@ -59,9 +59,12 @@ background error:
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -100,7 +103,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COR_GLOBAL yaml
@@ -154,9 +157,12 @@ background error:
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -195,7 +201,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_LOCAL yaml
@@ -262,9 +268,12 @@ background error:
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -303,7 +312,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_GLOBAL yaml
@@ -371,9 +380,12 @@ background error:
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
@@ -412,7 +424,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_MULTI_LOCAL yaml
@@ -492,9 +504,12 @@ background error:
       load_samp_local: true
       vbal_block: [true, true,false, true,false,false]
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
@@ -533,7 +548,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_COV_MULTI_GLOBAL yaml
@@ -613,9 +628,12 @@ background error:
       load_samp_global: true
       vbal_block: [true, true,false, true,false,false]
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
@@ -654,7 +672,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_C2A_LOCAL yaml
@@ -738,10 +756,13 @@ background error:
     input variables: *control_vars
     output variables: *state_vars
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -779,7 +800,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_PSICHITOUV_LOCAL yaml
@@ -869,10 +890,13 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -910,7 +934,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/geos
+mkdir -p ${data_dir_c384}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_GLOBAL yaml
@@ -1000,10 +1024,13 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}_%id%.nc4
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
+  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
@@ -1041,7 +1068,7 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/geos
+mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 mkdir -p ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_REGRID_LOCAL yaml
@@ -1131,9 +1158,12 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: geos
-  datapath: ${data_dir_regrid}/${bump_dir}/geos
-  filename_bkgd: dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filetype: gfs
+  datapath: ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  psinfile: true
+  filename_core: dirac_%id%.fv_core.res.nc
+  filename_trcr: dirac_%id%.fv_tracer.res.nc
+  filename_cplr: dirac_%id%.coupler.res
   date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6

@@ -181,17 +181,14 @@ final:
     departures: oman
 
 output:
-#  filetype: gfs
-#  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-#  filename_cplr: coupler.res
-#  filename_core: fv_core.res.nc
-#  filename_sfcw: fv_srf_wnd.res.nc
-#  filename_trcr: fv_tracer.res.nc
-#  filename_phys: phy_data.nc
-#  filename_sfcd: sfc_data.nc
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: 3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_sfcw: fv_srf_wnd.res.nc
+  filename_trcr: fv_tracer.res.nc
+  filename_phys: phy_data.nc
+  filename_sfcd: sfc_data.nc
   first: PT0H
   frequency: PT1H
 EOF
@@ -370,17 +367,14 @@ final:
     departures: oman
 
 output:
-#  filetype: gfs
-#  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
-#  filename_cplr: coupler.res
-#  filename_core: fv_core.res.nc
-#  filename_sfcw: fv_srf_wnd.res.nc
-#  filename_trcr: fv_tracer.res.nc
-#  filename_phys: phy_data.nc
-#  filename_sfcd: sfc_data.nc
-  filetype: geos
-  datapath: ${data_dir_regrid}/${bump_dir}/geos
-  filename_bkgd: 3dvar_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filetype: gfs
+  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_sfcw: fv_srf_wnd.res.nc
+  filename_trcr: fv_tracer.res.nc
+  filename_phys: phy_data.nc
+  filename_sfcd: sfc_data.nc
   first: PT0H
   frequency: PT1H
 EOF
@@ -394,7 +388,7 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -p orion
 #SBATCH -q batch
 #SBATCH --ntasks=$((6*nlx*nly))
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -560,17 +554,14 @@ final:
     departures: oman
 
 output:
-#  filetype: gfs
-#  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
-#  filename_cplr: coupler.res
-#  filename_core: fv_core.res.nc
-#  filename_sfcw: fv_srf_wnd.res.nc
-#  filename_trcr: fv_tracer.res.nc
-#  filename_phys: phy_data.nc
-#  filename_sfcd: sfc_data.nc
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: 3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.nc4
+  filetype: gfs
+  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  filename_cplr: coupler.res
+  filename_core: fv_core.res.nc
+  filename_sfcw: fv_srf_wnd.res.nc
+  filename_trcr: fv_tracer.res.nc
+  filename_phys: phy_data.nc
+  filename_sfcd: sfc_data.nc
   first: PT0H
   frequency: PT1H
 EOF
