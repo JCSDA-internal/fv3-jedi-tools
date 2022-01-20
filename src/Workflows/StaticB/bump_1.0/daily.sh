@@ -32,46 +32,43 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
-  update_vbal_cov: 1
-  write_vbal_cov: 1
-  new_vbal: 1
-  write_vbal: 1
-  write_samp_local: 1
+  update_vbal_cov: true
+  write_vbal_cov: true
+  new_vbal: true
+  write_vbal: true
+  write_samp_local: true
   nc1: 5000
   nc2: 3500
-  vbal_block: [1, 1,0, 1,0,0]
+  vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [1, 0,0, 0,0,0]
-  vbal_pseudo_inv: 1
+  vbal_diag_reg: [true, false,false, false,false,false]
+  vbal_pseudo_inv: true
   vbal_pseudo_inv_var_th: 0.1
   ensemble:
-    members:
-EOF
-   for imem in $(seq 1 1 ${nmem}); do
-      imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
-    - filetype: gfs
-      state variables: *stateVars
-      psinfile: 1
-      datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
-      filename_core: bvars.fv_core.res.nc
-      filename_trcr: bvars.fv_tracer.res.nc
-      filename_cplr: bvars.coupler.res
-      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-EOF
-   done
+    members from template:
+      template:
+        filetype: gfs
+        state variables: *stateVars
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        filename_core: bvars.fv_core.res.nc
+        filename_trcr: bvars.fv_tracer.res.nc
+        filename_cplr: bvars.coupler.res
+        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      pattern: %mem%
+      nmembers: ${nmem}
+      zero padding: 3
 
    # VBAL sbatch
    sbatch_name="vbal_${yyyymmddhh}.sh"
@@ -88,9 +85,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/vbal_${yyyymmddhh}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -124,44 +122,44 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
-  datapath: ${data_dir_c384}/${yyyymmddhh}/mem001
+  psinfile: true
+  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: *stateVars
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   datadir: ${data_dir_c384}/${bump_dir}
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
-  load_vbal: 1
+  load_vbal: true
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
   fname_vbal: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_vbal
-  load_samp_local: 1
-  vbal_block: [1, 1,0, 1,0,0]
-operators application:
+  load_samp_local: true
+  vbal_block: [true, true,false, true,false,false]
+  operators application:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
 cat<< EOF >> ${yaml_dir}/${yaml_name}
-- input:
-    filetype: gfs
-    state variables: *stateVars
-    psinfile: 1
-    datapath: ${data_dir_c384}/${yyyymmddhh}/mem${imemp}
-    filename_core: bvars.fv_core.res.nc
-    filename_trcr: bvars.fv_tracer.res.nc
-    filename_cplr: bvars.coupler.res
-  bump operators: [multiplyVbalInv]
-  output:
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-    filename_core: unbal.fv_core.res.nc
-    filename_trcr: unbal.fv_tracer.res.nc
-    filename_cplr: unbal.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - input:
+      filetype: gfs
+      state variables: *stateVars
+      psinfile: true
+      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      filename_core: bvars.fv_core.res.nc
+      filename_trcr: bvars.fv_tracer.res.nc
+      filename_cplr: bvars.coupler.res
+    bump operators: [multiplyVbalInv]
+    output:
+      filetype: gfs
+      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      prepend files with date: false
+      filename_core: unbal.fv_core.res.nc
+      filename_trcr: unbal.fv_tracer.res.nc
+      filename_cplr: unbal.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
 
@@ -180,9 +178,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/unbal_${yyyymmddhh}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -214,13 +213,12 @@ geometry:
 background:
   filetype: gfs
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
-  psinfile: 1
+  psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
-  filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc
-  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc
-  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.unbal.coupler.res
+  filename_core: unbal.fv_core.res.nc
+  filename_trcr: unbal.fv_tracer.res.nc
+  filename_cplr: unbal.coupler.res
 input variables: [${var}]
-date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 bump:
   prefix: var-mom_${yyyymmddhh}/var-mom_${yyyymmddhh}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
@@ -228,86 +226,67 @@ bump:
   universe_rad: 4000.0e3
   method: cor
   strategy: specific_univariate
-  update_var: 1
-  update_mom: 1
-  write_mom: 1
-  new_hdiag: 1
-  write_hdiag: 1
-  write_samp_local: 1
+  update_var: true
+  update_mom: true
+  write_mom: true
+  new_hdiag: true
+  write_hdiag: true
+  write_samp_local: true
   nc1: 5000
   nc2: 1000
   nc3: 50
   dc: 75.0e3
   nl0r: 15
-  local_diag: 1
+  local_diag: true
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ensemble:
-    members:
-EOF
-      for imem in $(seq 1 1 ${nmem}); do
-         imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
-    - filetype: gfs
-      state variables: *stateVars
-      psinfile: 1
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-      filename_core: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_core.res.nc
-      filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.unbal.fv_tracer.res.nc
-      filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.unbal.coupler.res
-      date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-EOF
-      done
-cat<< EOF >> ${yaml_dir}/${yaml_name}
-output:
-- parameter: var
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: var_${var}.fv_core.res.nc
-  filename_trcr: var_${var}.fv_tracer.res.nc
-  filename_cplr: var_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: m4
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: m4_${var}.fv_core.res.nc
-  filename_trcr: m4_${var}.fv_tracer.res.nc
-  filename_cplr: m4_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rh
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: cor_rh_${var}.fv_core.res.nc
-  filename_trcr: cor_rh_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rh_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rv
-  filetype: gfs
-  datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-  filename_core: cor_rv_${var}.fv_core.res.nc
-  filename_trcr: cor_rv_${var}.fv_tracer.res.nc
-  filename_cplr: cor_rv_${var}.coupler.res
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: var
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: var_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: m4
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: m4_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rh
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rh_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
-- parameter: cor_rv
-  filetype: geos
-  datapath: ${data_dir_c384}/${bump_dir}/geos
-  filename_bkgd: cor_rv_${yyyymmddhh}_${var}.nc4
-  date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+    members from template:
+      template:
+        filetype: gfs
+        state variables: *stateVars
+        psinfile: true
+        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        filename_core: unbal.fv_core.res.nc
+        filename_trcr: unbal.fv_tracer.res.nc
+        filename_cplr: unbal.coupler.res
+        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      pattern: %mem%
+      nmembers: ${nmem}
+      zero padding: 3
+  output:
+  - parameter: var
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    prepend files with date: false
+    filename_core: var_${var}.fv_core.res.nc
+    filename_trcr: var_${var}.fv_tracer.res.nc
+    filename_cplr: var_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: m4
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    prepend files with date: false
+    filename_core: m4_${var}.fv_core.res.nc
+    filename_trcr: m4_${var}.fv_tracer.res.nc
+    filename_cplr: m4_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rh
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    prepend files with date: false
+    filename_core: cor_rh_${var}.fv_core.res.nc
+    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  - parameter: cor_rv
+    filetype: gfs
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    prepend files with date: false
+    filename_core: cor_rv_${var}.fv_core.res.nc
+    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${var}.coupler.res
+    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch
@@ -325,9 +304,10 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out
 
 source ${env_script}
+export OMP_NUM_THREADS=1
 
 cd ${work_dir}/var-mom_${yyyymmddhh}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_parameters.x ${yaml_dir}/${yaml_name}
+mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF

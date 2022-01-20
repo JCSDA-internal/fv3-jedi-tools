@@ -24,11 +24,15 @@ run_sbatch () {
 # Data directory
 export data_dir="/work/noaa/da/menetrie/StaticBTraining"
 
+# Data directory for regridded data
+export data_dir_regrid_base="/work/noaa/da/menetrie/regrid"
+
 # FV3-JEDI source directory
 export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
 
 # JEDI binaries directory
 export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
+#export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 
 # Experiments directory
 export xp_dir="${HOME}/xp"
@@ -53,7 +57,6 @@ export nmem=80
 
 # List of dates for the training (january or july or both)
 export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
-#export yyyymmddhh_list="2020070100 2020070200 2020070300 2020070400 2020070500 2020070600 2020070700 2020070800 2020070900 2020071000"
 
 # Background date
 export yyyymmddhh_bkg="2020121500"
@@ -62,9 +65,9 @@ export yyyymmddhh_bkg="2020121500"
 export yyyymmddhh_obs="2020121421"
 
 # Regridding layout and resolution
-export nlx=4
-export nly=4
-export cregrid=96
+export nlx=20
+export nly=20
+export cregrid=384
 
 # Specific observations experiments
 export obs_xp="
@@ -135,8 +138,8 @@ export run_variational_3dvar=false
 export run_variational_3dvar_regrid=false
 export run_variational_3dvar_specific_obs=false
 
-# Conversion
-export run_convert_background=false
+# Prepare scripts only (do not run sbatch)
+export prepare_scripts_only=false
 
 ####################################################################
 ####################################################################
@@ -177,16 +180,14 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 # Define directories
 echo `date`": define directories"
 export data_dir_c384=${data_dir}/c384
-export data_dir_regrid=${data_dir}/c${cregrid}
+export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export bump_dir="bump_1.0"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
-
-# Local scripts directory
-export script_dir=`pwd`
+export script_dir="${xp_dir}/${bump_dir}/script"
 
 # Regridding
 export npx=$((cregrid+1))
@@ -209,12 +210,12 @@ mkdir -p ${work_dir}
 
 if test "${get_data_ensemble}" = "true"; then
    # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}"
-   mkdir -p ${data_dir_c384}
+   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
+   mkdir -p ${data_dir_c384}/${bump_dir}
 
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}"
-   cd ${data_dir_c384}
+   echo `date`": cd ${data_dir_c384}/${bump_dir}"
+   cd ${data_dir_c384}/${bump_dir}
 
    # Get ensemble for regression
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -231,18 +232,21 @@ if test "${get_data_ensemble}" = "true"; then
       rm -f bvars_ens_${yyyymmddhh}.tar
 
       # Create coupler files
-      ${script_dir}/coupler.sh ${yyyymmddhh}
+      for imem in $(seq 1 1 ${nmem}); do
+         imemp=$(printf "%.3d" "${imem}")
+         ${script_dir}/coupler.sh ${yyyymmddhh} ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
+      done
    done
 fi
 
 if test "${get_data_background}" = "true"; then
    # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}"
-   mkdir -p ${data_dir_c384}
+   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
+   mkdir -p ${data_dir_c384}/${bump_dir}
 
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}"
-   cd ${data_dir_c384}
+   echo `date`": cd ${data_dir_c384}/${bump_dir}"
+   cd ${data_dir_c384}/${bump_dir}
 
    # Get background
    echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"
@@ -288,7 +292,7 @@ echo `date`": cd ${script_dir}"
 cd ${script_dir}
 
 # Run generators
-echo `date`": run generators"
+echo `date`": run yamls and sbatch scripts generators"
 
 if test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
    # Daily runs
@@ -320,14 +324,13 @@ if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}"
    ./variational.sh
 fi
 
-if test "${run_convert_background}" = "true" ; then
-   # Convert runs
-   ./convert.sh
-fi
-
 ####################################################################
 # Run sbatch #######################################################
 ####################################################################
+
+if test "${prepare_scripts_only}" = "true"; then
+   exit 0
+fi
 
 # Go to sbatch directory
 echo `date`": cd ${sbatch_dir}"
@@ -494,7 +497,7 @@ fi
 
 # Run dirac_cov_global
 if test "${run_dirac_cov_global}" = "true"; then
-   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
+   run_sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
    dirac_cov_global_pid=:${pid}
 fi
 
@@ -556,15 +559,6 @@ if test "${run_variational_3dvar_specific_obs}" = "true"; then
       run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
       variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
    done
-fi
-
-# Convert runs
-# ------------
-
-# Run background
-if test "${run_convert_background}" = "true"; then
-   run_sbatch convert_background.sh
-   convert_background_pid=:${pid}
 fi
 
 exit 0

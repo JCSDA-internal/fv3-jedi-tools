@@ -2,9 +2,9 @@
 
 source /etc/bashrc
 module purge
-export JEDI_OPT=/work/noaa/da/grubin/opt/modules
+export JEDI_OPT=/work/noaa/da/jedipara/opt/modules
 module use $JEDI_OPT/modulefiles/core
-module load jedi/gnu-openmpi
+module load jedi/gnu-openmpi odc nco
 module list
 ulimit -s unlimited
 ulimit -v unlimited
