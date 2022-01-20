@@ -162,7 +162,6 @@ export dd_last=${yyyymmddhh_last:6:2}
 export hh_last=${yyyymmddhh_last:8:2}
 export m_last=${mm_last##0}
 export d_last=${dd_last##0}
-
 export h_last=${hh_last##0}
 export yyyy_bkg=${yyyymmddhh_bkg:0:4}
 export mm_bkg=${yyyymmddhh_bkg:4:2}
