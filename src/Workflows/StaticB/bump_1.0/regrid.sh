@@ -69,7 +69,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_background
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -143,7 +143,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -211,7 +211,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -284,7 +284,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -395,7 +395,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_convertstate.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -472,7 +472,7 @@ source ${env_script}
 export OMP_NUM_THREADS=2
 
 cd ${work_dir}/regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n $((6*nlx*nly)) ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
