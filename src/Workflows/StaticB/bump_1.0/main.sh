@@ -65,8 +65,8 @@ export yyyymmddhh_bkg="2020121500"
 export yyyymmddhh_obs="2020121421"
 
 # Regridding layout and resolution
-export nlx=20
-export nly=20
+export nlx=7
+export nly=7
 export cregrid=384
 
 # Specific observations experiments

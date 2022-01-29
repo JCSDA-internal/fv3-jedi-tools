@@ -36,19 +36,26 @@ output geometry:
 states:
 - input:
     filetype: gfs
-    state variables: [ua,va,t,ps,sphum,liq_wat,o3mr]
-    psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
+    filename_sfcw: fv_srf_wnd.res.nc
     filename_trcr: fv_tracer.res.nc
+    filename_phys: phy_data.nc
+    filename_sfcd: sfc_data.nc
+    state variables: [ua,va,t,ps,delp,sphum,ice_wat,liq_wat,o3mr,phis,
+                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
+                      u_srf,v_srf,f10m]
   output:
     filetype: gfs
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     prepend files with date: false
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
+    filename_sfcw: fv_srf_wnd.res.nc
     filename_trcr: fv_tracer.res.nc
+    filename_phys: phy_data.nc
+    filename_sfcd: sfc_data.nc
 EOF
 
 # BACKGROUND sbatch
