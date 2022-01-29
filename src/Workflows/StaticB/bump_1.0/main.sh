@@ -65,8 +65,8 @@ export yyyymmddhh_bkg="2020121500"
 export yyyymmddhh_obs="2020121421"
 
 # Regridding layout and resolution
-export nlx=20
-export nly=20
+export nlx=7
+export nly=7
 export cregrid=384
 
 # Specific observations experiments
@@ -135,8 +135,9 @@ export run_dirac_full_regrid_local=false
 
 # Variational runs
 export run_variational_3dvar=false
-export run_variational_3dvar_regrid=false
 export run_variational_3dvar_specific_obs=false
+export run_variational_3dvar_regrid=false
+export run_variational_3dvar_full_regrid=true
 
 # Prepare scripts only (do not run sbatch)
 export prepare_scripts_only=false
@@ -319,7 +320,7 @@ if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" 
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_full_regrid}" = "true" ; then
    # Variational runs
    ./variational.sh
 fi
@@ -546,12 +547,6 @@ if test "${run_variational_3dvar}" = "true"; then
    variational_3dvar_pid=:${pid}
 fi
 
-# Run 3dvar_regrid
-if test "${run_variational_3dvar_regrid}" = "true"; then
-   run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
-   variational_3dvar_regrid_pid=:${pid}
-fi
-
 # Run 3dvar_specific_obs
 if test "${run_variational_3dvar_specific_obs}" = "true"; then
    variational_3dvar_specific_obs_pid=''
@@ -559,6 +554,18 @@ if test "${run_variational_3dvar_specific_obs}" = "true"; then
       run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
       variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
    done
+fi
+
+# Run 3dvar_regrid
+if test "${run_variational_3dvar_regrid}" = "true"; then
+   run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   variational_3dvar_regrid_pid=:${pid}
+fi
+
+# Run 3dvar_full_regrid
+if test "${run_variational_3dvar_full_regrid}" = "true"; then
+   run_sbatch variational_3dvar_full_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   variational_3dvar_full_regrid_pid=:${pid}
 fi
 
 exit 0

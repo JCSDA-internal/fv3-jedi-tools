@@ -72,7 +72,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -151,7 +151,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -255,7 +255,7 @@ source ${env_script}
 export OMP_NUM_THREADS=1
 
 cd ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -359,7 +359,7 @@ source ${env_script}
 export OMP_NUM_THREADS=2
 
 cd ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
@@ -454,7 +454,7 @@ source ${env_script}
 export OMP_NUM_THREADS=2
 
 cd ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-mpirun -n 216 ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 
 exit 0
 EOF
