@@ -137,7 +137,7 @@ export run_dirac_full_regrid_local=false
 export run_variational_3dvar=false
 export run_variational_3dvar_specific_obs=false
 export run_variational_3dvar_regrid=false
-export run_variational_3dvar_full_regrid=true
+export run_variational_3dvar_full_regrid=false
 
 # Prepare scripts only (do not run sbatch)
 export prepare_scripts_only=false
