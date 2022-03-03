@@ -474,7 +474,7 @@ bump:
     filename_cplr: cor_rh_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   input:
-  - parameter: cor_rh
+  - parameter: rh
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
@@ -483,7 +483,7 @@ bump:
     filename_trcr: cor_rh_${var}.fv_tracer.res.nc
     filename_cplr: cor_rh_${var}.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  - parameter: cor_rv
+  - parameter: rv
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
