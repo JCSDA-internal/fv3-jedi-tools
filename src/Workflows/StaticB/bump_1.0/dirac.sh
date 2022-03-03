@@ -23,7 +23,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -51,7 +52,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -59,7 +61,7 @@ background error:
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -133,7 +135,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -161,7 +164,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -169,7 +173,7 @@ background error:
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -243,7 +247,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -272,7 +277,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -284,7 +290,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -292,7 +299,7 @@ background error:
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -366,7 +373,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   psinfile: true
@@ -396,7 +404,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -408,7 +417,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -416,7 +426,7 @@ background error:
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -490,7 +500,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -519,7 +530,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -531,7 +543,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -552,7 +565,7 @@ background error:
       load_samp_local: true
       vbal_block: [true, true,false, true,false,false]
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -626,7 +639,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -655,7 +669,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -667,7 +682,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -688,7 +704,7 @@ background error:
       load_samp_global: true
       vbal_block: [true, true,false, true,false,false]
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -762,7 +778,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -791,7 +808,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -803,7 +821,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -828,7 +847,7 @@ background error:
     input variables: *control_vars
     output variables: *state_vars
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -902,7 +921,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -931,7 +951,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -943,7 +964,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -974,7 +996,7 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -1048,7 +1070,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -1077,7 +1100,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -1089,7 +1113,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -1120,7 +1145,7 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
@@ -1194,7 +1219,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -1223,7 +1249,8 @@ background error:
       - variables: [surface_pressure]
         fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
       universe radius:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -1235,7 +1262,8 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     file:
-      filetype: gfs
+      datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      filetype: fms restart
       psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
@@ -1266,7 +1294,7 @@ background error:
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc

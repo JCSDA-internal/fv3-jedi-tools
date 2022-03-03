@@ -30,7 +30,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
@@ -58,7 +59,8 @@ bump:
   ensemble:
     members from template:
       template:
-        filetype: gfs
+        datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+        filetype: fms restart
         state variables: *stateVars
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
@@ -133,7 +135,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
@@ -157,7 +160,8 @@ EOF
       imemp=$(printf "%.3d" "${imem}")
 cat<< EOF >> ${yaml_dir}/${yaml_name}
   - input:
-      filetype: gfs
+      datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      filetype: fms restart
       state variables: *stateVars
       psinfile: true
       datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
@@ -166,7 +170,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
       filename_cplr: bvars.coupler.res
     bump operators: [multiplyVbalInv]
     output:
-      filetype: gfs
+      filetype: fms restart
       datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       prepend files with date: false
       filename_core: unbal.fv_core.res.nc
@@ -236,7 +240,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
@@ -268,7 +273,8 @@ bump:
   ensemble:
     members from template:
       template:
-        filetype: gfs
+        datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+        filetype: fms restart
         state variables: *stateVars
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
@@ -281,7 +287,7 @@ bump:
       zero padding: 3
   output:
   - parameter: var
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     prepend files with date: false
     filename_core: var_${var}.fv_core.res.nc
@@ -289,7 +295,7 @@ bump:
     filename_cplr: var_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     prepend files with date: false
     filename_core: m4_${var}.fv_core.res.nc
@@ -297,7 +303,7 @@ bump:
     filename_cplr: m4_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rh
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     prepend files with date: false
     filename_core: cor_rh_${var}.fv_core.res.nc
@@ -305,7 +311,7 @@ bump:
     filename_cplr: cor_rh_${var}.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rv
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
     prepend files with date: false
     filename_core: cor_rv_${var}.fv_core.res.nc

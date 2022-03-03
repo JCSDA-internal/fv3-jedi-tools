@@ -62,7 +62,8 @@ cost function:
     - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/ufo.yaml
 
   background:
-    filetype: gfs
+    datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -96,7 +97,8 @@ cost function:
         - variables: [surface_pressure]
           fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
         universe radius:
-          filetype: gfs
+          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          filetype: fms restart
           psinfile: true
           datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -108,7 +110,8 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
@@ -181,7 +184,7 @@ final:
     departures: oman
 
 output:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -261,7 +264,8 @@ cost function:
     - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/ufo.yaml
 
   background:
-    filetype: gfs
+    datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -295,7 +299,8 @@ cost function:
         - variables: [surface_pressure]
           fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
         universe radius:
-          filetype: gfs
+          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          filetype: fms restart
           psinfile: true
           datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -307,7 +312,8 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
@@ -380,7 +386,7 @@ final:
     departures: oman
 
 output:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -460,7 +466,8 @@ cost function:
     - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/ufo.yaml
 
   background:
-    filetype: gfs
+    datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -494,7 +501,8 @@ cost function:
         - variables: [surface_pressure]
           fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
         universe radius:
-          filetype: gfs
+          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          filetype: fms restart
           psinfile: true
           datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -506,7 +514,8 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
@@ -579,7 +588,7 @@ final:
     departures: oman
 
 output:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
@@ -658,7 +667,8 @@ cost function:
     - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/ufo.yaml
 
   background:
-    filetype: gfs
+    datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -693,7 +703,8 @@ cost function:
         - variables: [surface_pressure]
           fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
         universe radius:
-          filetype: gfs
+          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          filetype: fms restart
           psinfile: true
           datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -705,7 +716,8 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        filetype: gfs
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
@@ -5269,7 +5281,7 @@ final:
     departures: oman
 
 output:
-  filetype: gfs
+  filetype: fms restart
   datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc

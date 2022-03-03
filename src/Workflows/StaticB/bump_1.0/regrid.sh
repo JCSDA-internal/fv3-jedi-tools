@@ -35,7 +35,8 @@ output geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 states:
 - input:
-    filetype: gfs
+    datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
+    filetype: fms restart
     datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
@@ -47,7 +48,7 @@ states:
                       slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
                       u_srf,v_srf,f10m]
   output:
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
     prepend files with date: false
     filename_cplr: coupler.res
@@ -128,7 +129,8 @@ output geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 states:
 - input:
-    filetype: gfs
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
@@ -136,7 +138,7 @@ states:
     filename_trcr: unbal.fv_tracer.res.nc
     filename_cplr: unbal.coupler.res
   output:
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
     prepend files with date: false
     filename_core: unbal.fv_core.res.nc
@@ -203,7 +205,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
@@ -287,7 +290,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
@@ -380,7 +384,8 @@ output geometry:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 states:
 - input:
-    filetype: gfs
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -389,7 +394,7 @@ states:
     filename_cplr: stddev.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
     prepend files with date: false
     filename_core: stddev.fv_core.res.nc
@@ -397,7 +402,8 @@ states:
     filename_cplr: stddev.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - input:
-    filetype: gfs
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -406,7 +412,7 @@ states:
     filename_cplr: cor_rh.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
@@ -414,7 +420,8 @@ states:
     filename_cplr: cor_rh.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - input:
-    filetype: gfs
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
     datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -423,7 +430,7 @@ states:
     filename_cplr: cor_rv.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
-    filetype: gfs
+    filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
@@ -494,7 +501,8 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  filetype: fms restart
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
@@ -512,7 +520,8 @@ bump:
   min_lev:
     liq_wat: 76
   universe radius:
-    filetype: gfs
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
     psinfile: true
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: cor_rh.fv_core.res.nc
