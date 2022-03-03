@@ -112,7 +112,7 @@ ${script_dir}/coupler.sh ${yyyymmddhh_last} ${data_dir_c384}/${bump_dir}/cor_${y
 
 # Timer
 wait
-echo "ELAPSED TIME = ${SECONDS}"
+echo "ELAPSED TIME = \${SECONDS}"
 
 exit 0
 EOF
@@ -213,7 +213,7 @@ done
 
 # Timer
 wait
-echo "ELAPSED TIME = ${SECONDS}"
+echo "ELAPSED TIME = \${SECONDS}"
 
 exit 0
 EOF

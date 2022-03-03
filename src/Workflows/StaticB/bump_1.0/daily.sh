@@ -101,9 +101,9 @@ source ${env_script}
 source ${rankfile_script}
 
 SECONDS=0
-mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 wait
-echo "ELAPSED TIME = ${SECONDS}"
+echo "ELAPSED TIME = \${SECONDS}"
 
 exit 0
 EOF
@@ -208,9 +208,9 @@ source ${env_script}
 source ${rankfile_script}
 
 SECONDS=0
-mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 wait
-echo "ELAPSED TIME = ${SECONDS}"
+echo "ELAPSED TIME = \${SECONDS}"
 
 exit 0
 EOF
@@ -348,9 +348,9 @@ source ${env_script}
 source ${rankfile_script}
 
 SECONDS=0
-mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
 wait
-echo "ELAPSED TIME = ${SECONDS}"
+echo "ELAPSED TIME = \${SECONDS}"
 
 exit 0
 EOF
