@@ -139,6 +139,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out

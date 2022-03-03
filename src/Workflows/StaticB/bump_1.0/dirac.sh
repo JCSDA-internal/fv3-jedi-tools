@@ -90,6 +90,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -198,6 +200,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -319,6 +323,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -441,6 +447,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -575,6 +583,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -709,6 +719,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -847,6 +859,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -991,6 +1005,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -1135,6 +1151,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -1279,6 +1297,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out

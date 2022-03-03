@@ -208,6 +208,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:40:00
 #SBATCH -e ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -405,6 +407,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -602,6 +606,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -5290,6 +5296,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:30:00
 #SBATCH -e ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.out

@@ -69,6 +69,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -158,6 +160,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -272,6 +276,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
@@ -386,6 +392,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
@@ -491,6 +499,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=02:00:00
 #SBATCH -e ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out

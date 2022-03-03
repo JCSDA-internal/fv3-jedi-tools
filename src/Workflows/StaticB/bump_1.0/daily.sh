@@ -86,6 +86,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
@@ -189,6 +191,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
@@ -325,6 +329,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.err
 #SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out

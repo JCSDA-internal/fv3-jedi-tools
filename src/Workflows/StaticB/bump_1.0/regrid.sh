@@ -73,6 +73,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_background/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_background.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_background/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_background.out
@@ -157,6 +159,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_first_member_${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_first_member_${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_first_member_${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_first_member_${yyyymmddhh_last}.out
@@ -235,6 +239,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -318,6 +324,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -439,6 +447,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
@@ -526,6 +536,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:20:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.out
@@ -567,6 +579,8 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -q batch
 #SBATCH --nodes=${nodes}-${nodes}
 #SBATCH --cpus-per-task=${cpus_per_task}
+#SBATCH --exclusive
+#SBATCH --wait-all-nodes=1
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
