@@ -23,9 +23,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -69,26 +69,37 @@ bump:
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
+EOF
 
    # VBAL sbatch
    sbatch_name="vbal_${yyyymmddhh}.sh"
+   ntasks=${ntasks_def}
+   cpus_per_task=1
+   threads=1
+   ppn=$((cores_per_node/cpus_per_task))
+   nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=vbal_${yyyymmddhh}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/vbal_${yyyymmddhh}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -113,9 +124,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -165,23 +176,33 @@ EOF
 
    # Unbal sbatch
    sbatch_name="unbal_${yyyymmddhh}.sh"
+   ntasks=${ntasks_def}
+   cpus_per_task=1
+   threads=1
+   ppn=$((cores_per_node/cpus_per_task))
+   nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=unbal_${yyyymmddhh}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
 #SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/unbal_${yyyymmddhh}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -204,9 +225,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -291,23 +312,33 @@ EOF
 
       # VAR-MOM sbatch
       sbatch_name="var-mom_${yyyymmddhh}_${var}.sh"
+      ntasks=${ntasks_def}
+      cpus_per_task=1
+      threads=1
+      ppn=$((cores_per_node/cpus_per_task))
+      nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=var-mom_${yyyymmddhh}_${var}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.err
 #SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/var-mom_${yyyymmddhh}_${var}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF

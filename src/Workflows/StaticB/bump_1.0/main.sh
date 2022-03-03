@@ -44,6 +44,8 @@ export xp_dir="${HOME}/xp"
 
 export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
 #export env_script=${xp_dir}/env_script/intel-impi_env.sh
+export rankfile_script=${xp_dir}/env_script/rankfile.bash
+export cores_per_node=40
 
 ####################################################################
 # Parameters #######################################################
@@ -64,9 +66,16 @@ export yyyymmddhh_bkg="2020121500"
 # Observation date
 export yyyymmddhh_obs="2020121421"
 
+# Default layout
+export nlx_def=6
+export nly_def=6
+export ntasks_def=$((6*nlx_def*nly_def))
+export cdef=384
+
 # Regridding layout and resolution
-export nlx=7
-export nly=7
+export nlx_regrid=7
+export nly_regrid=7
+export ntasks_regrid=$((6*nlx_regrid*nly_regrid))
 export cregrid=384
 
 # Specific observations experiments
@@ -190,10 +199,15 @@ export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
 export script_dir="${xp_dir}/${bump_dir}/script"
 
-# Regridding
-export npx=$((cregrid+1))
-export npy=$((cregrid+1))
-export dirac_center=$((cregrid/2))
+# Default geometry
+export npx_def=$((cdef+1))
+export npy_def=$((cdef+1))
+export dirac_center_def=$((cdef/2))
+
+# Regridding geometry
+export npx_regrid=$((cregrid+1))
+export npy_regrid=$((cregrid+1))
+export dirac_center_regrid=$((cregrid/2))
 
 ####################################################################
 # Create work directories ##########################################

@@ -16,9 +16,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -77,23 +77,33 @@ EOF
 
 # DIRAC_COR_LOCAL sbatch
 sbatch_name="dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -114,9 +124,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -175,23 +185,33 @@ EOF
 
 # DIRAC_COR_GLOBAL sbatch
 sbatch_name="dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=2
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=2
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -212,9 +232,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -286,23 +306,33 @@ EOF
 
 # DIRAC_COV_LOCAL sbatch
 sbatch_name="dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -323,9 +353,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -398,23 +428,33 @@ EOF
 
 # DIRAC_COV_GLOBAL sbatch
 sbatch_name="dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=2
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=2
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -435,9 +475,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -522,23 +562,33 @@ EOF
 
 # DIRAC_COV_MULTI_LOCAL sbatch
 sbatch_name="dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -559,9 +609,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -646,23 +696,33 @@ EOF
 
 # DIRAC_COV_MULTI_GLOBAL sbatch
 sbatch_name="dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=2
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=2
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -683,9 +743,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -774,23 +834,33 @@ EOF
 
 # DIRAC_FULL_C2A_LOCAL sbatch
 sbatch_name="dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -811,9 +881,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -908,23 +978,33 @@ EOF
 
 # DIRAC_FULL_PSICHITOUV_LOCAL sbatch
 sbatch_name="dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
 #SBATCH -e ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -945,9 +1025,9 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -1042,23 +1122,33 @@ EOF
 
 # DIRAC_FULL_GLOBAL sbatch
 sbatch_name="dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_def}
+cpus_per_task=2
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=2
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=01:00:00
 #SBATCH -e ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-
 cd ${work_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+source ${rankfile_script}
+
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
@@ -1068,20 +1158,20 @@ EOF
 ####################################################################
 
 # Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # DIRAC_FULL_REGRID_LOCAL yaml
-yaml_name="dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
+yaml_name="dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
 cat<< EOF > ${yaml_dir}/${yaml_name}
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx},${nly}]
-  npx: ${npx}
-  npy: ${npy}
+  layout: [${nlx_regrid},${nly_regrid}]
+  npx: ${npx_regrid}
+  npy: ${npy_regrid}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
@@ -1159,7 +1249,7 @@ background error:
       load_wind_local: true
 output dirac:
   filetype: gfs
-  datapath: ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -1167,32 +1257,42 @@ output dirac:
   date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
-  ixdir: [${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center}]
-  iydir: [${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center},${dirac_center}]
+  ixdir: [${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid}]
+  iydir: [${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid}]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
   ifdir: ["t","t","t","t","t","t"]
 EOF
 
 # DIRAC_FULL_REGRID_LOCAL sbatch
-sbatch_name="dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+sbatch_name="dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=${ntasks_regrid}
+cpus_per_task=1
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
-#SBATCH --job-name=dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+#SBATCH --job-name=dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=$((6*nlx*nly))
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:10:00
-#SBATCH -e ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
+#SBATCH -e ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.err
+#SBATCH -o ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
+cd ${work_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+
+export OMP_NUM_THREADS=${threads}
 source ${env_script}
-export OMP_NUM_THREADS=1
+source ${rankfile_script}
 
-cd ${work_dir}/dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-srun --ntasks=$((6*nlx*nly)) --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+SECONDS=0
+mpirun -rf ${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_dirac.x ${yaml_dir}/${yaml_name}
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF

@@ -10,4 +10,5 @@ ulimit -s unlimited
 ulimit -v unlimited
 export SLURM_EXPORT_ENV=ALL
 export HDF5_USE_FILE_LOCKING=FALSE
-#export HDF5_USE_FILE_LOCKING=TRUE
+export MALLOC_MMAP_MAX_=0
+export MALLOC_TRIM_THRESHOLD_=-1

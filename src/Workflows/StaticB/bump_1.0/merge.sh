@@ -9,6 +9,7 @@ mkdir -p ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge VAR files
 sbatch_name="merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+threads=1
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -21,11 +22,14 @@ cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #SBATCH -e ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
+cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+
+export OMP_NUM_THREADS=${threads}
 source ${env_script}
-export OMP_NUM_THREADS=1
 module load nco
 
-cd ${work_dir}/merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+# Timer
+SECONDS=0
 
 # Specific file
 declare -A vars_files
@@ -106,6 +110,10 @@ done
 # Create coupler file
 ${script_dir}/coupler.sh ${yyyymmddhh_last} ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}/cor_rv.coupler.res
 
+# Timer
+wait
+echo "ELAPSED TIME = ${SECONDS}"
+
 exit 0
 EOF
 
@@ -118,26 +126,34 @@ mkdir -p ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # Merge NICAS files
 sbatch_name="merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
+ntasks=1
+cpus_per_task=${cores_per_node}
+threads=1
+ppn=$((cores_per_node/cpus_per_task))
+nodes=$(((ntasks+ppn-1)/ppn))
 cat<< EOF > ${sbatch_dir}/${sbatch_name}
 #!/bin/bash
 #SBATCH --job-name=merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 #SBATCH -A da-cpu
 #SBATCH -p orion
 #SBATCH -q batch
-#SBATCH --ntasks=40
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=${nodes}-${nodes}
+#SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=00:30:00
 #SBATCH -e ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.err
 #SBATCH -o ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.out
 
-source ${env_script}
-export OMP_NUM_THREADS=1
-module load nco
-
 cd ${work_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
 
+export OMP_NUM_THREADS=${threads}
+source ${env_script}
+module load nco
+
+# Timer
+SECONDS=0
+
 # Number of local files
-nlocal=216
+nlocal=${ntasks_def}
 
 # Create scripts for local files
 ntotpad=\$(printf "%.6d" "\${nlocal}")
@@ -178,10 +194,10 @@ for var in ${vars}; do
 done
 
 # Run scripts in parallel
-nbatch=\$((nlocalp1/40+1))
+nbatch=\$((nlocalp1/${cores_per_node}+1))
 itot=0
 for ibatch in \$(seq 1 \${nbatch}); do
-   for i in \$(seq 1 40); do
+   for i in \$(seq 1 ${cores_per_node}); do
       itot=\$((itot+1))
       if test "\${itot}" -le "\${nlocalp1}"; then
          itotpad=\$(printf "%.6d" "\${itot}")
@@ -192,6 +208,10 @@ for ibatch in \$(seq 1 \${nbatch}); do
    done
    wait
 done
+
+# Timer
+wait
+echo "ELAPSED TIME = ${SECONDS}"
 
 exit 0
 EOF
