@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Source functions
+source ./functions.sh
+
 for yyyymmddhh in ${yyyymmddhh_list}; do
    # Date
    yyyy=${yyyymmddhh:0:4}
@@ -11,13 +14,15 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    # VBAL #############################################################
    ####################################################################
 
+   # Job name
+   job=vbal_${yyyymmddhh}
+
    # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh}
-   mkdir -p ${work_dir}/vbal_${yyyymmddhh}
+   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
+   mkdir -p ${work_dir}/${job}
 
    # VBAL yaml
-   yaml_name="vbal_${yyyymmddhh}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -74,43 +79,19 @@ bump:
 EOF
 
    # VBAL sbatch
-   sbatch_name="vbal_${yyyymmddhh}.sh"
    ntasks=${ntasks_def}
    cpus_per_task=1
    threads=1
-   ppn=$((cores_per_node/cpus_per_task))
-   nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=vbal_${yyyymmddhh}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=00:30:00
-#SBATCH -e ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.err
-#SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
-
-cd ${work_dir}/vbal_${yyyymmddhh}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+   time=00:30:00
+   exe=fv3jedi_error_covariance_training.x
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
    ####################################################################
    # Unbal ############################################################
    ####################################################################
+
+   # Job name
+   job=unbal_${yyyymmddhh}
 
    # Create directories
    mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
@@ -118,11 +99,10 @@ EOF
       imemp=$(printf "%.3d" "${imem}")
       mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
    done
-   mkdir -p ${work_dir}/unbal_${yyyymmddhh}
+   mkdir -p ${work_dir}/${job}
 
    # Unbal yaml
-   yaml_name="unbal_${yyyymmddhh}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -158,7 +138,7 @@ bump:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
+cat<< EOF >> ${yaml_dir}/${job}.yaml
   - input:
       datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
       filetype: fms restart
@@ -168,7 +148,7 @@ cat<< EOF >> ${yaml_dir}/${yaml_name}
       filename_core: bvars.fv_core.res.nc
       filename_trcr: bvars.fv_tracer.res.nc
       filename_cplr: bvars.coupler.res
-    bump operators: [multiplyVbalInv]
+    bump operators: [inverseMultiplyVbal]
     output:
       filetype: fms restart
       datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
@@ -181,53 +161,27 @@ EOF
    done
 
    # Unbal sbatch
-   sbatch_name="unbal_${yyyymmddhh}.sh"
    ntasks=${ntasks_def}
    cpus_per_task=1
    threads=1
-   ppn=$((cores_per_node/cpus_per_task))
-   nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=unbal_${yyyymmddhh}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=01:00:00
-#SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
-#SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
-
-cd ${work_dir}/unbal_${yyyymmddhh}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
-
+   time=01:00:00
+   exe=fv3jedi_error_covariance_training.x
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
    ####################################################################
    # VAR-MOM ##########################################################
    ####################################################################
 
    for var in ${vars}; do
+      # Job name
+      job=var-mom_${yyyymmddhh}_${var}
+
       # Create directories
-      mkdir -p ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-      mkdir -p ${work_dir}/var-mom_${yyyymmddhh}_${var}
+      mkdir -p ${data_dir_c384}/${bump_dir}/${job}
+      mkdir -p ${work_dir}/${job}
 
       # VAR-MOM yaml
-      yaml_name="var-mom_${yyyymmddhh}_${var}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -250,7 +204,7 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var-mom_${yyyymmddhh}/var-mom_${yyyymmddhh}_${var}
+  prefix: var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}
   datadir: ${data_dir_c384}/${bump_dir}
   verbosity: main
   universe_rad: 4000.0e3
@@ -288,71 +242,44 @@ bump:
   output:
   - parameter: var
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: var_${var}.fv_core.res.nc
-    filename_trcr: var_${var}.fv_tracer.res.nc
-    filename_cplr: var_${var}.coupler.res
+    filename_core: var.fv_core.res.nc
+    filename_trcr: var.fv_tracer.res.nc
+    filename_cplr: var.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: m4_${var}.fv_core.res.nc
-    filename_trcr: m4_${var}.fv_tracer.res.nc
-    filename_cplr: m4_${var}.coupler.res
+    filename_core: m4.fv_core.res.nc
+    filename_trcr: m4.fv_tracer.res.nc
+    filename_cplr: m4.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rh
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: cor_rh_${var}.fv_core.res.nc
-    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
-    filename_cplr: cor_rh_${var}.coupler.res
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rv
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: cor_rv_${var}.fv_core.res.nc
-    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
-    filename_cplr: cor_rv_${var}.coupler.res
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch
-      sbatch_name="var-mom_${yyyymmddhh}_${var}.sh"
       ntasks=${ntasks_def}
       cpus_per_task=1
       threads=1
-      ppn=$((cores_per_node/cpus_per_task))
-      nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=var-mom_${yyyymmddhh}_${var}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=01:00:00
-#SBATCH -e ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.err
-#SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out
-
-cd ${work_dir}/var-mom_${yyyymmddhh}_${var}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+      time=01:00:00
+      exe=fv3jedi_error_covariance_training.x
+      prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
    done
 done

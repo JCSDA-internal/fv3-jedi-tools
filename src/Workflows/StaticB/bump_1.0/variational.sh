@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Source functions
+source ./functions.sh
+
 # Observations file
 declare -A obs_file
 obs_file+=(["sondes"]="ncdiag.oper_3d.ob.PT6H.sondes.2020-12-14T21:00:00Z")
@@ -34,13 +37,15 @@ obs_vars+=(["single_ob_f"]="air_temperature")
 # 3DVAR ############################################################
 ####################################################################
 
+# Job name
+job=variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+
 # Create directories
-mkdir -p ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/${job}
+mkdir -p ${data_dir_c384}/${bump_dir}/${job}
 
 # 3DVAR yaml
-yaml_name="variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
 
   cost type: 3D-Var
@@ -197,52 +202,27 @@ output:
 EOF
 
 # 3DVAR sbatch
-sbatch_name="variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 ntasks=${ntasks_def}
 cpus_per_task=1
 threads=1
-ppn=$((cores_per_node/cpus_per_task))
-nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=00:40:00
-#SBATCH -e ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-cd ${work_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+time=00:40:00
+exe=fv3jedi_var.x
+prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 ####################################################################
 # 3DVAR with specific observations #################################
 ####################################################################
 
 for obs in ${obs_xp} ; do
+   # Job name
+   job=variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+
    # Create directories
-   mkdir -p ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
-   mkdir -p ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+   mkdir -p ${work_dir}/${job}
+   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
    
    # 3DVAR yaml
-   yaml_name="variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
 
   cost type: 3D-Var
@@ -399,52 +379,27 @@ output:
 EOF
 
    # 3DVAR sbatch
-   sbatch_name="variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
    ntasks=${ntasks_def}
    cpus_per_task=1
    threads=1
-   ppn=$((cores_per_node/cpus_per_task))
-   nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=00:20:00
-#SBATCH -e ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-cd ${work_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+   time=00:20:00
+   exe=fv3jedi_var.x
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 done
 
 ####################################################################
 # 3DVAR REGRID #####################################################
 ####################################################################
 
+# Job name
+job=variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+
 # Create directories
-mkdir -p ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/${job}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${job}
 
 # 3DVAR yaml
-yaml_name="variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
 
   cost type: 3D-Var
@@ -601,51 +556,26 @@ output:
 EOF
 
 # 3DVAR REGRID sbatch
-sbatch_name="variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 ntasks=${ntasks_regrid}
 cpus_per_task=2
 threads=1
-ppn=$((cores_per_node/cpus_per_task))
-nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=00:20:00
-#SBATCH -e ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-cd ${work_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+time=00:40:00
+exe=fv3jedi_var.x
+prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 ####################################################################
 # 3DVAR FULL REGRID ################################################
 ####################################################################
 
+# Job name
+job=variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+
 # Create directories
-mkdir -p ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${work_dir}/${job}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${job}
 
 # 3DVAR yaml
-yaml_name="variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
 
   cost type: 3D-Var
@@ -5294,36 +5224,9 @@ output:
 EOF
 
 # 3DVAR FULL REGRID sbatch
-sbatch_name="variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh"
 ntasks=${ntasks_regrid}
 cpus_per_task=2
 threads=1
-ppn=$((cores_per_node/cpus_per_task))
-nodes=$(((ntasks+ppn-1)/ppn))
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --nodes=${nodes}-${nodes}
-#SBATCH --cpus-per-task=${cpus_per_task}
-#SBATCH --exclusive
-#SBATCH --wait-all-nodes=1
-#SBATCH --time=01:30:00
-#SBATCH -e ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.err
-#SBATCH -o ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.out
-
-cd ${work_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-export OMP_NUM_THREADS=${threads}
-source ${env_script}
-source ${rankfile_script}
-
-SECONDS=0
-mpirun -rf \${OMPI_RANKFILE} --report-bindings -np ${ntasks} ${bin_dir}/fv3jedi_var.x ${yaml_dir}/${yaml_name}
-wait
-echo "ELAPSED TIME = \${SECONDS}"
-
-exit 0
-EOF
+time=01:30:00
+exe=fv3jedi_var.x
+prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}

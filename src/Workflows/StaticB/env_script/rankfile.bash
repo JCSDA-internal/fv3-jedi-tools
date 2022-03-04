@@ -20,10 +20,9 @@ rm -f ${NODE_INFO}
 SLURM_HOSTFILE=$(pwd)/mpi.hosts_${SLURM_JOB_ID}
 rm -f ${SLURM_HOSTFILE}
 scontrol show hostnames ${SLURM_JOB_NODELIST} | sort > ${SLURM_HOSTFILE}
-cat ${SLURM_HOSTFILE}
 
 # Map ranks to slots
-OMPI_RANKFILE=$(pwd)/mpi.rankfile_${SLURM_JOB_ID}
+export OMPI_RANKFILE=$(pwd)/mpi.rankfile_${SLURM_JOB_ID}
 rm -f ${OMPI_RANKFILE}
 touch ${OMPI_RANKFILE}
 CORES_PER_SOCKET=$((CORES_PER_NODE/SOCKETS_PER_NODE))
