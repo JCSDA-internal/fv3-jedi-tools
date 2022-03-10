@@ -3,6 +3,19 @@
 # Source functions
 source ./functions.sh
 
+# Create data directories
+for yyyymmddhh in ${yyyymmddhh_list}; do
+   mkdir -p ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh}
+   mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}
+   for imem in $(seq 1 1 ${nmem}); do
+      imemp=$(printf "%.3d" "${imem}")
+      mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+   done
+   for var in ${vars}; do
+      mkdir -p ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+   done
+done
+
 for yyyymmddhh in ${yyyymmddhh_list}; do
    # Date
    yyyy=${yyyymmddhh:0:4}
@@ -16,10 +29,6 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
 
    # Job name
    job=vbal_${yyyymmddhh}
-
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-   mkdir -p ${work_dir}/${job}
 
    # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -39,13 +48,13 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
@@ -58,9 +67,8 @@ bump:
   nc2: 3500
   vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [true, false,false, false,false,false]
-  vbal_pseudo_inv: true
-  vbal_pseudo_inv_var_th: 0.1
+  vbal_diag_auto: [true, true,false, true,false,false]
+  vbal_diag_reg: [true, true,false, true,false,false]
   ensemble:
     members from template:
       template:
@@ -68,7 +76,7 @@ bump:
         filetype: fms restart
         state variables: *stateVars
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: bvars.fv_core.res.nc
         filename_trcr: bvars.fv_tracer.res.nc
         filename_cplr: bvars.coupler.res
@@ -93,14 +101,6 @@ EOF
    # Job name
    job=unbal_${yyyymmddhh}
 
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
-      for imem in $(seq 1 1 ${nmem}); do
-      imemp=$(printf "%.3d" "${imem}")
-      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-   done
-   mkdir -p ${work_dir}/${job}
-
    # Unbal yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -119,13 +119,13 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: *stateVars
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
@@ -144,14 +144,14 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
       filetype: fms restart
       state variables: *stateVars
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       filename_core: bvars.fv_core.res.nc
       filename_trcr: bvars.fv_tracer.res.nc
       filename_cplr: bvars.coupler.res
     bump operators: [inverseMultiplyVbal]
     output:
       filetype: fms restart
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       prepend files with date: false
       filename_core: unbal.fv_core.res.nc
       filename_trcr: unbal.fv_tracer.res.nc
@@ -176,10 +176,6 @@ EOF
       # Job name
       job=var-mom_${yyyymmddhh}_${var}
 
-      # Create directories
-      mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-      mkdir -p ${work_dir}/${job}
-
       # VAR-MOM yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -198,14 +194,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   verbosity: main
   universe_rad: 4000.0e3
   method: cor
@@ -231,7 +227,7 @@ bump:
         filetype: fms restart
         state variables: *stateVars
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: unbal.fv_core.res.nc
         filename_trcr: unbal.fv_tracer.res.nc
         filename_cplr: unbal.coupler.res
@@ -242,7 +238,7 @@ bump:
   output:
   - parameter: var
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
@@ -250,7 +246,7 @@ bump:
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
@@ -258,7 +254,7 @@ bump:
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rh
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -266,7 +262,7 @@ bump:
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rv
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc

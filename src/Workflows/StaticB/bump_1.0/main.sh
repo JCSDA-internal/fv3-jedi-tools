@@ -36,7 +36,7 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
-export data_dir_c384=${data_dir}/c384
+export data_dir_def=${data_dir}/c${cdef}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
@@ -65,19 +65,17 @@ echo `date`": create work directories"
 mkdir -p ${yaml_dir}
 mkdir -p ${sbatch_dir}
 mkdir -p ${work_dir}
+mkdir -p ${data_dir}
+mkdir -p ${data_dir_def}/${bump_dir}
 
 ####################################################################
 # Get data #########################################################
 ####################################################################
 
 if test "${get_data_ensemble}" = "true"; then
-   # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
-   mkdir -p ${data_dir_c384}/${bump_dir}
-
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}/${bump_dir}"
-   cd ${data_dir_c384}/${bump_dir}
+   echo `date`": cd ${data_dir_def}/${bump_dir}"
+   cd ${data_dir_def}/${bump_dir}
 
    # Get ensemble for regression
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -96,19 +94,15 @@ if test "${get_data_ensemble}" = "true"; then
       # Create coupler files
       for imem in $(seq 1 1 ${nmem}); do
          imemp=$(printf "%.3d" "${imem}")
-         ${script_dir}/coupler.sh ${yyyymmddhh} ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
+         ${script_dir}/coupler.sh ${yyyymmddhh} ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}/bvars.coupler.res
       done
    done
 fi
 
 if test "${get_data_background}" = "true"; then
-   # Make data directory
-   echo `date`": mkdir -p ${data_dir_c384}/${bump_dir}"
-   mkdir -p ${data_dir_c384}/${bump_dir}
-
    # Go to data directory
-   echo `date`": cd ${data_dir_c384}/${bump_dir}"
-   cd ${data_dir_c384}/${bump_dir}
+   echo `date`": cd ${data_dir_def}/${bump_dir}"
+   cd ${data_dir_def}/${bump_dir}
 
    # Get background
    echo `date`": aws s3 cp s3://fv3-jedi/StaticBTraining/C384/Background/bkg_${yyyymmddhh_bkg}.tar . --quiet"
@@ -124,10 +118,6 @@ if test "${get_data_background}" = "true"; then
 fi
 
 if test "${get_data_observations}" = "true"; then
-   # Make data directory
-   echo `date`": mkdir -p ${data_dir}"
-   mkdir -p ${data_dir}
-
    # Go to data directory
    echo `date`": cd ${data_dir}"
    cd ${data_dir}
@@ -166,12 +156,12 @@ if test "${run_final_psichitouv}" = "true" || "${run_final_vbal}" = "true" || "$
    ./final.sh
 fi
 
-if test "${run_merge_varcor}" = "true" || test "${run_merge_nicas}" = "true"; then
+if test "${run_merge_states}" = "true" || test "${run_merge_nicas}" = "true"; then
    # Merge runs
    ./merge.sh
 fi
 
-if test "${run_regrid_background}" = "true" || "${run_regrid_first_member}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_vbal}" = "true" || "${run_regrid_varcor}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
+if test "${run_regrid_states}" = "true" || "${run_regrid_psichitouv}" = "true" || "${run_regrid_vbal}" = "true" || "${run_regrid_nicas}" = "true" || "${run_regrid_merge_nicas}" = "true" ; then
    # Regrid runs
    ./regrid.sh
 fi
@@ -276,10 +266,10 @@ fi
 # Merge runs
 # ----------
 
-# Run var-cor
-if test "${run_merge_varcor}" = "true"; then
-   run_sbatch merge_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_var_pids}${final_cor_pids}
-   merge_varcor_pid=:${pid}
+# Run states
+if test "${run_merge_states}" = "true"; then
+   run_sbatch merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_var_pids}${final_cor_pids}${final_nicas_pids}
+   merge_states_pid=:${pid}
 fi
 
 # Run nicas
@@ -291,48 +281,36 @@ fi
 # Regrid runs
 # -----------
 
-# Run background
-if test "${run_regrid_background}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_background.sh
-   regrid_background_pid=:${pid}
-fi
-
-# Run first member
-if test "${run_regrid_first_member}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_first_member_${yyyymmddhh_last}.sh
-   regrid_first_member_pid=:${pid}
+# Run states
+if test "${run_regrid_states}" = "true"; then
+   run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_states_pid}
+   regrid_states_pid=:${pid}
 fi
 
 # Run psichitouv
 if test "${run_regrid_psichitouv}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_psichitouv_pid}${regrid_first_member_pid}
+   run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_states}${final_psichitouv_pid}
    regrid_psichitouv_pid=:${pid}
 fi
 
 # Run vbal
 if test "${run_regrid_vbal}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${final_vbal_pid}${regrid_first_member_pid}
+   run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_states}${final_vbal_pid}
    regrid_vbal_pid=:${pid}
-fi
-
-# Run var-cor
-if test "${run_regrid_varcor}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_varcor_pid}${regrid_first_member_pid}
-   regrid_varcor_pid=:${pid}
 fi
 
 # Run nicas
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regrid_c${cregrid}_${nlx}x${nly}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_varcor_pid}${final_nicas_pids}${regrid_first_member_pid}
+      run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
 
 # Run merge nicas
 if test "${run_regrid_merge_nicas}" = "true"; then
-   run_sbatch regrid_c${cregrid}_${nlx}x${nly}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_nicas_pids}${regrid_first_member_pid}
+   run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_states}${regrid_nicas_pids}
    regrid_merge_nicas_pid=:${pid}
 fi
 
@@ -341,61 +319,61 @@ fi
 
 # Run dirac_cor_local
 if test "${run_dirac_cor_local}" = "true"; then
-   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}
+   run_sbatch dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}
    dirac_cor_local_pid=:${pid}
 fi
 
 # Run dirac_cor_global
 if test "${run_dirac_cor_global}" = "true"; then
-   run_sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}
+   run_sbatch dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}
    dirac_cor_global_pid=:${pid}
 fi
 
 # Run dirac_cov_local
 if test "${run_dirac_cov_local}" = "true"; then
-   run_sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
+   run_sbatch dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}
    dirac_cov_local_pid=:${pid}
 fi
 
 # Run dirac_cov_global
 if test "${run_dirac_cov_global}" = "true"; then
-   run_sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}
+   run_sbatch dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}
    dirac_cov_global_pid=:${pid}
 fi
 
 # Run dirac_cov_multi_local
 if test "${run_dirac_cov_multi_local}" = "true"; then
-   run_sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
+   run_sbatch dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
    dirac_cov_multi_local_pid=:${pid}
 fi
 
 # Run dirac_cov_multi_global
 if test "${run_dirac_cov_multi_global}" = "true"; then
-   run_sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
+   run_sbatch dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
    dirac_cov_multi_global_pid=:${pid}
 fi
 
 # Run dirac_full_c2a_local
 if test "${run_dirac_full_c2a_local}" = "true"; then
-   run_sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}
+   run_sbatch dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
    dirac_full_c2a_local_pid=:${pid}
 fi
 
 # Run dirac_full_psichitouv_local
 if test "${run_dirac_full_psichitouv_local}" = "true"; then
-   run_sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+   run_sbatch dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}${final_psichitouv_pid}
    dirac_full_psichitouv_local_pid=:${pid}
 fi
 
 # Run dirac_full_global
 if test "${run_dirac_full_global}" = "true"; then
-   run_sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+   run_sbatch dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}${final_psichitouv_pid}
    dirac_full_global_pid=:${pid}
 fi
 
 # Run dirac_full_regrid_local
 if test "${run_dirac_full_regrid_local}" = "true"; then
-   run_sbatch dirac_full_c${cregrid}_${nlx}x${nly}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   run_sbatch dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_states_pid}
    dirac_full_regrid_local_pid=:${pid}
 fi
 
@@ -404,7 +382,7 @@ fi
 
 # Run 3dvar
 if test "${run_variational_3dvar}" = "true"; then
-   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}${final_psichitouv_pid}
    variational_3dvar_pid=:${pid}
 fi
 
@@ -412,20 +390,20 @@ fi
 if test "${run_variational_3dvar_specific_obs}" = "true"; then
    variational_3dvar_specific_obs_pid=''
    for obs in ${obs_xp} ; do
-      run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_varcor_pid}${final_vbal_pid}${final_psichitouv_pid}
+      run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}${final_psichitouv_pid}
       variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
    done
 fi
 
 # Run 3dvar_regrid
 if test "${run_variational_3dvar_regrid}" = "true"; then
-   run_sbatch variational_3dvar_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   run_sbatch variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_states_pid}
    variational_3dvar_regrid_pid=:${pid}
 fi
 
 # Run 3dvar_full_regrid
 if test "${run_variational_3dvar_full_regrid}" = "true"; then
-   run_sbatch variational_3dvar_full_c${cregrid}_${nlx}x${nly}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_varcor_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_background_pid}
+   run_sbatch variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_states_pid}
    variational_3dvar_full_regrid_pid=:${pid}
 fi
 

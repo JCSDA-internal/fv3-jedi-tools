@@ -12,6 +12,9 @@ prepare_sbatch () {
    time=$5
    exe=$6
 
+   # Create work directory
+   mkdir -p ${work_dir}/${job}
+
    # Common directives
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash

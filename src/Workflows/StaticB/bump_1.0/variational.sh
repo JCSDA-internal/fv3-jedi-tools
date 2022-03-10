@@ -33,16 +33,20 @@ obs_vars+=(["single_ob_d"]="air_temperature")
 obs_vars+=(["single_ob_e"]="air_temperature")
 obs_vars+=(["single_ob_f"]="air_temperature")
 
+# Create data directories
+mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+for obs in ${obs_xp} ; do
+   mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+done
+mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+
 ####################################################################
 # 3DVAR ############################################################
 ####################################################################
 
 # Job name
 job=variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${work_dir}/${job}
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
 
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -69,7 +73,7 @@ cost function:
   background:
     datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+    datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -77,7 +81,6 @@ cost function:
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
     state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: SABER
@@ -90,7 +93,7 @@ cost function:
       active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       bump:
         prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
@@ -104,8 +107,9 @@ cost function:
         universe radius:
           datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
           filetype: fms restart
+          set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -117,8 +121,9 @@ cost function:
       file:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -128,7 +133,7 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       bump:
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
@@ -141,7 +146,7 @@ cost function:
       output variables: *vars
       active variables: [psi,chi,ua,va]
       bump:
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
@@ -153,7 +158,7 @@ cost function:
       obsdatain:
         obsfile: ${data_dir}/obs/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       obsdataout:
-        obsfile: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
+        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       simulated variables: [air_temperature]
     obs operator:
       name: VertInterp
@@ -190,7 +195,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
@@ -217,10 +222,6 @@ for obs in ${obs_xp} ; do
    # Job name
    job=variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-   # Create directories
-   mkdir -p ${work_dir}/${job}
-   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-   
    # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
@@ -246,7 +247,7 @@ cost function:
   background:
     datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+    datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -254,7 +255,6 @@ cost function:
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
     state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: SABER
@@ -267,7 +267,7 @@ cost function:
       active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
       bump:
         prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
@@ -281,8 +281,9 @@ cost function:
         universe radius:
           datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
           filetype: fms restart
+          set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -294,8 +295,9 @@ cost function:
       file:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -305,7 +307,7 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       bump:
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
@@ -318,7 +320,7 @@ cost function:
       output variables: *vars
       active variables: [psi,chi,ua,va]
       bump:
-        datadir: ${data_dir_c384}/${bump_dir}
+        datadir: ${data_dir_def}/${bump_dir}
         prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
         verbosity: main
         universe_rad: 2000.0e3
@@ -330,7 +332,7 @@ cost function:
       obsdatain:
         obsfile: /work/noaa/da/dholdawa/JediWork/Benchmarks/3dvar/Data/obs/${obs_file[${obs}]}.nc4
       obsdataout:
-        obsfile: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/${obs_file[${obs}]}.nc4
+        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/${obs_file[${obs}]}.nc4
       simulated variables: [${obs_vars[${obs}]}]
     obs operator:
       name: VertInterp
@@ -367,7 +369,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
@@ -393,10 +395,6 @@ done
 
 # Job name
 job=variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${work_dir}/${job}
-mkdir -p ${data_dir_regrid}/${bump_dir}/${job}
 
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -431,7 +429,6 @@ cost function:
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
     state variables: *vars
-    psinfile: true
 
   background error:
     covariance model: SABER
@@ -458,6 +455,7 @@ cost function:
         universe radius:
           datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
           filetype: fms restart
+          set datetime on read: true
           psinfile: true
           datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -471,6 +469,7 @@ cost function:
       file:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc
@@ -570,10 +569,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${work_dir}/${job}
-mkdir -p ${data_dir_regrid}/${bump_dir}/${job}
-
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 cost function:
@@ -635,6 +630,7 @@ cost function:
         universe radius:
           datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
           filetype: fms restart
+          set datetime on read: true
           psinfile: true
           datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
           filename_core: cor_rh.fv_core.res.nc
@@ -648,6 +644,7 @@ cost function:
       file:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: stddev.fv_core.res.nc

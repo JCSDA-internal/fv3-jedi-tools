@@ -41,7 +41,8 @@ export vars="psi chi t ps sphum liq_wat o3mr"
 export nmem=80
 
 # List of dates for the training (january or july or both)
-export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
+#export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
+export yyyymmddhh_list="2020013100"
 
 # Background date
 export yyyymmddhh_bkg="2020121500"
@@ -56,10 +57,10 @@ export ntasks_def=$((6*nlx_def*nly_def))
 export cdef=384
 
 # Regridding layout and resolution
-export nlx_regrid=7
-export nly_regrid=7
+export nlx_regrid=5
+export nly_regrid=5
 export ntasks_regrid=$((6*nlx_regrid*nly_regrid))
-export cregrid=384
+export cregrid=192
 
 # Specific observations experiments
 export obs_xp="
@@ -101,15 +102,13 @@ export run_final_cor=false
 export run_final_nicas=false
 
 # Merge runs
-export run_merge_varcor=false
-export run_merge_nicas=false
+export run_merge_states=true
+export run_merge_nicas=true
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
-export run_regrid_background=false
-export run_regrid_first_member=false
+export run_regrid_states=false
 export run_regrid_psichitouv=false
 export run_regrid_vbal=false
-export run_regrid_varcor=false
 export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
 
@@ -118,7 +117,7 @@ export run_dirac_cor_local=false
 export run_dirac_cor_global=false
 export run_dirac_cov_local=false
 export run_dirac_cov_global=false
-export run_dirac_cov_multi_local=false
+export run_dirac_cov_multi_local=true
 export run_dirac_cov_multi_global=false
 export run_dirac_full_c2a_local=false
 export run_dirac_full_psichitouv_local=false
@@ -126,7 +125,7 @@ export run_dirac_full_global=false
 export run_dirac_full_regrid_local=false
 
 # Variational runs
-export run_variational_3dvar=false
+export run_variational_3dvar=true
 export run_variational_3dvar_specific_obs=false
 export run_variational_3dvar_regrid=false
 export run_variational_3dvar_full_regrid=false

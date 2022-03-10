@@ -3,16 +3,24 @@
 # Source functions
 source ./functions.sh
 
+# Create data directories
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+
 ####################################################################
 # DIRAC_COR_LOCAL ##################################################
 ####################################################################
 
 # Job name
 job=dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
 
 # DIRAC_COR_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -32,7 +40,7 @@ initial condition:
   filetype: fms restart
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -45,7 +53,7 @@ background error:
     output variables: *active_vars
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
@@ -59,15 +67,16 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -97,10 +106,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_COR_GLOBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -119,7 +124,7 @@ initial condition:
   filetype: fms restart
   state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -132,7 +137,7 @@ background error:
     output variables: *active_vars
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_global: true
@@ -146,15 +151,27 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      input:
+      - parameter: nicas_norm
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
+        set datetime on read: true
+        psinfile: true
+        datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: nicas_norm.fv_core.res.nc
+        filename_trcr: nicas_norm.fv_tracer.res.nc
+        filename_cplr: nicas_norm.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -184,10 +201,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_COV_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -206,7 +219,7 @@ initial condition:
   filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -220,7 +233,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
@@ -234,8 +247,9 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -247,15 +261,16 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -285,10 +300,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_COV_GLOBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -308,7 +319,7 @@ initial condition:
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -322,7 +333,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_global: true
@@ -336,11 +347,23 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      input:
+      - parameter: nicas_norm
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
+        set datetime on read: true
+        psinfile: true
+        datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: nicas_norm.fv_core.res.nc
+        filename_trcr: nicas_norm.fv_tracer.res.nc
+        filename_cplr: nicas_norm.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -349,15 +372,16 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
       date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -387,10 +411,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_COV_MULTI_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -409,7 +429,7 @@ initial condition:
   filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -423,7 +443,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
@@ -437,8 +457,9 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -450,8 +471,9 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
@@ -461,7 +483,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -471,7 +493,7 @@ background error:
       vbal_block: [true, true,false, true,false,false]
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cov_multi_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -501,10 +523,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_COV_MULTI_GLOBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -523,7 +541,7 @@ initial condition:
   filetype: fms restart
   state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
@@ -537,7 +555,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_global: true
@@ -551,11 +569,23 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      input:
+      - parameter: nicas_norm
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
+        set datetime on read: true
+        psinfile: true
+        datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: nicas_norm.fv_core.res.nc
+        filename_trcr: nicas_norm.fv_tracer.res.nc
+        filename_cplr: nicas_norm.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -564,8 +594,9 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
@@ -575,7 +606,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -585,7 +616,7 @@ background error:
       vbal_block: [true, true,false, true,false,false]
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_cov_multi_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -615,10 +646,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_FULL_C2A_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -633,14 +660,13 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
   state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
-  psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
@@ -651,7 +677,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
@@ -665,8 +691,9 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -678,8 +705,9 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
@@ -689,7 +717,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -697,13 +725,13 @@ background error:
       fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
       load_samp_local: true
       vbal_block: [true, true,false, true,false,false]
-  variable changes:
-  - variable change: Control2Analysis
+  linear variable change:
+    linear variable change name: Control2Analysis
     input variables: *control_vars
     output variables: *state_vars
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_full_c2a_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -733,10 +761,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_FULL_PSICHITOUV_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -751,14 +775,13 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
   state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
-  psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
@@ -769,7 +792,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
@@ -783,8 +806,9 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -796,8 +820,9 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
@@ -807,7 +832,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -820,14 +845,14 @@ background error:
     output variables: *state_vars
     active variables: [psi,chi,ua,va]
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_full_psichitouv_local_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -857,10 +882,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_FULL_GLOBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -875,14 +896,13 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
   state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
-  psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
@@ -893,7 +913,7 @@ background error:
     active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       verbosity: main
       strategy: specific_univariate
       load_nicas_global: true
@@ -907,11 +927,23 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
+        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+      input:
+      - parameter: nicas_norm
+        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        filetype: fms restart
+        set datetime on read: true
+        psinfile: true
+        datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        filename_core: nicas_norm.fv_core.res.nc
+        filename_trcr: nicas_norm.fv_tracer.res.nc
+        filename_cplr: nicas_norm.coupler.res
         date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
@@ -920,8 +952,9 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+      datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
@@ -931,7 +964,7 @@ background error:
     output variables: *control_vars
     active variables: *active_vars
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
@@ -944,14 +977,14 @@ background error:
     output variables: *state_vars
     active variables: [psi,chi,ua,va]
     bump:
-      datadir: ${data_dir_c384}/${bump_dir}
+      datadir: ${data_dir_def}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
       verbosity: main
       universe_rad: 2000.0e3
       load_wind_local: true
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_c384}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/dirac_full_global_${yyyymmddhh_first}-${yyyymmddhh_last}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -981,10 +1014,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=dirac_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_local_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # DIRAC_FULL_REGRID_LOCAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -999,14 +1028,13 @@ geometry:
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 initial condition:
-  datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
   datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
   state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
-  psinfile: true
 background error:
   covariance model: SABER
   saber blocks:
@@ -1031,6 +1059,7 @@ background error:
       universe radius:
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
         filetype: fms restart
+        set datetime on read: true
         psinfile: true
         datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
         filename_core: cor_rh.fv_core.res.nc
@@ -1044,6 +1073,7 @@ background error:
     file:
       datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       filetype: fms restart
+      set datetime on read: true
       psinfile: true
       datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
       filename_core: stddev.fv_core.res.nc

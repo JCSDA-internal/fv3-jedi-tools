@@ -3,16 +3,25 @@
 # Source functions
 source ./functions.sh
 
+# Create data directories
+mkdir -p ${data_dir_regrid}/${bump_dir}/${bkg_dir}
+mkdir -p ${data_dir_regrid}/${bump_dir}/${first_member_dir}
+mkdir -p ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+for var in ${vars}; do
+   mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+done
+
 ####################################################################
-# BACKGROUND #######################################################
+# STATES ###########################################################
 ####################################################################
 
 # Job name
-job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_background
-
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/${bkg_dir}
-mkdir -p ${work_dir}/${job}
+job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}
 
 # BACKGROUND yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -42,7 +51,7 @@ states:
 - input:
     datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/${bkg_dir}
+    datapath: ${data_dir_def}/${bump_dir}/${bkg_dir}
     filename_cplr: coupler.res
     filename_core: fv_core.res.nc
     filename_sfcw: fv_srf_wnd.res.nc
@@ -62,58 +71,12 @@ states:
     filename_trcr: fv_tracer.res.nc
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
-EOF
-
-# BACKGROUND sbatch
-ntasks=${ntasks_regrid}
-cpus_per_task=1
-threads=1
-time=00:10:00
-exe=fv3jedi_convertstate.x
-prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
-
-####################################################################
-# FIRST_MEMBER #####################################################
-####################################################################
-
-# Job name
-job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_first_member_${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-mkdir -p ${work_dir}/${job}
-
-# FIRST_MEMBER yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
-input geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx_regrid},${nly_regrid}]
-  npx: ${npx_def}
-  npy: ${npy_def}
-  npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
-output geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx_regrid},${nly_regrid}]
-  npx: ${npx_regrid}
-  npy: ${npy_regrid}
-  npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
-states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
     psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+    datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
     filename_core: unbal.fv_core.res.nc
     filename_trcr: unbal.fv_tracer.res.nc
     filename_cplr: unbal.coupler.res
@@ -124,13 +87,85 @@ states:
     filename_core: unbal.fv_core.res.nc
     filename_trcr: unbal.fv_tracer.res.nc
     filename_cplr: unbal.coupler.res
+- input:
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: stddev.fv_core.res.nc
+    filename_trcr: stddev.fv_tracer.res.nc
+    filename_cplr: stddev.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
+    filename_core: stddev.fv_core.res.nc
+    filename_trcr: stddev.fv_tracer.res.nc
+    filename_cplr: stddev.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+- input:
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+- input:
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+- input:
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+    filename_core: nicas_norm.fv_core.res.nc
+    filename_trcr: nicas_norm.fv_tracer.res.nc
+    filename_cplr: nicas_norm.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+    prepend files with date: false
+    filename_core: nicas_norm.fv_core.res.nc
+    filename_trcr: nicas_norm.fv_tracer.res.nc
+    filename_cplr: nicas_norm.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
-# FIRST_MEMBER sbatch
+# BACKGROUND sbatch
 ntasks=${ntasks_regrid}
 cpus_per_task=1
 threads=1
-time=00:10:00
+time=00:05:00
 exe=fv3jedi_convertstate.x
 prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
@@ -140,10 +175,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/${job}
 
 # PSICHITOUV yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -196,14 +227,9 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/${job}
-
 # Link input file
-ln -sf ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc
-ln -sf ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc
+ln -sf ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling.nc
+ln -sf ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}_vbal.nc
 
 # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -251,107 +277,6 @@ exe=fv3jedi_error_covariance_training.x
 prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 ####################################################################
-# VAR-COR ##########################################################
-####################################################################
-
-# Job name
-job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_var-cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${work_dir}/${job}
-
-# VAR-COR yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
-input geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx_regrid},${nly_regrid}]
-  npx: ${npx_def}
-  npy: ${npy_def}
-  npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
-output geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx_regrid},${nly_regrid}]
-  npx: ${npx_regrid}
-  npy: ${npy_regrid}
-  npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
-states:
-- input:
-    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-    filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: stddev.fv_core.res.nc
-    filename_trcr: stddev.fv_tracer.res.nc
-    filename_cplr: stddev.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  output:
-    filetype: fms restart
-    datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
-    prepend files with date: false
-    filename_core: stddev.fv_core.res.nc
-    filename_trcr: stddev.fv_tracer.res.nc
-    filename_cplr: stddev.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- input:
-    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-    filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  output:
-    filetype: fms restart
-    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    prepend files with date: false
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-- input:
-    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-    filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
-    psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  output:
-    filetype: fms restart
-    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    prepend files with date: false
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-EOF
-
-# VAR-COR sbatch
-ntasks=${ntasks_regrid}
-cpus_per_task=1
-threads=1
-time=00:30:00
-exe=fv3jedi_convertstate.x
-prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
-
-####################################################################
 # NICAS ############################################################
 ####################################################################
 
@@ -359,12 +284,8 @@ for var in ${vars}; do
    # Job name
    job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
-   # Create directories
-   mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-   mkdir -p ${work_dir}/${job}
-
    # Link input files
-   ln -sf ${data_dir_c384}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
+   ln -sf ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
 
    # NICAS yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -407,6 +328,16 @@ bump:
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  input:
+  - parameter: nicas_norm
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    filename_core: nicas_norm.fv_core.res.nc
+    filename_trcr: nicas_norm.fv_tracer.res.nc
+    filename_cplr: nicas_norm.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # NICAS sbatch
@@ -424,8 +355,6 @@ done
 
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
 mkdir -p ${work_dir}/${job}
 
 # Merge NICAS files

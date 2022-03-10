@@ -3,6 +3,15 @@
 # Source functions
 source ./functions.sh
 
+# Create data directories
+mkdir -p ${data_dir_def}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+for var in ${vars}; do
+   mkdir -p ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+   mkdir -p ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+   mkdir -p ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+done
+
 # Generic variable names
 declare -A vars_generic
 vars_generic+=(["psi"]="stream_function")
@@ -19,10 +28,6 @@ vars_generic+=(["ps"]="surface_pressure")
 
 # Job name
 job=psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
 
 # PSICHITOUV yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -42,13 +47,13 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
@@ -75,10 +80,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 # Job name
 job=vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# Create directories
-mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-mkdir -p ${work_dir}/${job}
-
 # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -97,13 +98,13 @@ background:
   filetype: fms restart
   state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [psi,chi,t,ps]
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
   verbosity: main
   universe_rad: 2000.0e3
@@ -122,9 +123,8 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   write_samp_global: true
   vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [true, false,false, false,false,false]
-  vbal_pseudo_inv: true
-  vbal_pseudo_inv_var_th: 0.1
+  vbal_diag_auto: [true, true,false, true,false,false]
+  vbal_diag_reg: [true, true,false, true,false,false]
 EOF
 
 # VBAL sbatch
@@ -142,10 +142,6 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 for var in ${vars}; do
    # Job name
    job=var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-   mkdir -p ${work_dir}/${job}
 
    # VAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -165,14 +161,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   verbosity: main
   universe_rad: 3000.0e3
   ens1_nsub: ${yyyymmddhh_size}
@@ -192,7 +188,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   - parameter: var
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     psinfile: true
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
@@ -201,7 +197,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   - parameter: m4
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     psinfile: true
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
@@ -213,7 +209,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   output:
   - parameter: stddev
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
@@ -238,10 +234,6 @@ for var in ${vars}; do
    # Job name
    job=cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-   mkdir -p ${work_dir}/${job}
-
    # COR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -260,14 +252,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   verbosity: main
   method: cor
   strategy: specific_univariate
@@ -297,7 +289,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   output:
   - parameter: cor_rh
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -305,7 +297,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - parameter: cor_rv
     filetype: fms restart
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
@@ -330,10 +322,6 @@ for var in ${vars}; do
    # Job name
    job=nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${job}
-   mkdir -p ${work_dir}/${job}
-
    # NICAS yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
@@ -352,14 +340,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${first_member_dir}
+  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   verbosity: main
   strategy: specific_univariate
   new_nicas: true
@@ -373,7 +361,7 @@ bump:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -383,7 +371,7 @@ bump:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -392,10 +380,19 @@ bump:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_c384}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
+    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+  output:
+  - parameter: nicas_norm
+    filetype: fms restart
+    datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    prepend files with date: false
+    filename_core: nicas_norm.fv_core.res.nc
+    filename_trcr: nicas_norm.fv_tracer.res.nc
+    filename_cplr: nicas_norm.coupler.res
     date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
@@ -403,7 +400,7 @@ EOF
    ntasks=${ntasks_def}
    cpus_per_task=2
    threads=2
-   time=02:00:00
+   time=03:00:00
    exe=fv3jedi_error_covariance_training.x
    prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 done
