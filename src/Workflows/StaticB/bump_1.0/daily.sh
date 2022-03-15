@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Source functions
+source ./functions.sh
+
+# Create data directories
+for yyyymmddhh in ${yyyymmddhh_list}; do
+   mkdir -p ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh}
+   mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}
+   for imem in $(seq 1 1 ${nmem}); do
+      imemp=$(printf "%.3d" "${imem}")
+      mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+   done
+   for var in ${vars}; do
+      mkdir -p ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+   done
+done
+
 for yyyymmddhh in ${yyyymmddhh_list}; do
    # Date
    yyyy=${yyyymmddhh:0:4}
@@ -11,35 +27,34 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    # VBAL #############################################################
    ####################################################################
 
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/vbal_${yyyymmddhh}
-   mkdir -p ${work_dir}/vbal_${yyyymmddhh}
+   # Job name
+   job=vbal_${yyyymmddhh}
 
    # VBAL yaml
-   yaml_name="vbal_${yyyymmddhh}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: [psi,chi,t,ps]
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
@@ -52,16 +67,16 @@ bump:
   nc2: 3500
   vbal_block: [true, true,false, true,false,false]
   vbal_rad: 2000.0e3
-  vbal_diag_reg: [true, false,false, false,false,false]
-  vbal_pseudo_inv: true
-  vbal_pseudo_inv_var_th: 0.1
+  vbal_diag_auto: [true, true,false, true,false,false]
+  vbal_diag_reg: [true, true,false, true,false,false]
   ensemble:
     members from template:
       template:
-        filetype: gfs
+        datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+        filetype: fms restart
         state variables: *stateVars
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: bvars.fv_core.res.nc
         filename_trcr: bvars.fv_tracer.res.nc
         filename_cplr: bvars.coupler.res
@@ -69,67 +84,48 @@ bump:
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
+EOF
 
    # VBAL sbatch
-   sbatch_name="vbal_${yyyymmddhh}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=vbal_${yyyymmddhh}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
-#SBATCH -e ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.err
-#SBATCH -o ${work_dir}/vbal_${yyyymmddhh}/vbal_${yyyymmddhh}.out
-
-source ${env_script}
-export OMP_NUM_THREADS=1
-
-cd ${work_dir}/vbal_${yyyymmddhh}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-
-exit 0
-EOF
+   ntasks=${ntasks_def}
+   cpus_per_task=1
+   threads=1
+   time=00:30:00
+   exe=fv3jedi_error_covariance_training.x
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
    ####################################################################
    # Unbal ############################################################
    ####################################################################
 
-   # Create directories
-   mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}
-      for imem in $(seq 1 1 ${nmem}); do
-      imemp=$(printf "%.3d" "${imem}")
-      mkdir -p ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
-   done
-   mkdir -p ${work_dir}/unbal_${yyyymmddhh}
+   # Job name
+   job=unbal_${yyyymmddhh}
 
    # Unbal yaml
-   yaml_name="unbal_${yyyymmddhh}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: bvars.fv_core.res.nc
   filename_trcr: bvars.fv_tracer.res.nc
   filename_cplr: bvars.coupler.res
 input variables: *stateVars
 bump:
-  datadir: ${data_dir_c384}/${bump_dir}
+  datadir: ${data_dir_def}/${bump_dir}
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
   verbosity: main
   universe_rad: 2000.0e3
@@ -142,19 +138,20 @@ bump:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${yaml_name}
+cat<< EOF >> ${yaml_dir}/${job}.yaml
   - input:
-      filetype: gfs
+      datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+      filetype: fms restart
       state variables: *stateVars
       psinfile: true
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       filename_core: bvars.fv_core.res.nc
       filename_trcr: bvars.fv_tracer.res.nc
       filename_cplr: bvars.coupler.res
-    bump operators: [multiplyVbalInv]
+    bump operators: [inverseMultiplyVbal]
     output:
-      filetype: gfs
-      datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem${imemp}
+      filetype: fms restart
+      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       prepend files with date: false
       filename_core: unbal.fv_core.res.nc
       filename_trcr: unbal.fv_tracer.res.nc
@@ -164,64 +161,47 @@ EOF
    done
 
    # Unbal sbatch
-   sbatch_name="unbal_${yyyymmddhh}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=unbal_${yyyymmddhh}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
-#SBATCH --time=01:00:00
-#SBATCH -e ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.err
-#SBATCH -o ${work_dir}/unbal_${yyyymmddhh}/unbal_${yyyymmddhh}.out
-
-source ${env_script}
-export OMP_NUM_THREADS=1
-
-cd ${work_dir}/unbal_${yyyymmddhh}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-
-exit 0
-EOF
-
+   ntasks=${ntasks_def}
+   cpus_per_task=1
+   threads=1
+   time=01:00:00
+   exe=fv3jedi_error_covariance_training.x
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
    ####################################################################
    # VAR-MOM ##########################################################
    ####################################################################
 
    for var in ${vars}; do
-      # Create directories
-      mkdir -p ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
-      mkdir -p ${work_dir}/var-mom_${yyyymmddhh}_${var}
+      # Job name
+      job=var-mom_${yyyymmddhh}_${var}
 
       # VAR-MOM yaml
-      yaml_name="var-mom_${yyyymmddhh}_${var}.yaml"
-cat<< EOF > ${yaml_dir}/${yaml_name}
+cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [6,6]
-  npx: 385
-  npy: 385
+  layout: [${nlx_def},${nly_def}]
+  npx: ${npx_def}
+  npy: ${npy_def}
   npz: 127
   fieldsets:
   - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
 background:
-  filetype: gfs
+  datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+  filetype: fms restart
   state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
   psinfile: true
-  datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem001
+  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var-mom_${yyyymmddhh}/var-mom_${yyyymmddhh}_${var}
-  datadir: ${data_dir_c384}/${bump_dir}
+  prefix: var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}
+  datadir: ${data_dir_def}/${bump_dir}
   verbosity: main
   universe_rad: 4000.0e3
   method: cor
@@ -243,10 +223,11 @@ bump:
   ensemble:
     members from template:
       template:
-        filetype: gfs
+        datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+        filetype: fms restart
         state variables: *stateVars
         psinfile: true
-        datapath: ${data_dir_c384}/${bump_dir}/${yyyymmddhh}/mem%mem%
+        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: unbal.fv_core.res.nc
         filename_trcr: unbal.fv_tracer.res.nc
         filename_cplr: unbal.coupler.res
@@ -256,60 +237,45 @@ bump:
       zero padding: 3
   output:
   - parameter: var
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filetype: fms restart
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: var_${var}.fv_core.res.nc
-    filename_trcr: var_${var}.fv_tracer.res.nc
-    filename_cplr: var_${var}.coupler.res
+    filename_core: var.fv_core.res.nc
+    filename_trcr: var.fv_tracer.res.nc
+    filename_cplr: var.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filetype: fms restart
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: m4_${var}.fv_core.res.nc
-    filename_trcr: m4_${var}.fv_tracer.res.nc
-    filename_cplr: m4_${var}.coupler.res
+    filename_core: m4.fv_core.res.nc
+    filename_trcr: m4.fv_tracer.res.nc
+    filename_cplr: m4.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rh
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filetype: fms restart
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: cor_rh_${var}.fv_core.res.nc
-    filename_trcr: cor_rh_${var}.fv_tracer.res.nc
-    filename_cplr: cor_rh_${var}.coupler.res
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rv
-    filetype: gfs
-    datapath: ${data_dir_c384}/${bump_dir}/var-mom_${yyyymmddhh}
+    filetype: fms restart
+    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
     prepend files with date: false
-    filename_core: cor_rv_${var}.fv_core.res.nc
-    filename_trcr: cor_rv_${var}.fv_tracer.res.nc
-    filename_cplr: cor_rv_${var}.coupler.res
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
     date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch
-      sbatch_name="var-mom_${yyyymmddhh}_${var}.sh"
-cat<< EOF > ${sbatch_dir}/${sbatch_name}
-#!/bin/bash
-#SBATCH --job-name=var-mom_${yyyymmddhh}_${var}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
-#SBATCH --ntasks=216
-#SBATCH --cpus-per-task=1
-#SBATCH --time=01:00:00
-#SBATCH -e ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.err
-#SBATCH -o ${work_dir}/var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}.out
-
-source ${env_script}
-export OMP_NUM_THREADS=1
-
-cd ${work_dir}/var-mom_${yyyymmddhh}_${var}
-srun --ntasks=216 --cpu_bind=core --distribution=block:block ${bin_dir}/fv3jedi_error_covariance_training.x ${yaml_dir}/${yaml_name}
-
-exit 0
-EOF
+      ntasks=${ntasks_def}
+      cpus_per_task=1
+      threads=1
+      time=01:00:00
+      exe=fv3jedi_error_covariance_training.x
+      prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
    done
 done
