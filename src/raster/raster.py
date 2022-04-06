@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.cm as cm
 import numpy as np
+import copy
+import subprocess
 import cartopy.crs as ccrs
 
 # -----------------------------------------------------------------------------
@@ -72,6 +74,9 @@ parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Color map (o
 
 # Centered color map
 parser.add_argument("--centered", dest="centered", action="store_true", help="Centered color map")
+
+# Cross representation (a lot faster)
+parser.add_argument("--cross", dest="cross", action="store_true", help="Cross representation")
 
 # Output file path
 parser.add_argument("--output", "-o", help="Output file path")
@@ -204,14 +209,6 @@ fgrid = Dataset(gridfiledir + "/fv3grid_c" + str(nx).zfill(4) + ".nc4", "r", for
 # Read grid vertices lons/lats
 vlons = np.degrees(fgrid["vlons"][:,:,:])
 vlats = np.degrees(fgrid["vlats"][:,:,:])
-if lon_test:
-    # Check lon
-    flons = np.degrees(fgrid["flons"][:,:,:])
-    print(np.max(np.abs(fld-flons)))
-elif lat_test:
-    # Read lat
-    flats = np.degrees(fgrid["flats"][:,:,:])
-    print(np.max(np.abs(fld-flats)))
 
 # Compute min/max
 if args.centered:
@@ -226,13 +223,17 @@ norm = plt.Normalize(vmin=vmin, vmax=vmax)
 normavg = 1.0/args.average**2
 
 # Initialize figure
-fig,ax = plt.subplots(figsize=(8,8),subplot_kw=dict(projection=projection))
-ax.set_global()
-ax.coastlines()
-ax.gridlines()
+if args.cross:
+   fig,ax = plt.subplots(figsize=(8,8))
+else:
+   fig,ax = plt.subplots(figsize=(8,8),subplot_kw=dict(projection=projection))
+   ax.set_global()
+   ax.coastlines()
+   ax.gridlines()
 
 # Colormap
-cmap = cm.get_cmap(args.colormap)
+cmap = copy.copy(cm.get_cmap(args.colormap))
+cmap.set_bad('gray', 1)
 
 # Figure title
 if args.average > 1:
@@ -240,27 +241,40 @@ if args.average > 1:
 else:
     plt.title(args.variable + " at level " + str(args.level) + " - C" + str(nx))
 
-# Loop over tiles
-for itile in range(0, ntile):
-    # Loop over polygons
-    for iy in range(0, ny, args.average):
-        for ix in range(0, nx, args.average):
-            # Average value
-            value = 0.0
-            for iya in range(0, args.average):
-                for ixa in range(0, args.average):
-                    value += fld[itile,iy+ixa,ix+ixa]
-            value = value*normavg
+if args.cross:
+    nxc = 3*nx
+    nyc = 4*ny
+    fld_cross =  np.zeros((nxc,nyc))
+    fld_cross[:,:] = np.inf
+    fld_cross[1*nx:2*nx,1*ny:2*ny] = fld[0,:,:]
+    fld_cross[1*nx:2*nx,2*ny:3*ny] = fld[1,:,:]
+    fld_cross[2*nx:3*nx,1*ny:2*ny] = np.rot90(fld[2,:,:],3)
+    fld_cross[1*nx:2*nx,3*ny:4*ny] = np.rot90(fld[3,:,:])
+    fld_cross[1*nx:2*nx,0*ny:1*ny] = np.rot90(fld[4,:,:])
+    fld_cross[0*nx:1*nx,1*ny:2*ny] = fld[5,:,:]
+    ax.pcolormesh(fld_cross, cmap=cmap, vmin=vmin, vmax=vmax);
+else:
+    # Loop over tiles
+    for itile in range(0, ntile):
+        # Loop over polygons
+        for iy in range(0, ny, args.average):
+            for ix in range(0, nx, args.average):
+                # Average value
+                value = 0.0
+                for iya in range(0, args.average):
+                    for ixa in range(0, args.average):
+                        value += fld[itile,iy+ixa,ix+ixa]
+                value = value*normavg
 
-            if abs(value) >= args.threshold:
-                # Polygon coordinates      
-                xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
-                      [vlons[itile,iy+0,ix+args.average], vlats[itile,iy+0,ix+args.average]],
-                      [vlons[itile,iy+args.average,ix+args.average], vlats[itile,iy+args.average,ix+args.average]],
-                      [vlons[itile,iy+args.average,ix+0], vlats[itile,iy+args.average,ix+0]]]
+                if abs(value) >= args.threshold:
+                    # Polygon coordinates      
+                    xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
+                          [vlons[itile,iy+0,ix+args.average], vlats[itile,iy+0,ix+args.average]],
+                          [vlons[itile,iy+args.average,ix+args.average], vlats[itile,iy+args.average,ix+args.average]],
+                          [vlons[itile,iy+args.average,ix+0], vlats[itile,iy+args.average,ix+0]]]
 
-                # Add polygon
-                ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(value)),transform=ccrs.Geodetic()))
+                    # Add polygon
+                    ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(value)),transform=ccrs.Geodetic()))
 
 # Set colorbar
 sm = cm.ScalarMappable(cmap=args.colormap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
@@ -270,6 +284,13 @@ plt.colorbar(sm, orientation="horizontal", pad=0.06)
 # Save and close figure
 plt.savefig(args.output + ".jpg", format="jpg", dpi=300)
 plt.close()
+
+# Trim figure with mogrify if available
+info = subprocess.getstatusoutput('mogrify')
+if info[0] == 0:
+    subprocess.run(["mogrify", "-trim", args.output + ".jpg"])
+
+# Print plot path
 print(" -> plot produced: " + args.output + ".jpg")
 
 # -----------------------------------------------------------------------------
