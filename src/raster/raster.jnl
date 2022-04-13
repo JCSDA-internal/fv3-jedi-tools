@@ -1,0 +1,71 @@
+! -----------------------------------------------------------------------------
+! Ferret script to plot FV3 fields stored in GFS format
+! Source: https://extranet.gfdl.noaa.gov/~atw/ferret/cubed_sphere/
+! Modified by Benjamin Menetrier for FV3-JEDI
+! -----------------------------------------------------------------------------
+
+say ok
+exit
+
+! File name (without the tile number and the extension)
+def sym filename /home/benjamin/data/fv3/20201215.000000.c24.fv_core.res.tile
+
+! Resolution ("c" + 4 digits)
+def sym res c0024
+
+! Variable
+def sym var ua
+
+! Vertical level
+def sym lev 30
+
+! Point of view
+def sym lonview -45
+def sym latview 45
+
+! Output file name
+def sym output ortho.jnl
+
+! -----------------------------------------------------------------------------
+! DO NOT MODIFY ANYTHING AFTER THIS POINT
+let var=($var)
+can dat/all
+let minlev=1e38
+let maxlev=-1e38
+rep/name=s/range=1:6 (\
+   use ($filename)`s`.nc;\
+   let var`s`=var[k=($lev),l=1,d=`($var),r=dsetnum`];\
+   let mintest=var`s`[x=@min,y=@min,z=@min,t=@min];\
+   if `mintest lt minlev` THEN let minlev=`mintest` ENDIF;\
+   let maxtest=var`s`[x=@max,y=@max,z=@max,t=@max];\
+   if `maxtest gt maxlev` THEN let maxlev=`maxtest` ENDIF;\
+   )
+
+use fv3grid/fv3grid_($res).nc4
+rep/name=s/range=1:6 (\
+   let vlons`s`=vlons[k=`s`,d=`vlons,r=dsetnum`];\
+   let vlats`s`=vlats[k=`s`,d=`vlats,r=dsetnum`];\
+   let ngrd_lon=x[gx=vlons`s`]+y[gy=vlons`s`];\
+   let lon`s`=reshape(vlons`s`,ngrd_lon);\
+   let ngrd_lat=x[gx=vlats`s`]+y[gy=vlats`s`];\
+   let lat`s`=reshape(vlats`s`,ngrd_lat);\
+   )
+
+def sym win_reset ppl cross 0\; ppl color 6 100 100 100\; ppl shaset reset
+
+set window/aspect=1.05/size=.3 1
+($win_reset); palette dark_terrestrial
+
+let nlev=200
+let delta=(maxlev-minlev)/nlev
+
+go plot_cubesphere_ortho "shade/nolab/lev=(`minlev`,`maxlev`,`delta`)" var lon lat ($lonview) ($latview)
+
+! define a global grid for land overlays
+def ax/x=0:360:360 pcso_xdum
+def ax/y=-90:90:180 pcso_ydum
+def grid/x=pcso_xdum/y=pcso_ydum pcso_gdum
+set grid pcso_gdum
+go mp_land 7 " " " " " " " " " " 0
+
+FRAME/FILE=ortho.png/XPIXELS=3000
