@@ -321,10 +321,11 @@ else:
 # Trim figure with mogrify if available
 info = subprocess.getstatusoutput('mogrify -help')
 if info[0] == 0:
-    subprocess.run(["mogrify", "-trim", args.output + ".png"])
-
-# Print plot path
-print(" -> plot produced: " + args.output + ".png")
+    if args.ferret:
+        subprocess.run(["mogrify", "-trim", "-format", "png", args.output + ".gif"])
+        os.remove(args.output + ".gif")
+    else:
+        subprocess.run(["mogrify", "-trim", args.output + ".png"])
 
 # -----------------------------------------------------------------------------
 
