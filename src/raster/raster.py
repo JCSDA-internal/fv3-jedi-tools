@@ -52,12 +52,6 @@ parser.add_argument("--basevariable", "-bv", help="Base variable")
 # Level
 parser.add_argument("--level", "-l", type=int, help="Level")
 
-# Averaging size (optional, default=1)
-parser.add_argument("--average", "-a", type=int, nargs="?", help="Averaging size (optional, default=1)", default=1)
-
-# Value threshold (optional, default=0.0)
-parser.add_argument("--threshold", "-th", type=float, nargs="?", help="Value threshold (optional, default=0.0)", default=0.0)
-
 # Color map (optional, default=jet or coolwarm)
 parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Color map (optional, default=jet or coolwarm)")
 
@@ -251,9 +245,9 @@ if args.ferret:
             ncferret.close()
 
     # Run ferret script
-    info = subprocess.getstatusoutput('pyferret --help')
+    info = subprocess.getstatusoutput('ferret --help')
     if info[0] == 0:
-        subprocess.run(["pyferret", "-nodisplay", "-script", "raster.jnl", ferret_file_name, title, str(lonview), str(latview), args.colormap, str(args.centered), args.output],
+        subprocess.run(["ferret", "-unmapped", "-gif", "-script", "raster.jnl", ferret_file_name, title, str(lonview), str(latview), args.colormap, str(args.centered), args.output],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT)
     else:
@@ -304,15 +298,14 @@ else:
         # Loop over polygons
         for iy in range(0, ny):
             for ix in range(0, nx):
-                if abs(fld[itile,iy,ix]) >= args.threshold:
-                    # Polygon coordinates      
-                    xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
-                          [vlons[itile,iy+0,ix+args.average], vlats[itile,iy+0,ix+args.average]],
-                          [vlons[itile,iy+args.average,ix+args.average], vlats[itile,iy+args.average,ix+args.average]],
-                          [vlons[itile,iy+args.average,ix+0], vlats[itile,iy+args.average,ix+0]]]
+                # Polygon coordinates      
+                xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
+                      [vlons[itile,iy+0,ix+1], vlats[itile,iy+0,ix+1]],
+                      [vlons[itile,iy+1,ix+1], vlats[itile,iy+1,ix+1]],
+                      [vlons[itile,iy+1,ix+0], vlats[itile,iy+1,ix+0]]]
     
-                    # Add polygon
-                    ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(fld[itile,iy,ix])),transform=ccrs.Geodetic()))
+                # Add polygon
+                ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(fld[itile,iy,ix])),transform=ccrs.Geodetic()))
     
     # Set colorbar
     sm = cm.ScalarMappable(cmap=args.colormap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
