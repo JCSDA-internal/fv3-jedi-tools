@@ -41,10 +41,9 @@ rep/name=s/range=1:6 (\
    )
 
 ! Define windows
-set window/aspect=1.05/size=.3 1
+set window/aspect=1.05/size=5.0 1
 ppl cross 0\
 ppl color 6 100 100 100\
-ppl shaset reset
 palette ($colormap)
 
 ! Define levels
@@ -52,7 +51,7 @@ let nlev=30
 let delta=(vmax-vmin)/nlev
 
 ! Plot cube-sphere data
-go plot_cubesphere_ortho "shade/nolab/lev=(`vmin`,`vmax`,`delta`)" var lon lat `lonview` `latview`
+go plot_cubesphere_ortho "shade/nolab/lev=(`vmin`,`vmax`,`delta`)" var lon lat "`lonview`" "`latview`"
 
 ! Define a global grid for land overlays
 def ax/x=0:360:360 pcso_xdum
@@ -62,8 +61,8 @@ set grid pcso_gdum
 go mp_land 7 " " " " " " " " " " 0
 
 ! Set title
-set text/font=arial
+!set text/font=arial
 annotate/xpos=0/ypos=1.05/halign=0/valign=0/size=0.15 "($title)"
 
 ! Write file
-frame/file=($output).png/xpixels=3000
+frame/file=($output).gif

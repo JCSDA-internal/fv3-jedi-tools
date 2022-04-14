@@ -21,19 +21,19 @@
 say In plot_cubesphere_face:
 
 ! Arguments
-let pcsf_face = $1
+let pcsf_face=$1
 say pcsf_face: `pcsf_face`
 def sym cmd $2
 say cmd: ($cmd)
 
 ! Set grid to cell centers for this face
-let pcsf_val = ($pcsf_vals)`pcsf_face`
+let pcsf_val=($pcsf_vals)`pcsf_face`
 set grid pcsf_val
 
 ! Redefine locations to be cell vertices for this face
-let mp_lambda = deg2rad * ($pcsf_lons)`pcsf_face`
-let mp_phi    = deg2rad * ($pcsf_lats)`pcsf_face`
-let pcsf_rotate_rad = pcsf_rotate * deg2rad
+let mp_lambda=deg2rad*($pcsf_lons)`pcsf_face`
+let mp_phi=deg2rad*($pcsf_lats)`pcsf_face`
+let pcsf_rotate_rad=pcsf_rotate*deg2rad
 
 ! Render the plot
 ($cmd)/noax/hl=`pcsf_hoff-1/pcsf_zoom`:`pcsf_hoff+1/pcsf_zoom`/vl=`pcsf_voff-1/pcsf_zoom`:`pcsf_voff+1/pcsf_zoom` \

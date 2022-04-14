@@ -20,22 +20,22 @@ def sym pcsf_lons $3               !< Data longitudes (P centers or P+1 corners/
 say pcsf_lons: ($pcsf_lons)
 def sym pcsf_lats $4               !< Data latitudes (Q centers or Q+1 corners/vertices)
 say pcsf_lats: ($pcsf_lats)
-let pcso_vlon = $5"170"            !< View longitude
+let pcso_vlon=$5"0"                !< View longitude
 say pcso_vlon: `pcso_vlon`
-let pcso_vlat = $6"20"             !< View latitude
+let pcso_vlat=$6"0"                !< View latitude
 say pcso_vlat: `pcso_vlat`
-let pcsf_zoom = $7"1"              !< Zoom factor (at 1, globe fills the screen)
+let pcsf_zoom=$7"1"                !< Zoom factor (at 1, globe fills the screen)
 say pcsf_zoom: `pcsf_zoom`
-let pcsf_hoff = $8"0"              !< Horizontal offset, in screens
+let pcsf_hoff=$8"0"                !< Horizontal offset, in screens
 say pcsf_hoff: `pcsf_hoff`
-let pcsf_voff = $9"0"              !< Vertical offset, in screens
+let pcsf_voff=$9"0"                !< Vertical offset, in screens
 say pcsf_voff: `pcsf_voff`
-let pcsf_rotate = $10"0"           !< Counterclockwise rotation angle, in degrees
+let pcsf_rotate=$10"0"             !< Counterclockwise rotation angle, in degrees
 say pcsf_rotate: `pcsf_rotate`
 
 ! Define the mapping factors for this viewpoint (this also defines the factor deg2rad)
 go mp_orthographic `pcso_vlon` `pcso_vlat`
-let pcso_rotate_rad = pcso_rotate * deg2rad
+let pcso_rotate_rad=pcso_rotate*deg2rad
 
 ! Setup a plot of face #1, to see if it has valid data (i.e. data visible from the selected viewpoint).
 ! If it doesn't, then plot the opposite face (#4) first.
