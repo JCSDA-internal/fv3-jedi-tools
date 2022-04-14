@@ -23,8 +23,8 @@ let pcsf_val = ($pcsf_vals)`pcsf_face`
 set grid pcsf_val
 
 ! redefine locations to be cell vertices for this face
-let mp_lambda = ($pcsf_lons)`pcsf_face`
-let mp_phi    = ($pcsf_lats)`pcsf_face`
+let mp_lambda = deg2rad * ($pcsf_lons)`pcsf_face`
+let mp_phi    = deg2rad * ($pcsf_lats)`pcsf_face`
 
 let pcsf_rotate_rad = pcsf_rotate * deg2rad
 
