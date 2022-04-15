@@ -315,6 +315,9 @@ for iz in range(0, nz):
         cmap = copy.copy(cm.get_cmap(args.colormap))
         cmap.set_bad('gray', 1)
     
+        # Normalization
+        norm = plt.Normalize(vmin=vmin, vmax=vmax)
+
         # Figure title
         plt.title(title)
     
@@ -330,10 +333,10 @@ for iz in range(0, nz):
                           [vlons[itile,iy+1,ix+0], vlats[itile,iy+1,ix+0]]]
     
                     # Add polygon
-                    ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(fld[itile,iy,ix])),transform=ccrs.Geodetic()))
+                    ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(fld[itile,iz,iy,ix])),transform=ccrs.Geodetic()))
     
         # Set colorbar
-        sm = cm.ScalarMappable(cmap=args.colormap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
+        sm = cm.ScalarMappable(cmap=args.colormap, norm=norm)
         sm.set_array([])
         plt.colorbar(sm, orientation="vertical",shrink=0.8)
     

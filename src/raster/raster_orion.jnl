@@ -33,9 +33,9 @@ say output: ($output)
 can dat/all
 rep/name=s/range=1:6 (\
    use ($filename)`s`.nc;\
-   let var_tmp=var[k=`iz`,d=`var,r=dsetnum`];\
-   let ngrd=x[gx=var_tmp]+y[gy=var_tmp];\
-   let var`s`=reshape(var_tmp,ngrd);\
+   let var_tmp`s`=var[k=`iz`,d=`var,r=dsetnum`];\
+   let ngrd=x[gx=var_tmp`s`]+y[gy=var_tmp`s`];\
+   let var`s`=reshape(var_tmp`s`,ngrd);\
    let lon`s`=lon[d=`lon,r=dsetnum`];\
    let lat`s`=lat[d=`lat,r=dsetnum`];\
    )
@@ -44,6 +44,7 @@ rep/name=s/range=1:6 (\
 set window/aspect=1.05/size=5.0 1
 ppl cross 0\
 ppl color 6 100 100 100\
+ppl shaset reset
 palette ($colormap)
 
 ! Define levels
