@@ -13,12 +13,9 @@ import os
 import argparse
 import sys
 import time
-from netCDF4 import Dataset
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import matplotlib.cm as cm
+import subprocess
 import numpy as np
-import cartopy.crs as ccrs
+from netCDF4 import Dataset
 
 # -----------------------------------------------------------------------------
 
@@ -32,13 +29,8 @@ initial_time = time.perf_counter()
 # FV3_GRID_DIR: directory with FV3 grid files for each resolution ("fv3grid_cNNNN.nc")
 gridfiledir = os.environ.get("FV3_GRID_DIR", os.path.dirname(os.path.realpath(__file__)) + "/fv3grid")
 
-# Hard-coded parameters
-
-# Number of tiles
-ntile = 6
-
-# Projection
-projection = ccrs.Robinson()
+# Host name
+hostname = os.environ.get("HOSTNAME", "")
 
 # -----------------------------------------------------------------------------
 
@@ -52,20 +44,17 @@ parser.add_argument("--gfs", dest="gfs", action="store_true", help="GFS input fi
 # File path
 parser.add_argument("--filepath", "-f", help="File path")
 
-# Base file path to compute a difference (optional)
-parser.add_argument("--basefilepath", "-bf", help="Base file path to compute a difference (optional)")
-
 # Variable
 parser.add_argument("--variable", "-v", help="Variable")
 
-# Level
-parser.add_argument("--level", "-l", type=int, help="Level")
+# Base file path to compute a difference (optional)
+parser.add_argument("--basefilepath", "-bf", help="Base file path to compute a difference (optional)")
 
-# Averaging size (optional, default=1)
-parser.add_argument("--average", "-a", type=int, nargs="?", help="Averaging size (optional, default=1)", default=1)
+# Base variable to compute a difference (optional)
+parser.add_argument("--basevariable", "-bv", help="Base variable")
 
-# Value threshold (optional, default=0.0)
-parser.add_argument("--threshold", "-th", type=float, nargs="?", help="Value threshold (optional, default=0.0)", default=0.0)
+# Levels
+parser.add_argument("--levels", "-l", type=str, help="Levels (values separated with commas)")
 
 # Color map (optional, default=jet or coolwarm)
 parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Color map (optional, default=jet or coolwarm)")
@@ -73,20 +62,33 @@ parser.add_argument("--colormap", "-cm", type=str, nargs="?", help="Color map (o
 # Centered color map
 parser.add_argument("--centered", dest="centered", action="store_true", help="Centered color map")
 
+# Ferret script (a lot faster)
+parser.add_argument("--ferret", dest="ferret", action="store_true", help="Ferret script")
+
 # Output file path
 parser.add_argument("--output", "-o", help="Output file path")
 
-# -----------------------------------------------------------------------------
+# Lon/lat of view
+lonview = -45.0
+latview = 45.0
 
 # Parse arguments
 args = parser.parse_args()
 
+# -----------------------------------------------------------------------------
+
 # Set default string values
 if args.colormap is None:
     if args.centered:
-        args.colormap = "coolwarm"
+        if args.ferret:
+            args.colormap = "cmocean_balance"
+        else:
+            args.colormap = "seismic"
     else:
-        args.colormap = "jet"
+        if args.ferret:
+            args.colormap = "default"
+        else:
+            args.colormap = "viridis"
 
 # Print arguments
 print("Parameters:")
@@ -95,25 +97,25 @@ for arg in vars(args):
     if not arg is None:
         print(" - " + arg + ": " + str(getattr(args, arg)))
 
-
 # Check arguments
-if (not (args.geos or args.gfs)):
-    print("ERROR: --geos or --gfs required")
+if not (args.geos or args.gfs):
+    print("ERROR: --geos or --gfs is required")
+    sys.exit(1)
+if args.filepath is None:
+    print("ERROR: filepath is required")
+    sys.exit(1)
+if args.variable is None:
+    print("ERROR: variable is required")
+    sys.exit(1)
+if args.levels is None:
+    print("ERROR: levels is required")
+    sys.exit(1)
+if args.output is None:
+    print("ERROR: output is required")
     sys.exit(1)
 
-# -----------------------------------------------------------------------------
-
-# Lon/lat test
-lon_test = False
-lat_test = False
-
-if lon_test and lat_test:
-    print("ERROR: lon_test and lat_test are mutually exclusive")
-    sys.exit(1)
-
-if (lon_test or lat_test) and args.gfs:
-    print("ERROR: lon_test and lat_test are only available with GFS")
-    sys.exit(1)
+# Convert levels list to array of integers
+levels = np.array(list(map(int, args.levels.split(","))))
 
 # -----------------------------------------------------------------------------
 
@@ -126,15 +128,10 @@ if args.geos:
     # Open data file
     fdata = Dataset(args.filepath, "r", format="NETCDF4")
 
-    if lon_test:
-        # Read lon
-        fld = fdata["lons"][:,:,:]
-    elif lat_test:
-        # Read lat
-        fld = fdata["lats"][:,:,:]
-    else:
-        # Read field
-        fld = fdata[args.variable][0,args.level-1,:,:,:]
+    # Read field
+    fld = fdata[args.variable][0,levels-1,:,:,:]
+    units = fdata[args.variable].units
+    long_name = fdata[args.variable].long_name
 
     if not args.basefilepath is None:
         # Check base file extension
@@ -145,41 +142,52 @@ if args.geos:
         # Open data file
         fdata = Dataset(args.basefilepath, "r", format="NETCDF4")
 
+        # Variable name
+        if args.basevariable is None:
+            variable = args.variable
+        else:
+            variable = args.basevariable
+
         # Read field
-        basefld = fdata[args.variable][0,args.level-1,:,:,:]
+        basefld = fdata[variable][0,levels-1,:,:,:]
 
         # Compute increment
         fld = fld - basefld
 
     # Get shape
     shp = np.shape(fld)
-    ny = shp[1]
-    nx = shp[2]
-else:
+    nz = shp[1]
+    ny = shp[2]
+    nx = shp[3]
+elif args.gfs:
     # Check file extension
     if not args.filepath.endswith(".nc"):
         print("   Error: filepath extension should be .nc")
         sys.exit(1)
 
-    for itile in range(0, ntile):
+    for itile in range(0, 6):
         # Open data file
         filename = args.filepath.replace(".nc", ".tile" + str(itile+1) + ".nc")
         fdata = Dataset(filename, "r", format="NETCDF4")
 
         # Read field
-        fld_tmp = fdata[args.variable][0,args.level-1,:,:]
+        fld_tmp = fdata[args.variable][0,levels-1,:,:]
+
+        units = fdata[args.variable].units
+        long_name = fdata[args.variable].long_name
 
         if itile == 0:
             # Get shape
             shp = np.shape(fld_tmp)
-            ny = shp[0]
-            nx = shp[1]
+            nz = shp[0]
+            ny = shp[1]
+            nx = shp[2]
 
             # Initialize field
-            fld = np.zeros((ntile, ny, nx))
+            fld = np.zeros((6, nz, ny, nx))
 
         # Copy field
-        fld[itile,:,:] = fld_tmp
+        fld[itile,:,:,:] = fld_tmp
 
     if not args.basefilepath is None:
         # Check base file extension
@@ -187,31 +195,23 @@ else:
             print("   Error: basefilepath extension should be .nc")
             sys.exit(1)
 
-        for itile in range(0, ntile):
+        for itile in range(0, 6):
             # Open data file
             filename = args.basefilepath.replace(".nc", ".tile" + str(itile+1) + ".nc")
             fdata = Dataset(filename, "r", format="NETCDF4")
 
+            # Variable name
+            if args.basevariable is None:
+                variable = args.variable
+            else:
+                variable = args.basevariable
+
             # Read field
-            fld_tmp = fdata[args.variable][0,args.level-1,:,:]
+            fld_tmp = fdata[variable][0,levels-1,:,:]
 
             # Copy field
-            fld[itile,:,:] = fld[itile,:,:] - fld_tmp
+            fld[itile,:,:,:] = fld[itile,:,:,:] - fld_tmp
 
-# Open grid file
-fgrid = Dataset(gridfiledir + "/fv3grid_c" + str(nx).zfill(4) + ".nc4", "r", format="NETCDF4")
-
-# Read grid vertices lons/lats
-vlons = np.degrees(fgrid["vlons"][:,:,:])
-vlats = np.degrees(fgrid["vlats"][:,:,:])
-if lon_test:
-    # Check lon
-    flons = np.degrees(fgrid["flons"][:,:,:])
-    print(np.max(np.abs(fld-flons)))
-elif lat_test:
-    # Read lat
-    flats = np.degrees(fgrid["flats"][:,:,:])
-    print(np.max(np.abs(fld-flats)))
 
 # Compute min/max
 if args.centered:
@@ -220,57 +220,149 @@ if args.centered:
 else:
     vmin = np.min(fld)
     vmax = np.max(fld)
-norm = plt.Normalize(vmin=vmin, vmax=vmax)
 
-# Compute averaging norm
-normavg = 1.0/args.average**2
+# Open grid file
+fgrid = Dataset(gridfiledir + "/fv3grid_c" + str(nx).zfill(4) + ".nc4", "r", format="NETCDF4")
 
-# Initialize figure
-fig,ax = plt.subplots(figsize=(8,8),subplot_kw=dict(projection=projection))
-ax.set_global()
-ax.coastlines()
-ax.gridlines()
+# Read grid vertices lons/lats
+vlons = np.degrees(fgrid["vlons"][:,:,:])
+vlats = np.degrees(fgrid["vlats"][:,:,:])
 
-# Colormap
-cmap = cm.get_cmap(args.colormap)
+if args.ferret:
+    # Write field in NetCDF file
+    if args.geos:
+        # TODO
+        print('not implemented yet')
+        exit()
+    elif args.gfs:
+        for itile in range(0, 6):
+            # Ferret file name
+            ferret_file_name = "ferret_tile"
 
-# Figure title
-if args.average > 1:
-    plt.title(args.variable + " at level " + str(args.level) + " - C" + str(nx) + " - Avg. " + str(args.average))
-else:
-    plt.title(args.variable + " at level " + str(args.level) + " - C" + str(nx))
+            # Open data file
+            filename = ferret_file_name + str(itile+1) + ".nc"
+            ncferret = Dataset(filename,mode="w",format="NETCDF4_CLASSIC")
 
-# Loop over tiles
-for itile in range(0, ntile):
-    # Loop over polygons
-    for iy in range(0, ny, args.average):
-        for ix in range(0, nx, args.average):
-            # Average value
-            value = 0.0
-            for iya in range(0, args.average):
-                for ixa in range(0, args.average):
-                    value += fld[itile,iy+ixa,ix+ixa]
-            value = value*normavg
+            # Create dimensions
+            nvx_dim = ncferret.createDimension('nvx', nx+1)
+            nvy_dim = ncferret.createDimension('nvy', ny+1)
+            ncx_dim = ncferret.createDimension('ncx', nx)
+            ncy_dim = ncferret.createDimension('ncy', ny)
+            nz_dim = ncferret.createDimension('nz', nz)
 
-            if abs(value) >= args.threshold:
-                # Polygon coordinates      
-                xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
-                      [vlons[itile,iy+0,ix+args.average], vlats[itile,iy+0,ix+args.average]],
-                      [vlons[itile,iy+args.average,ix+args.average], vlats[itile,iy+args.average,ix+args.average]],
-                      [vlons[itile,iy+args.average,ix+0], vlats[itile,iy+args.average,ix+0]]]
+            # Create variables
+            lat = ncferret.createVariable('lat', np.float64, ('nvy','nvx',))
+            lat.units = 'degrees_north'
+            lat.long_name = 'latitude'
+            lon = ncferret.createVariable('lon', np.float64, ('nvy','nvx',))
+            lon.units = 'degrees_east'
+            lon.long_name = 'longitude'
+            var = ncferret.createVariable('var', np.float64, ('nz','ncy','ncx',))
+            var.units = units
+            var.long_name = long_name
 
-                # Add polygon
-                ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(value)),transform=ccrs.Geodetic()))
+            # Write variables
+            lat[:,:] = vlats[itile,:,:]
+            lon[:,:] = vlons[itile,:,:]
+            var[:,:,:] = fld[itile,:,:,:]
 
-# Set colorbar
-sm = cm.ScalarMappable(cmap=args.colormap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
-sm.set_array([])
-plt.colorbar(sm, orientation="horizontal", pad=0.06)
+            # Close file
+            ncferret.close()
 
-# Save and close figure
-plt.savefig(args.output + ".jpg", format="jpg", dpi=300)
-plt.close()
-print(" -> plot produced: " + args.output + ".jpg")
+for iz in range(0, nz):
+    # Figure title
+    title = long_name + " (" + units + ") at level " + str(levels[iz]) + " - C" + str(nx)
+    title = title.replace("_", " ")
+
+    # Output
+    output = args.output + "_" + str(levels[iz])
+    
+    if args.ferret:
+        if "Orion" in hostname:
+            # Run ferret script (pyferret not available on Orion)
+            info = subprocess.getstatusoutput('ferret -help')
+            if info[0] == 0:
+                subprocess.run(["ferret", "-unmapped", "-gif", "-script", "raster_orion.jnl", ferret_file_name, str(iz+1), "\"" + title + "\"", str(lonview), str(latview), args.colormap, str(vmin), str(vmax), output],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT)
+            else:
+                print(info[1])
+        else:
+            # Run pyferret script
+            info = subprocess.getstatusoutput('pyferret -help')
+            if info[0] == 0:
+                subprocess.run(["pyferret", "-png", "-script", "raster.jnl", ferret_file_name, str(iz+1), title, str(lonview), str(latview), args.colormap, str(vmin), str(vmax), output],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT)
+            else:
+                print(info[1])
+    else:
+        # Import modules
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as mpatches
+        import matplotlib.cm as cm
+        import cartopy.crs as ccrs
+        import copy
+    
+        # Projection
+        projection = ccrs.Orthographic(lonview, latview)
+        
+        # Initialize figure
+        fig,ax = plt.subplots(figsize=(8,8),subplot_kw=dict(projection=projection))
+        ax.set_global()
+        ax.coastlines()
+    
+        # Colormap
+        cmap = copy.copy(cm.get_cmap(args.colormap))
+        cmap.set_bad('gray', 1)
+    
+        # Normalization
+        norm = plt.Normalize(vmin=vmin, vmax=vmax)
+
+        # Figure title
+        plt.title(title)
+    
+        # Loop over tiles
+        for itile in range(0, 6):
+            # Loop over polygons
+            for iy in range(0, ny):
+                for ix in range(0, nx):
+                    # Polygon coordinates
+                    xy = [[vlons[itile,iy+0,ix+0], vlats[itile,iy+0,ix+0]],
+                          [vlons[itile,iy+0,ix+1], vlats[itile,iy+0,ix+1]],
+                          [vlons[itile,iy+1,ix+1], vlats[itile,iy+1,ix+1]],
+                          [vlons[itile,iy+1,ix+0], vlats[itile,iy+1,ix+0]]]
+    
+                    # Add polygon
+                    ax.add_patch(mpatches.Polygon(xy=xy, closed=True, facecolor=cmap(norm(fld[itile,iz,iy,ix])),transform=ccrs.Geodetic()))
+    
+        # Set colorbar
+        sm = cm.ScalarMappable(cmap=args.colormap, norm=norm)
+        sm.set_array([])
+        plt.colorbar(sm, orientation="vertical",shrink=0.8)
+    
+        # Save and close figure
+        plt.savefig(output + ".png", format="png", dpi=300)
+        plt.close()
+    
+    # Trim figure with mogrify if available
+    info = subprocess.getstatusoutput('mogrify -help')
+    if info[0] == 0:
+        if args.ferret and "Orion" in hostname:
+            subprocess.run(["mogrify", "-trim", "-format", "png", output + ".gif"])
+            os.remove(output + ".gif")
+        else:
+            subprocess.run(["mogrify", "-trim", output + ".png"])
+
+if args.ferret:
+    # Remove temporary files
+    if args.geos:
+        # TODO
+        print('not implemented yet')
+        exit()
+    elif args.gfs:
+        for itile in range(0, 6):
+            os.remove(ferret_file_name + str(itile+1) + ".nc")    
 
 # -----------------------------------------------------------------------------
 
