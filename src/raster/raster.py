@@ -271,7 +271,8 @@ if args.ferret:
 
 for iz in range(0, nz):
     # Figure title
-    title = long_name + " [" + units + "] at level " + str(levels[iz]) + " - C" + str(nx)
+    title = long_name + " (" + units + ") at level " + str(levels[iz]) + " - C" + str(nx)
+    title = title.replace("_", " ")
 
     # Output
     output = args.output + "_" + str(levels[iz])
