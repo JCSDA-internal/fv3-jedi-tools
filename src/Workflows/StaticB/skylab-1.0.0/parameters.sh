@@ -22,6 +22,9 @@ export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
 # Experiments directory
 export xp_dir="${HOME}/xp"
 
+# BUMP directory
+export bump_dir="skylab-1.0.0"
+
 ####################################################################
 # Environment script path ##########################################
 # Provided: gnu-openmpi or intel-impi on Orion #####################

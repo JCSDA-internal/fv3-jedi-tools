@@ -40,7 +40,6 @@ export data_dir_def=${data_dir}/c${cdef}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
-export bump_dir="bump_1.0"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
