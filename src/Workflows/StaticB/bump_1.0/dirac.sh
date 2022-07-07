@@ -33,12 +33,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
@@ -73,7 +72,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
   datapath: ${data_dir_def}/${bump_dir}/dirac_cor_local_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -81,14 +79,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
   ixdir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
 EOF
 
 # DIRAC_COR_LOCAL sbatch
@@ -117,12 +114,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
@@ -157,7 +153,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       input:
       - parameter: nicas_norm
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -168,7 +163,6 @@ background error:
         filename_core: nicas_norm.fv_core.res.nc
         filename_trcr: nicas_norm.fv_tracer.res.nc
         filename_cplr: nicas_norm.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
   datapath: ${data_dir_def}/${bump_dir}/dirac_cor_global_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -176,14 +170,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
   ixdir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
 EOF
 
 # DIRAC_COR_GLOBAL sbatch
@@ -212,12 +205,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
@@ -230,7 +222,7 @@ background error:
     saber central block: true
     input variables: *control_vars
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -253,7 +245,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -267,7 +258,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
   datapath: ${data_dir_def}/${bump_dir}/dirac_cov_local_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -275,14 +265,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
   ixdir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
 EOF
 
 # DIRAC_COV_LOCAL sbatch
@@ -311,12 +300,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
@@ -330,7 +318,7 @@ background error:
     saber central block: true
     input variables: *control_vars
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -353,7 +341,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       input:
       - parameter: nicas_norm
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -364,7 +351,6 @@ background error:
         filename_core: nicas_norm.fv_core.res.nc
         filename_trcr: nicas_norm.fv_tracer.res.nc
         filename_cplr: nicas_norm.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -378,7 +364,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 output dirac:
   filetype: fms restart
   datapath: ${data_dir_def}/${bump_dir}/dirac_cov_global_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -386,14 +371,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 42
   ixdir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["psi","psi","psi","psi","psi","psi","chi","chi","chi","chi","chi","chi","t","t","t","t","t","t","sphum","sphum","sphum","sphum","sphum","sphum","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","liq_wat","o3mr","o3mr","o3mr","o3mr","o3mr","o3mr","ps","ps","ps","ps","ps","ps"]
+  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
 EOF
 
 # DIRAC_COV_GLOBAL sbatch
@@ -422,12 +406,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
@@ -440,7 +423,7 @@ background error:
     saber central block: true
     input variables: *control_vars
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -463,7 +446,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -477,7 +459,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -498,14 +479,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_COV_MULTI_LOCAL sbatch
@@ -534,12 +514,11 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
   datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
@@ -552,7 +531,7 @@ background error:
     saber central block: true
     input variables: *control_vars
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -575,7 +554,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       input:
       - parameter: nicas_norm
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -586,7 +564,6 @@ background error:
         filename_core: nicas_norm.fv_core.res.nc
         filename_trcr: nicas_norm.fv_tracer.res.nc
         filename_cplr: nicas_norm.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -600,7 +577,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -621,14 +597,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_COV_MULTI_GLOBAL sbatch
@@ -657,8 +632,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
@@ -666,15 +640,15 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
+  state variables: &state_vars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    input variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -697,7 +671,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -711,7 +684,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -736,14 +708,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_FULL_C2A_LOCAL sbatch
@@ -772,8 +743,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
@@ -781,15 +751,15 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
+  state variables: &state_vars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    input variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -812,7 +782,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -826,7 +795,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -843,7 +811,7 @@ background error:
   - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi,ua,va]
+    active variables: [stream_function,velocity_potential,eastward_wind,northward_wind]
     bump:
       datadir: ${data_dir_def}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -857,14 +825,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_FULL_PSICHITOUV_LOCAL sbatch
@@ -893,8 +860,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
@@ -902,15 +868,15 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
+  state variables: &state_vars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    input variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_def}/${bump_dir}
@@ -933,7 +899,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
       input:
       - parameter: nicas_norm
         datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -944,7 +909,6 @@ background error:
         filename_core: nicas_norm.fv_core.res.nc
         filename_trcr: nicas_norm.fv_tracer.res.nc
         filename_cplr: nicas_norm.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -958,7 +922,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -975,7 +938,7 @@ background error:
   - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi,ua,va]
+    active variables: [stream_function,velocity_potential,eastward_wind,northward_wind]
     bump:
       datadir: ${data_dir_def}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -989,14 +952,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [192,192,192,192,192,192]
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_FULL_GLOBAL sbatch
@@ -1025,8 +987,7 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
   filetype: fms restart
@@ -1034,15 +995,15 @@ initial condition:
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_trcr: fv_tracer.res.nc
-  state variables: &state_vars [ua,va,t,ps,sphum,liq_wat,o3mr]
+  state variables: &state_vars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
 background error:
   covariance model: SABER
   saber blocks:
   - saber block name: BUMP_NICAS
     saber central block: true
-    input variables: &control_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    input variables: &control_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     output variables: *control_vars
-    active variables: &active_vars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     bump:
       prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
       datadir: ${data_dir_regrid}/${bump_dir}
@@ -1065,7 +1026,6 @@ background error:
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
-        date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: StdDev
     input variables: *control_vars
     output variables: *control_vars
@@ -1079,7 +1039,6 @@ background error:
       filename_core: stddev.fv_core.res.nc
       filename_trcr: stddev.fv_tracer.res.nc
       filename_cplr: stddev.coupler.res
-      date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - saber block name: BUMP_VerticalBalance
     input variables: *control_vars
     output variables: *control_vars
@@ -1096,7 +1055,7 @@ background error:
   - saber block name: BUMP_PsiChiToUV
     input variables: *control_vars
     output variables: *state_vars
-    active variables: [psi,chi,ua,va]
+    active variables: [stream_function,velocity_potential,eastward_wind,northward_wind]
     bump:
       datadir: ${data_dir_regrid}/${bump_dir}
       prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -1110,14 +1069,13 @@ output dirac:
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
   filename_cplr: dirac_%id%.coupler.res
-  date: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
 dirac:
   ndir: 6
   ixdir: [${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid}]
   iydir: [${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid}]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["t","t","t","t","t","t"]
+  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
 EOF
 
 # DIRAC_FULL_REGRID_LOCAL sbatch

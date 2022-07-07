@@ -40,8 +40,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -69,7 +68,7 @@ EOF
 ntasks=${ntasks_def}
 cpus_per_task=1
 threads=1
-time=00:20:00
+time=00:30:00
 exe=fv3jedi_error_covariance_training.x
 prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
@@ -91,8 +90,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -154,8 +152,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -193,7 +190,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
     filename_cplr: var.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
@@ -202,7 +198,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
@@ -214,7 +209,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
     filename_cplr: stddev.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # VAR sbatch
@@ -245,8 +239,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -266,7 +259,7 @@ bump:
   universe_rad: 4000.0e3
   load_mom: true
   new_hdiag: true
-  write_diag: true
+  write_hdiag: true
   fname_mom:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -294,7 +287,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - parameter: cor_rv
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -302,7 +294,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # COR sbatch
@@ -333,8 +324,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -353,7 +343,7 @@ bump:
   new_nicas: true
   write_nicas_local: true
   write_nicas_global: true
-  resol: 10.0
+  resol: 8.0
   nc1max: 50000
   min_lev:
     liq_wat: 76
@@ -365,7 +355,6 @@ bump:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   input:
   - parameter: rh
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -375,7 +364,6 @@ bump:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   - parameter: rv
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
@@ -384,7 +372,6 @@ bump:
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
   - parameter: nicas_norm
     filetype: fms restart
@@ -393,7 +380,6 @@ bump:
     filename_core: nicas_norm.fv_core.res.nc
     filename_trcr: nicas_norm.fv_tracer.res.nc
     filename_cplr: nicas_norm.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
    # NICAS sbatch

@@ -23,7 +23,8 @@ done
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# BACKGROUND yaml
+# BACKGROUND yamlcode/fv3-jedi-tools/src/Workflows/StaticB/bump_1.0_release/
+
 cat<< EOF > ${yaml_dir}/${job}.yaml
 input geometry:
   fms initialization:
@@ -34,8 +35,7 @@ input geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 output geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -45,8 +45,7 @@ output geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 states:
 - input:
     datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
@@ -96,7 +95,6 @@ states:
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
     filename_cplr: stddev.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -104,7 +102,6 @@ states:
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
     filename_cplr: stddev.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
@@ -114,7 +111,6 @@ states:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -122,7 +118,6 @@ states:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
@@ -132,7 +127,6 @@ states:
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -140,7 +134,6 @@ states:
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
@@ -150,7 +143,6 @@ states:
     filename_core: nicas_norm.fv_core.res.nc
     filename_trcr: nicas_norm.fv_tracer.res.nc
     filename_cplr: nicas_norm.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -158,7 +150,6 @@ states:
     filename_core: nicas_norm.fv_core.res.nc
     filename_trcr: nicas_norm.fv_tracer.res.nc
     filename_cplr: nicas_norm.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
 EOF
 
 # BACKGROUND sbatch
@@ -187,8 +178,7 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -242,8 +232,7 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
@@ -285,7 +274,11 @@ for var in ${vars}; do
    job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 
    # Link input files
-   ln -sf ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
+   if test "${var}" = "ps"; then
+      ln -sf ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
+   else
+      ln -sf ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas.nc ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}_nicas.nc
+   fi
 
    # NICAS yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -298,8 +291,7 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
