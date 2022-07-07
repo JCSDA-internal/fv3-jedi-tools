@@ -23,7 +23,7 @@ done
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# BACKGROUND yamlcode/fv3-jedi-tools/src/Workflows/StaticB/bump_1.0_release/
+# BACKGROUND yaml
 
 cat<< EOF > ${yaml_dir}/${job}.yaml
 input geometry:

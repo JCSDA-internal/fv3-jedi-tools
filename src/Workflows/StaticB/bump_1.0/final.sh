@@ -68,7 +68,7 @@ EOF
 ntasks=${ntasks_def}
 cpus_per_task=1
 threads=1
-time=00:30:00
+time=00:20:00
 exe=fv3jedi_error_covariance_training.x
 prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
@@ -343,7 +343,7 @@ bump:
   new_nicas: true
   write_nicas_local: true
   write_nicas_global: true
-  resol: 8.0
+  resol: 10.0
   nc1max: 50000
   min_lev:
     liq_wat: 76

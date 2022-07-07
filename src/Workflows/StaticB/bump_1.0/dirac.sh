@@ -85,7 +85,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
+  ifdir: [stream_function,stream_function,stream_function,stream_function,stream_function,stream_function,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure]
 EOF
 
 # DIRAC_COR_LOCAL sbatch
@@ -176,7 +176,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
+  ifdir: [stream_function,stream_function,stream_function,stream_function,stream_function,stream_function,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure]
 EOF
 
 # DIRAC_COR_GLOBAL sbatch
@@ -271,7 +271,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
+  ifdir: [stream_function,stream_function,stream_function,stream_function,stream_function,stream_function,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure]
 EOF
 
 # DIRAC_COV_LOCAL sbatch
@@ -377,7 +377,7 @@ dirac:
   iydir: [192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,1,1,1,1,1]
   itdir: [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6]
-  ifdir: ["stream_function","stream_function","stream_function","stream_function","stream_function","stream_function","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","velocity_potential","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","specific_humidity","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","cloud_liquid_water","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","ozone_mass_mixing_ratio","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure","surface_pressure"]
+  ifdir: [stream_function,stream_function,stream_function,stream_function,stream_function,stream_function,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,velocity_potential,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,specific_humidity,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,cloud_liquid_water,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,ozone_mass_mixing_ratio,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure,surface_pressure]
 EOF
 
 # DIRAC_COV_GLOBAL sbatch
@@ -485,7 +485,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_COV_MULTI_LOCAL sbatch
@@ -603,7 +603,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_COV_MULTI_GLOBAL sbatch
@@ -714,7 +714,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_FULL_C2A_LOCAL sbatch
@@ -831,7 +831,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_FULL_PSICHITOUV_LOCAL sbatch
@@ -958,7 +958,7 @@ dirac:
   iydir: [192,192,192,192,192,192]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_FULL_GLOBAL sbatch
@@ -1075,7 +1075,7 @@ dirac:
   iydir: [${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid},${dirac_center_regrid}]
   ildir: [50,50,50,50,50,50]
   itdir: [1,2,3,4,5,6]
-  ifdir: ["air_temperature","air_temperature","air_temperature","air_temperature","air_temperature","air_temperature"]
+  ifdir: [air_temperature,air_temperature,air_temperature,air_temperature,air_temperature,air_temperature]
 EOF
 
 # DIRAC_FULL_REGRID_LOCAL sbatch
