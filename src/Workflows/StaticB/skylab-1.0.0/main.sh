@@ -302,7 +302,7 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
+      run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_states_pid}${merge_nicas_pid}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
