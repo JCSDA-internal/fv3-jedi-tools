@@ -41,8 +41,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   filetype: fms restart
@@ -74,13 +73,11 @@ bump:
       template:
         datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
         filetype: fms restart
-        state variables: *stateVars
         psinfile: true
         datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: bvars.fv_core.res.nc
         filename_trcr: bvars.fv_tracer.res.nc
         filename_cplr: bvars.coupler.res
-        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
@@ -112,8 +109,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   filetype: fms restart
@@ -142,7 +138,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   - input:
       datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
       filetype: fms restart
-      state variables: *stateVars
       psinfile: true
       datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem${imemp}
       filename_core: bvars.fv_core.res.nc
@@ -156,7 +151,6 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
       filename_core: unbal.fv_core.res.nc
       filename_trcr: unbal.fv_tracer.res.nc
       filename_cplr: unbal.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
    done
 
@@ -187,8 +181,7 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: 127
-  fieldsets:
-  - fieldset: ${fv3jedi_dir}/test/Data/fieldsets/dynamics.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   filetype: fms restart
@@ -225,13 +218,11 @@ bump:
       template:
         datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
         filetype: fms restart
-        state variables: *stateVars
         psinfile: true
         datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
         filename_core: unbal.fv_core.res.nc
         filename_trcr: unbal.fv_tracer.res.nc
         filename_cplr: unbal.coupler.res
-        date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
@@ -243,7 +234,6 @@ bump:
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
     filename_cplr: var.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: m4
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
@@ -251,7 +241,6 @@ bump:
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rh
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
@@ -259,7 +248,6 @@ bump:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   - parameter: cor_rv
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
@@ -267,7 +255,6 @@ bump:
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-    date: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
 EOF
 
       # VAR-MOM sbatch

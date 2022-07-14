@@ -40,7 +40,6 @@ export data_dir_def=${data_dir}/c${cdef}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
-export bump_dir="bump_1.0"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
@@ -171,7 +170,7 @@ if test "${run_dirac_cor_local}" = "true" || "${run_dirac_cor_global}" = "true" 
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_full_regrid}" = "true" ; then
+if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" ; then
    # Variational runs
    ./variational.sh
 fi
@@ -303,7 +302,7 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
+      run_sbatch regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}.sh ${regrid_states_pid}${merge_nicas_pid}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
@@ -399,12 +398,6 @@ fi
 if test "${run_variational_3dvar_regrid}" = "true"; then
    run_sbatch variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_states_pid}
    variational_3dvar_regrid_pid=:${pid}
-fi
-
-# Run 3dvar_full_regrid
-if test "${run_variational_3dvar_full_regrid}" = "true"; then
-   run_sbatch variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_psichitouv_pid}${regrid_states_pid}
-   variational_3dvar_full_regrid_pid=:${pid}
 fi
 
 exit 0
