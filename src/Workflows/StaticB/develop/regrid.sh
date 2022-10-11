@@ -384,7 +384,6 @@ for itot in \$(seq 1 \${nlocal}); do
    # Create scripts to merge local files
    echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
    for var in ${vars}; do
-      filename_full=\${filename_full}
       filename_var=${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_\${itotpad}.sh
    done
