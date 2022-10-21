@@ -16,12 +16,18 @@ export data_dir_regrid_base="/work/noaa/da/menetrie/regrid"
 # FV3-JEDI source directory
 export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
 
+# FEMPS source directory
+export femps_dir="${HOME}/code/bundle/femps"
+
 # JEDI binaries directory
 export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
 #export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 
 # Experiments directory
 export xp_dir="${HOME}/xp"
+
+# BUMP directory
+export bump_dir="develop"
 
 ####################################################################
 # Environment script path ##########################################
@@ -38,10 +44,13 @@ export cores_per_node=40
 ####################################################################
 
 # Variables
-export vars="stream_function chi t ps sphum liq_wat o3mr"
+export vars="stream_function velocity_potential air_temperature surface_pressure specific_humidity cloud_liquid_water ozone_mass_mixing_ratio"
 
 # Number of ensemble members
 export nmem=80
+
+# Forecast range (in hours)
+export r=3
 
 # List of dates for the training
 export yyyymmddhh_list="2021080100"
@@ -87,39 +96,39 @@ single_ob_f"
 ####################################################################
 
 # Daily runs
-export run_daily_state_to_control=true
-export run_daily_vbal=true
-export run_daily_unbal=true
-export run_daily_varmom=true
+export run_daily_state_to_control=false
+export run_daily_vbal=false
+export run_daily_unbal=false
+export run_daily_varmom=false
 
 # Final runs
-export run_final_psichitouv=true
-export run_final_vbal=true
-export run_final_var=true
-export run_final_cor=true
-export run_final_nicas=true
+export run_final_psichitouv=false
+export run_final_vbal=false
+export run_final_var=false
+export run_final_cor=false
+export run_final_nicas_c0=false
+export run_final_nicas_c1=false
+export run_final_nicas_si=false
 
 # Merge runs
-export run_merge_states=true
-export run_merge_nicas=true
+export run_merge_states=false
+export run_merge_nicas_c0=false
+export run_merge_nicas_c1=false
+export run_merge_nicas_si=false
 
-# Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
-export run_regrid_states=true
-export run_regrid_vbal=true
-export run_regrid_nicas=true
-export run_regrid_merge_nicas=true
+# Regrid runs (at resolution ${cregrid} and with a layout [${nlx_regrid},${nly_regrid}])
+export run_regrid_states=false
+export run_regrid_vbal=false
+export run_regrid_nicas=false
+export run_regrid_merge_nicas=false
 
 # Dirac runs
-export run_dirac_cor_local=true
-export run_dirac_cor_global=true
-export run_dirac_cov_local=true
-export run_dirac_cov_global=true
-export run_dirac_cov_multi_local=true
-export run_dirac_cov_multi_global=true
-export run_dirac_full_c2a_local=true
-export run_dirac_full_psichitouv_local=true
-export run_dirac_full_c2a_global=true
-export run_dirac_full_regrid_local=true
+export run_dirac_c0=false
+export run_dirac_c1=false
+export run_dirac_si=true
+export run_dirac_psichitouv=false
+export run_dirac_c0_global=false
+export run_dirac_regrid=false
 
 # Variational runs
 export run_variational_3dvar=false

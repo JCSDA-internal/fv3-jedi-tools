@@ -34,19 +34,19 @@ obs_vars+=(["single_ob_e"]="air_temperature")
 obs_vars+=(["single_ob_f"]="air_temperature")
 
 # Create data directories
-mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 for obs in ${obs_xp} ; do
-   mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+   mkdir -p ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 done
-mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
-mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+mkdir -p ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 
 ####################################################################
 # 3DVAR ############################################################
 ####################################################################
 
 # Job name
-job=variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+job=variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -90,24 +90,20 @@ cost function:
       output variables: *control_vars
       active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       bump:
-        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         datadir: ${data_dir_def}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
         min_lev:
           cloud_liquid_water: 76
-        grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-        - variables: [surface_pressure]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
         universe radius:
-          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
           filetype: fms restart
           set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -116,11 +112,11 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -130,11 +126,11 @@ cost function:
       active variables: *active_vars
       bump:
         datadir: ${data_dir_def}/${bump_dir}
-        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         verbosity: main
         universe_rad: 2000.0e3
         load_vbal: true
-        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
         load_samp_local: true
         vbal_block: [true, true,false, true,false,false]
     linear variable change:
@@ -148,7 +144,7 @@ cost function:
       obsdatain:
         obsfile: ${data_dir}/obs/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       obsdataout:
-        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
+        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       simulated variables: [air_temperature]
     obs operator:
       name: VertInterp
@@ -183,7 +179,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
@@ -208,7 +204,7 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 for obs in ${obs_xp} ; do
    # Job name
-   job=variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+   job=variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 
    # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -252,24 +248,20 @@ cost function:
       output variables: *control_vars
       active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       bump:
-        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         datadir: ${data_dir_def}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
         min_lev:
           cloud_liquid_water: 76
-        grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-        - variables: [surface_pressure]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
         universe radius:
-          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
           filetype: fms restart
           set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -278,11 +270,11 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -292,11 +284,11 @@ cost function:
       active variables: *active_vars
       bump:
         datadir: ${data_dir_def}/${bump_dir}
-        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         verbosity: main
         universe_rad: 2000.0e3
         load_vbal: true
-        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
         load_samp_local: true
         vbal_block: [true, true,false, true,false,false]
     linear variable change:
@@ -310,7 +302,7 @@ cost function:
       obsdatain:
         obsfile: /work/noaa/da/dholdawa/JediWork/Benchmarks/3dvar/Data/obs/${obs_file[${obs}]}.nc4
       obsdataout:
-        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}/${obs_file[${obs}]}.nc4
+        obsfile: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/${obs_file[${obs}]}.nc4
       simulated variables: [${obs_vars[${obs}]}]
     obs operator:
       name: VertInterp
@@ -345,7 +337,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_def}/${bump_dir}/variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
@@ -370,7 +362,7 @@ done
 ####################################################################
 
 # Job name
-job=variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+job=variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -414,24 +406,20 @@ cost function:
       output variables: *control_vars
       active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       bump:
-        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         datadir: ${data_dir_regrid}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
         min_lev:
           cloud_liquid_water: 76
-        grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-        - variables: [surface_pressure]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
         universe radius:
-          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
           filetype: fms restart
           set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -440,11 +428,11 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -454,11 +442,11 @@ cost function:
       active variables: *active_vars
       bump:
         datadir: ${data_dir_regrid}/${bump_dir}
-        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         verbosity: main
         universe_rad: 2000.0e3
         load_vbal: true
-        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
         load_samp_local: true
         vbal_block: [true, true,false, true,false,false]
     linear variable change:
@@ -472,7 +460,7 @@ cost function:
       obsdatain:
         obsfile: ${data_dir}/obs/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       obsdataout:
-        obsfile: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
+        obsfile: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/ncdiag.oper_3d.ob.PT6H.aircraft.${yyyy_obs}-${mm_obs}-${dd_obs}T${hh_obs}:00:00Z.nc4
       simulated variables: [air_temperature]
     obs operator:
       name: VertInterp
@@ -507,7 +495,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
@@ -531,7 +519,7 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 ####################################################################
 
 # Job name
-job=variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+job=variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 
 # 3DVAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -577,24 +565,20 @@ cost function:
       output variables: *control_vars
       active variables: &active_vars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       bump:
-        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         datadir: ${data_dir_regrid}/${bump_dir}
         verbosity: main
         strategy: specific_univariate
         load_nicas_local: true
         min_lev:
           cloud_liquid_water: 76
-        grids:
-        - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_3D_nicas
-        - variables: [surface_pressure]
-          fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_2D_nicas
+        fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
         universe radius:
-          datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+          datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
           filetype: fms restart
           set datetime on read: true
           psinfile: true
-          datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+          datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
           filename_core: cor_rh.fv_core.res.nc
           filename_trcr: cor_rh.fv_tracer.res.nc
           filename_cplr: cor_rh.coupler.res
@@ -603,11 +587,11 @@ cost function:
       output variables: *control_vars
       active variables: *active_vars
       file:
-        datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
+        datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -617,11 +601,11 @@ cost function:
       active variables: *active_vars
       bump:
         datadir: ${data_dir_regrid}/${bump_dir}
-        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
+        prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
         verbosity: main
         universe_rad: 2000.0e3
         load_vbal: true
-        fname_samp: vbal_${yyyymmddhh_last}/vbal_${yyyymmddhh_last}_sampling
+        fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
         load_samp_local: true
         vbal_block: [true, true,false, true,false,false]
     linear variable change:
@@ -5161,7 +5145,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}
+  datapath: ${data_dir_regrid}/${bump_dir}/variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
   filename_cplr: coupler.res
   filename_core: fv_core.res.nc
   filename_sfcw: fv_srf_wnd.res.nc
