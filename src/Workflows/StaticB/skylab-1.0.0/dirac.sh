@@ -28,11 +28,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -109,11 +109,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -200,11 +200,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -295,11 +295,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -401,11 +401,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -509,11 +509,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -627,11 +627,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
@@ -738,11 +738,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
@@ -855,11 +855,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
@@ -982,11 +982,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_regrid},${nly_regrid}]
   npx: ${npx_regrid}
   npy: ${npy_regrid}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 initial condition:
   datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z

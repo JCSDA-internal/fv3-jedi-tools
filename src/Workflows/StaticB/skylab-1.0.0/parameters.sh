@@ -4,23 +4,28 @@
 # Directories ######################################################
 ####################################################################
 
-# Data directory
-export data_dir="/work/noaa/da/menetrie/StaticBTraining"
+# Input Data directory (need to be more generic)
+export r2d2_dir="/work/noaa/da/barre/gfs_aero_ensemble"
+
+# Ouput Data directory
+export data_dir="${WORK_DIR}/StaticBTraining"
 
 # Data directory for regridded data
-export data_dir_regrid_base="/work/noaa/da/menetrie/regrid"
+export data_dir_regrid_base="${WORK_DIR}/regrid"
 
 # FV3-JEDI source directory
-export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
+export fv3jedi_dir="${WORK_DIR}/jedi-release/jedi-bundle/fv3-jedi"
+
+export fv3jeditools_dir="${WORK_DIR}/fv3-jedi-tools"
 
 # JEDI binaries directory
-export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
+export bin_dir="${WORK_DIR}/jedi-release/build/bin"
 #export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_RelWithDebInfo/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_debug/bin"
 
 # Experiments directory
-export xp_dir="${HOME}/xp"
+export xp_dir="${WORK_DIR}/xp"
 
 # BUMP directory
 export bump_dir="skylab-1.0.0"
@@ -40,26 +45,44 @@ export cores_per_node=40
 ####################################################################
 
 # Variables
-export vars="psi chi t ps sphum liq_wat o3mr"
-
+#export vars="psi chi t ps sphum liq_wat o3mr"
+export vars="mass_fraction_of_dust001_in_air"
+#export vars="mass_fraction_of_sulfate_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
+varlist=""
+for var in ${vars}; do
+    varlist=${varlist}","${var}
+done
+varlist=${varlist:1}
+export varlist
 # Number of ensemble members
-export nmem=80
+export nmem=5
 
 # List of dates for the training (january or july or both)
-export yyyymmddhh_list="2020010100 2020010200 2020010300 2020010400 2020010500 2020010600 2020010700 2020010800 2020010900 2020011000 2020011100 2020011200 2020011300 2020011400 2020011500 2020011600 2020011700 2020011800 2020011900 2020012000 2020012100 2020012200 2020012300 2020012400 2020012500 2020012600 2020012700 2020012800 2020012900 2020013000 2020013100"
-#export yyyymmddhh_list="2020013100"
+#make a for loop for this...
+start_date="20210805"
+end_date="20210806"
+d=$start_date
+until [[ $d > ${end_date} ]]; do
+    yyyymmddhh_list=$yyyymmddhh_list$d"00 "
+    d=$(date +%Y%m%d -d "$d + 1 day")
+done
+echo $yyyymmddhh_list
+export yyyymmddhh_list
+
+#offset in hours to get forecast at analysis time
+export offset=6
 
 # Background date
-export yyyymmddhh_bkg="2020121500"
+export yyyymmddhh_bkg="2021080200"
 
 # Observation date
-export yyyymmddhh_obs="2020121421"
+export yyyymmddhh_obs="2021080121"
 
 # Default layout
 export nlx_def=6
 export nly_def=6
 export ntasks_def=$((6*nlx_def*nly_def))
-export cdef=384
+export cdef=96
 
 # Regridding layout and resolution
 export nlx_regrid=4
@@ -97,7 +120,7 @@ export get_data_observations=false
 # Daily runs
 export run_daily_vbal=false
 export run_daily_unbal=false
-export run_daily_varmom=false
+export run_daily_varmom=true
 
 # Final runs
 export run_final_psichitouv=false

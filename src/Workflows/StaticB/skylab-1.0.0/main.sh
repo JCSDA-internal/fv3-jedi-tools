@@ -36,6 +36,7 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
+export data_input_dir=${r2d2_dir}
 export data_dir_def=${data_dir}/c${cdef}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
@@ -43,7 +44,11 @@ export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"
-export script_dir="${xp_dir}/${bump_dir}/script"
+export script_dir="${fv3jeditools_dir}/src/Workflows/StaticB/skylab-1.0.0"
+#export script_dir="${xp_dir}/${bump_dir}/script"
+
+#vertical levels
+export npz_def=64 #127
 
 # Default geometry
 export npx_def=$((cdef+1))
@@ -178,6 +183,7 @@ fi
 ####################################################################
 # Run sbatch #######################################################
 ####################################################################
+
 
 if test "${prepare_scripts_only}" = "true"; then
    exit 0

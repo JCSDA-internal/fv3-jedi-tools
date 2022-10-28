@@ -14,7 +14,6 @@ prepare_sbatch () {
 
    # Create work directory
    mkdir -p ${work_dir}/${job}
-
    # Common directives
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash

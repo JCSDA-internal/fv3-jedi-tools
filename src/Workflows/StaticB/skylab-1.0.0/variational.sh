@@ -61,11 +61,11 @@ cost function:
     fms initialization:
       namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
       field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
     layout: &layout [${nlx_def},${nly_def}]
     npx: &npx ${npx_def}
     npy: &npy ${npy_def}
-    npz: &npz 127
+    npz: &npz ${npz_def}
     field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 
   background:
@@ -230,11 +230,11 @@ cost function:
     fms initialization:
       namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
       field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
     layout: &layout [${nlx_def},${nly_def}]
     npx: &npx ${npx_def}
     npy: &npy ${npy_def}
-    npz: &npz 127
+    npz: &npz ${npz_def}
     field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 
   background:
@@ -399,11 +399,11 @@ cost function:
     fms initialization:
       namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
       field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+    akbk: &akbk ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
     layout: &layout [${nlx_regrid},${nly_regrid}]
     npx: &npx ${npx_regrid}
     npy: &npy ${npy_regrid}
-    npz: &npz 127
+    npz: &npz ${npz_def}
     field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 
   background:

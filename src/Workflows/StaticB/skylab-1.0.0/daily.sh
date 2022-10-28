@@ -16,13 +16,22 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    done
 done
 
+echo ${yyyymmddhh_list}
+
 for yyyymmddhh in ${yyyymmddhh_list}; do
-   # Date
+
    yyyy=${yyyymmddhh:0:4}
    mm=${yyyymmddhh:4:2}
    dd=${yyyymmddhh:6:2}
    hh=${yyyymmddhh:8:2}
 
+   # Date
+   yyyymmddhh_o=$(date +%Y%m%d%H -d "$yyyy$mm$dd $hh - $offset hour")
+
+   yyyy_o=${yyyymmddhh_o:0:4}
+   mm_o=${yyyymmddhh_o:4:2}
+   dd_o=${yyyymmddhh_o:6:2}
+   hh_o=${yyyymmddhh_o:8:2}   
    ####################################################################
    # VBAL #############################################################
    ####################################################################
@@ -36,11 +45,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
@@ -104,11 +113,11 @@ geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
+  npz: ${npz_def}
   field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
@@ -171,26 +180,27 @@ EOF
       job=var-mom_${yyyymmddhh}_${var}
 
       # VAR-MOM yaml
+echo ${yaml_dir}/${job}.yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk${npz_def}.nc4
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
-  npz: 127
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  npz: ${npz_def}
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
   filetype: fms restart
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [${varlist}]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem001
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
+  datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem001/RESTART
+  filename_core: ${yyyy}${mm}${dd}.${hh}0000.fv_core.res.ges.nc
+  filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.fv_tracer.res.ges.nc
+  filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.coupler.res.ges
 input variables: [${var}]
 bump:
   prefix: var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}
@@ -219,10 +229,10 @@ bump:
         datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
         filetype: fms restart
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}/mem%mem%
-        filename_core: unbal.fv_core.res.nc
-        filename_trcr: unbal.fv_tracer.res.nc
-        filename_cplr: unbal.coupler.res
+        datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem%mem%/RESTART
+        filename_core: ${yyyy}${mm}${dd}.${hh}0000.fv_core.res.ges.nc
+        filename_trcr: ${yyyy}${mm}${dd}.${hh}0000.fv_tracer.res.ges.nc
+        filename_cplr: ${yyyy}${mm}${dd}.${hh}0000.coupler.res.ges
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
