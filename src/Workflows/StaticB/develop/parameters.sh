@@ -11,7 +11,7 @@ export data_dir="/work/noaa/da/menetrie/StaticBTraining"
 export ensemble_dir="/work/noaa/da/menetrie/ensemble"
 
 # Data directory for regridded data
-export data_dir_regrid_base="/work/noaa/da/menetrie/regrid"
+export data_dir_regrid_base="/work/noaa/da/menetrie/StaticBTraining"
 
 # FV3-JEDI source directory
 export fv3jedi_dir="${HOME}/code/bundle/fv3-jedi"
@@ -27,7 +27,8 @@ export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
 export xp_dir="${HOME}/xp"
 
 # BUMP directory
-export bump_dir="develop"
+export bump_dir_def="develop"
+export bump_dir_regrid="develop"
 
 ####################################################################
 # Environment script path ##########################################
@@ -68,10 +69,10 @@ export ntasks_def=$((6*nlx_def*nly_def))
 export cdef=384
 
 # Regridding layout and resolution
-export nlx_regrid=4
-export nly_regrid=4
+export nlx_regrid=6
+export nly_regrid=6
 export ntasks_regrid=$((6*nlx_regrid*nly_regrid))
-export cregrid=96
+export cregrid=192
 
 ####################################################################
 # What should be run? ##############################################
@@ -101,7 +102,7 @@ export run_regrid_merge_nicas=false
 
 # Dirac runs
 export run_dirac=false
-export run_dirac_regrid=false
+export run_dirac_regrid=true
 
 # Variational runs
 export run_variational_3dvar=false

@@ -4,11 +4,11 @@
 source ./functions.sh
 
 # Create data directories
-mkdir -p ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+mkdir -p ${data_dir_def}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 for var in ${vars}; do
-   mkdir -p ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
-   mkdir -p ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
-   mkdir -p ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+   mkdir -p ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   mkdir -p ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   mkdir -p ${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
 done
 
 ####################################################################
@@ -16,7 +16,7 @@ done
 ####################################################################
 
 # Job name
-job=vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+job=vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 
 # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -35,24 +35,24 @@ background:
   filetype: fms restart
   state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh_last}${rr}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
 bump:
-  datadir: ${data_dir_def}/${bump_dir}
-  prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+  datadir: ${data_dir_def}
+  prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
   verbosity: main
   universe_rad: 2000.0e3
   load_vbal_cov: true
   new_vbal: true
   write_vbal: true
-  fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
+  fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
   fname_vbal_cov:
 EOF
 for yyyymmddhh in ${yyyymmddhh_list}; do
-  echo "  - vbal_${yyyymmddhh}+${rr}/vbal_${yyyymmddhh}+${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
+  echo "  - vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
 done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
   ens1_nsub: ${yyyymmddhh_size}
@@ -78,7 +78,7 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 for var in ${vars}; do
    # Job name
-   job=var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+   job=var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
 
    # VAR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -97,14 +97,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh_last}${rr}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
-  datadir: ${data_dir_def}/${bump_dir}
+  prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  datadir: ${data_dir_def}
   verbosity: main
   universe_rad: 3000.0e3
   ens1_nsub: ${yyyymmddhh_size}
@@ -131,7 +131,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   file:
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     psinfile: true
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
@@ -140,7 +140,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   file:
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     psinfile: true
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
@@ -152,7 +152,7 @@ output:
 - parameter: stddev
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     prepend files with date: false
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
@@ -174,7 +174,7 @@ done
 
 for var in ${vars}; do
    # Job name
-   job=cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+   job=cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
 
    # COR yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -193,14 +193,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh_last}${rr}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
-  datadir: ${data_dir_def}/${bump_dir}
+  prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  datadir: ${data_dir_def}
   verbosity: main
   method: cor
   strategy: specific_univariate
@@ -211,10 +211,10 @@ bump:
   fname_mom:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
-      echo "    - var-mom_${yyyymmddhh}+${rr}_${var}/var-mom_${yyyymmddhh}+${rr}_${var}_mom" >> ${yaml_dir}/${job}.yaml
+      echo "    - var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}_mom" >> ${yaml_dir}/${job}.yaml
    done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
-  fname_samp: var-mom_${yyyymmddhh_last}+${rr}_${var}/var-mom_${yyyymmddhh_last}+${rr}_${var}_sampling
+  fname_samp: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
   ens1_ne: $((nmem*yyyymmddhh_size))
   ens1_nsub: ${yyyymmddhh_size}
   load_samp_local: true
@@ -231,7 +231,7 @@ output:
 - parameter: cor_rh
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -239,7 +239,7 @@ output:
 - parameter: cor_rv
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
@@ -261,7 +261,7 @@ done
 
 for var in ${vars}; do
    # Job name
-   job=nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+   job=nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
 
    # NICAS yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -280,14 +280,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh_last}${rr}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
-  datadir: ${data_dir_def}/${bump_dir}
+  prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  datadir: ${data_dir_def}
   verbosity: main
   strategy: specific_univariate
   new_nicas: true
@@ -309,7 +309,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -318,7 +318,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -327,7 +327,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
@@ -335,7 +335,7 @@ output:
 - parameter: nicas_norm
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}
+    datapath: ${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     prepend files with date: false
     filename_core: nicas_norm.fv_core.res.nc
     filename_trcr: nicas_norm.fv_tracer.res.nc

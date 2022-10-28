@@ -5,14 +5,14 @@ source ./functions.sh
 
 # Create data directories
 for yyyymmddhh in ${yyyymmddhh_list}; do
-   mkdir -p ${data_dir_def}/${bump_dir}/vbal_${yyyymmddhh}+${rr}
-   mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}
+   mkdir -p ${data_dir_def}/vbal_${yyyymmddhh}${rr}
+   mkdir -p ${data_dir_def}/${yyyymmddhh}${rr}
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
-      mkdir -p ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem${imemp}
+      mkdir -p ${data_dir_def}/${yyyymmddhh}${rr}/mem${imemp}
    done
    for var in ${vars}; do
-      mkdir -p ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+      mkdir -p ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
    done
 done
 
@@ -24,7 +24,7 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    hh=${yyyymmddhh:8:2}
 
    # Forecast date
-   yyyymmddhh_fc=`date -d "${yyyy}${mm}${dd} +${hh} hours +${rr} hours" '+%Y%m%d%H'`
+   yyyymmddhh_fc=`date -d "${yyyy}${mm}${dd} +${hh} hours ${rr_fc} hours" '+%Y%m%d%H'`
    yyyy_fc=${yyyymmddhh_fc:0:4}
    mm_fc=${yyyymmddhh_fc:4:2}
    dd_fc=${yyyymmddhh_fc:6:2}
@@ -35,7 +35,7 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    ####################################################################
 
    # Job name
-   job=state_to_control_${yyyymmddhh}+${rr}
+   job=state_to_control_${yyyymmddhh}${rr}
 
    # STATE_TO_CONTROL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -84,7 +84,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_cplr: ${yyyy}-${mm}-${dd}T${hh}:00:00Z.PT${r}H.coupler.res.${imem}
   output:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem${imemp}
+    datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem${imemp}
     prepend files with date: false
     filename_core: balanced.fv_core.res.nc
     filename_trcr: balanced.fv_tracer.res.nc
@@ -107,7 +107,7 @@ EOF
    ####################################################################
 
    # Job name
-   job=vbal_${yyyymmddhh}+${rr}
+   job=vbal_${yyyymmddhh}${rr}
 
    # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -126,14 +126,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem001
   filename_core: balanced.fv_core.res.nc
   filename_trcr: balanced.fv_tracer.res.nc
   filename_cplr: balanced.coupler.res
 input variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
 bump:
-  datadir: ${data_dir_def}/${bump_dir}
-  prefix: vbal_${yyyymmddhh}+${rr}/vbal_${yyyymmddhh}+${rr}
+  datadir: ${data_dir_def}
+  prefix: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}
   verbosity: main
   universe_rad: 2000.0e3
   update_vbal_cov: true
@@ -154,7 +154,7 @@ bump:
         datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
         filetype: fms restart
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem%mem%
+        datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem%mem%
         filename_core: balanced.fv_core.res.nc
         filename_trcr: balanced.fv_tracer.res.nc
         filename_cplr: balanced.coupler.res
@@ -176,7 +176,7 @@ EOF
    ####################################################################
 
    # Job name
-   job=unbal_${yyyymmddhh}+${rr}
+   job=unbal_${yyyymmddhh}${rr}
 
    # UNBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -195,19 +195,19 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem001
   filename_core: balanced.fv_core.res.nc
   filename_trcr: balanced.fv_tracer.res.nc
   filename_cplr: balanced.coupler.res
 input variables: *stateVars
 bump:
-  datadir: ${data_dir_def}/${bump_dir}
-  prefix: unbal_${yyyymmddhh}+${rr}/unbal_${yyyymmddhh}+${rr}
+  datadir: ${data_dir_def}
+  prefix: unbal_${yyyymmddhh}${rr}/unbal_${yyyymmddhh}${rr}
   verbosity: main
   universe_rad: 2000.0e3
   load_vbal: true
-  fname_samp: vbal_${yyyymmddhh}+${rr}/vbal_${yyyymmddhh}+${rr}_sampling
-  fname_vbal: vbal_${yyyymmddhh}+${rr}/vbal_${yyyymmddhh}+${rr}_vbal
+  fname_samp: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_sampling
+  fname_vbal: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal
   load_samp_local: true
   vbal_block: [true, true,false, true,false,false]
   operators application:
@@ -219,14 +219,14 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
       datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
       filetype: fms restart
       psinfile: true
-      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem${imemp}
+      datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem${imemp}
       filename_core: balanced.fv_core.res.nc
       filename_trcr: balanced.fv_tracer.res.nc
       filename_cplr: balanced.coupler.res
     bump operators: [inverseMultiplyVbal]
     output:
       filetype: fms restart
-      datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem${imemp}
+      datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem${imemp}
       prepend files with date: false
       filename_core: unbal.fv_core.res.nc
       filename_trcr: unbal.fv_tracer.res.nc
@@ -248,7 +248,7 @@ EOF
 
    for var in ${vars}; do
       # Job name
-      job=var-mom_${yyyymmddhh}+${rr}_${var}
+      job=var-mom_${yyyymmddhh}${rr}_${var}
 
       # VAR-MOM yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -267,14 +267,14 @@ background:
   filetype: fms restart
   state variables: &stateVars [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem001
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var-mom_${yyyymmddhh}+${rr}_${var}/var-mom_${yyyymmddhh}+${rr}_${var}
-  datadir: ${data_dir_def}/${bump_dir}
+  prefix: var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}
+  datadir: ${data_dir_def}
   verbosity: main
   universe_rad: 4000.0e3
   method: cor
@@ -299,7 +299,7 @@ bump:
         datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
         filetype: fms restart
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh}+${rr}/mem%mem%
+        datapath: ${data_dir_def}/${yyyymmddhh}${rr}/mem%mem%
         filename_core: unbal.fv_core.res.nc
         filename_trcr: unbal.fv_tracer.res.nc
         filename_cplr: unbal.coupler.res
@@ -310,7 +310,7 @@ output:
 - parameter: var
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     prepend files with date: false
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
@@ -318,7 +318,7 @@ output:
 - parameter: m4
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     prepend files with date: false
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
@@ -326,7 +326,7 @@ output:
 - parameter: cor_rh
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -334,7 +334,7 @@ output:
 - parameter: cor_rv
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}+${rr}_${var}
+    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc

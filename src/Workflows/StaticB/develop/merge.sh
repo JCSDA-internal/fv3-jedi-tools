@@ -1,17 +1,16 @@
 #!/bin/bash
 
 # Create data directories
-mkdir -p ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-mkdir -p ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-mkdir -p ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-
+mkdir -p ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+mkdir -p ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+mkdir -p ${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 
 ####################################################################
 # STATES ###########################################################
 ####################################################################
 
 # Job
-job=merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+job=merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 mkdir -p ${work_dir}/${job}
 
 # Merge states files
@@ -67,25 +66,25 @@ for state in \${states}; do
    # NetCDF files
    for itile in \$(seq 1 6); do
       # Rename surface_pressure file axis
-      filename_var=${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_surface_pressure/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
+      filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_surface_pressure/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
       ncrename -d .zaxis_1,zaxis_2 \${filename_var}
 
       # Remove existing files
-      filename_core=${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
-      filename_tracer=${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/\${states_files[\${state}]}.fv_tracer.res.tile\${itile}.nc
+      filename_core=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
+      filename_tracer=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/\${states_files[\${state}]}.fv_tracer.res.tile\${itile}.nc
       rm -f \${filename_core} \${filename_tracer}
 
       # Append files
       for var in ${vars}; do
-         filename_full=${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
-         filename_var=${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_\${var}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         filename_full=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
          echo -e "ncks -A \${filename_var} \${filename_full}"
          ncks -A \${filename_var} \${filename_full}
       done
    done
 
    # Create coupler file
-   ${script_dir}/coupler.sh ${yyyymmddhh_fc_last} ${data_dir_def}/${bump_dir}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/\${states_files[\${state}]}.coupler.res
+   ${script_dir}/coupler.sh ${yyyymmddhh_fc_last} ${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/\${states_files[\${state}]}.coupler.res
 done
 
 # Timer
@@ -100,14 +99,14 @@ EOF
 ####################################################################
 
 # Job name
-job=merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+job=merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 mkdir -p ${work_dir}/${job}
 
 # Merge NICAS files
 ntasks=1
 cpus_per_task=${cores_per_node}
 threads=1
-time=00:30:00
+time=00:45:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
@@ -137,7 +136,7 @@ for itot in \$(seq 1 \${nlocal}); do
    itotpad=\$(printf "%.6d" "\${itot}")
 
    # Local full files names
-   filename_full=${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas_local_\${ntotpad}-\${itotpad}.nc
+   filename_full=${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas_local_\${ntotpad}-\${itotpad}.nc
 
    # Remove existing local full files
    rm -f \${filename_full}
@@ -145,13 +144,13 @@ for itot in \$(seq 1 \${nlocal}); do
    # Create scripts to merge local files
    echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
    for var in ${vars}; do
-      filename_var=${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_\${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
+      filename_var=${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
       echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_\${itotpad}.sh
    done
 done
 
 # Global full files names
-filename_full=${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas.nc
+filename_full=${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas.nc
 
 # Remove existing global full files
 rm -f \${filename_full}
@@ -161,7 +160,7 @@ nlocalp1=\$((nlocal+1))
 itotpad=\$(printf "%.6d" "\${nlocalp1}")
 echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
 for var in ${vars}; do
-   filename_var=${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_\${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_\${var}_nicas.nc
+   filename_var=${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}_nicas.nc
    echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_\${itotpad}.sh
 done
 

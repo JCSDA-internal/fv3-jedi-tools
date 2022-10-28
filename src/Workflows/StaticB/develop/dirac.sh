@@ -4,15 +4,15 @@
 source ./functions.sh
 
 # Create data directories
-mkdir -p ${data_dir_def}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-mkdir -p ${data_dir_regrid}/${bump_dir}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+mkdir -p ${data_dir_def}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+mkdir -p ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 
 ####################################################################
 # DIRAC ############################################################
 ####################################################################
 
 # Job name
-job=dirac_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+job=dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 
 # DIRAC yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -31,7 +31,7 @@ initial condition:
   filetype: fms restart
   state variables: &stateVars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_def}/${yyyymmddhh_last}${rr}/mem001
   filename_core: balanced.fv_core.res.nc
   filename_trcr: balanced.fv_tracer.res.nc
   filename_cplr: balanced.coupler.res
@@ -40,14 +40,14 @@ background error:
   saber central block:
     saber block name: BUMP_NICAS
     bump:
-      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-      datadir: ${data_dir_def}/${bump_dir}
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+      datadir: ${data_dir_def}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
       min_lev:
         cloud_liquid_water: 76
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       - variables: [surface_pressure]
@@ -58,7 +58,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+        datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -71,18 +71,18 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+        datapath: ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      datadir: ${data_dir_def}/${bump_dir}
-      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+      datadir: ${data_dir_def}
+      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
       verbosity: main
       universe_rad: 2000.0e3
       load_vbal: true
-      fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
+      fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
       load_samp_local: true
       vbal_block: [true, true,false, true,false,false]
   linear variable change:
@@ -91,7 +91,7 @@ background error:
     output variables: *stateVars
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_def}/${bump_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+  datapath: ${data_dir_def}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -118,7 +118,7 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 ####################################################################
 
 # Job name
-job=dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+job=dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
 
 # DIRAC_REGRID yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -137,7 +137,7 @@ initial condition:
   filetype: fms restart
   state variables: &stateVars [eastward_wind,northward_wind,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
   psinfile: true
-  datapath: ${data_dir_regrid}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
+  datapath: ${data_dir_regrid}/${yyyymmddhh_last}${rr}/mem001
   filename_core: balanced.fv_core.res.nc
   filename_trcr: balanced.fv_tracer.res.nc
   filename_cplr: balanced.coupler.res
@@ -146,14 +146,14 @@ background error:
   saber central block:
     saber block name: BUMP_NICAS
     bump:
-      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-      datadir: ${data_dir_regrid}/${bump_dir}
+      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+      datadir: ${data_dir_regrid}
       verbosity: main
       strategy: specific_univariate
       load_nicas_local: true
       min_lev:
         cloud_liquid_water: 76
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_nicas
+      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
       grids:
       - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       - variables: [surface_pressure]
@@ -164,7 +164,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+        datapath: ${data_dir_regrid}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -177,18 +177,18 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+        datapath: ${data_dir_regrid}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      datadir: ${data_dir_regrid}/${bump_dir}
-      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+      datadir: ${data_dir_regrid}
+      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
       verbosity: main
       universe_rad: 2000.0e3
       load_vbal: true
-      fname_samp: vbal_${yyyymmddhh_last}+${rr}/vbal_${yyyymmddhh_last}+${rr}_sampling
+      fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
       load_samp_local: true
       vbal_block: [true, true,false, true,false,false]
   linear variable change:
@@ -197,7 +197,7 @@ background error:
     output variables: *stateVars
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_regrid}/${bump_dir}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
+  datapath: ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
