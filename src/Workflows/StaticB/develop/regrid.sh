@@ -9,7 +9,6 @@ mkdir -p ${data_dir_regrid}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
 mkdir -p ${data_dir_regrid}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 mkdir -p ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-mkdir -p ${data_dir_regrid}/${bump_dir}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_last}+${rr}
 mkdir -p ${data_dir_regrid}/${bump_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
 for var in ${vars}; do
@@ -155,55 +154,6 @@ time=00:05:00
 exe=fv3jedi_convertstate.x
 prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
-####################################################################
-# PSICHITOUV #######################################################
-####################################################################
-
-# Job name
-job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-
-# PSICHITOUV yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
-geometry:
-  fms initialization:
-    namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
-    field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
-  akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
-  layout: [${nlx_regrid},${nly_regrid}]
-  npx: ${npx_regrid}
-  npy: ${npy_regrid}
-  npz: 127
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
-background:
-  datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
-  filetype: fms restart
-  state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-  psinfile: true
-  datapath: ${data_dir_regrid}/${bump_dir}/${yyyymmddhh_last}+${rr}/mem001
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
-input variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-bump:
-  datadir: ${data_dir_regrid}/${bump_dir}
-  prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}
-  verbosity: main
-  universe_rad: 2000.0e3
-  new_wind: true
-  write_wind_local: true
-  wind_nlon: 400
-  wind_nlat: 200
-  wind_nsg: 5
-  wind_inflation: 1.1
-EOF
-
-# PSICHITOUV sbatch
-ntasks=${ntasks_regrid}
-cpus_per_task=1
-threads=1
-time=00:20:00
-exe=fv3jedi_error_covariance_training.x
-prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 ####################################################################
 # VBAL #############################################################

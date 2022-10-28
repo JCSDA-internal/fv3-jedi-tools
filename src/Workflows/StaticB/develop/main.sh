@@ -83,17 +83,17 @@ cd ${script_dir}
 # Run generators
 echo `date`": run yamls and sbatch scripts generators"
 
-if test "${run_daily_state_to_control}" = "true" || test "${run_daily_vbal}" = "true" || test "${run_daily_unbal}" = "true" || test "${run_daily_varmom}" = "true"; then
+if test "${run_daily_state_to_control}" = "true" || "${run_daily_vbal}" = "true" || "${run_daily_unbal}" = "true" || "${run_daily_varmom}" = "true"; then
    # Daily runs
    ./daily.sh
 fi
 
-if test "${run_final_psichitouv}" = "true" || "${run_final_vbal}" = "true" || "${run_final_var}" = "true" || "${run_final_cor}" = "true" || "${run_final_nicas_c0}" = "true" || "${run_final_nicas_c1}" = "true" || "${run_final_nicas_si}" = "true" ; then
+if test "${run_final_vbal}" = "true" || "${run_final_var}" = "true" || "${run_final_cor}" = "true" || "${run_final_nicas}" = "true" ; then
    # Final runs
    ./final.sh
 fi
 
-if test "${run_merge_states}" = "true" || test "${run_merge_nicas}" = "true"; then
+if test "${run_merge_states}" = "true" || "${run_merge_nicas}" = "true"; then
    # Merge runs
    ./merge.sh
 fi
@@ -103,12 +103,12 @@ if test "${run_regrid_states}" = "true" || "${run_regrid_vbal}" = "true" || "${r
    ./regrid.sh
 fi
 
-if test "${run_dirac_c0}" = "true" || "${run_dirac_c1}" = "true" || "${run_dirac_si}" = "true" || "${run_dirac_psichitouv}" = "true" || "${run_dirac_c0_global}" = "true" || test "${run_dirac_regrid}" = "true" ; then
+if test "${run_dirac}" = "true" || "${run_dirac_regrid}" = "true" ; then
    # Dirac runs
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true" || "${run_variational_3dvar_specific_obs}" = "true" || "${run_variational_3dvar_regrid}" = "true" || "${run_variational_3dvar_full_regrid}" = "true" ; then
+if test "${run_variational_3dvar}" = "true"|| "${run_variational_3dvar_regrid}" = "true"; then
    # Variational runs
    ./variational.sh
 fi
@@ -194,37 +194,13 @@ if test "${run_final_cor}" = "true"; then
    done
 fi
 
-# Run nicas - C0 interpolation
-if test "${run_final_nicas_c0}" = "true"; then
-   final_nicas_c0_pids=""
+# Run nicas
+if test "${run_final_nicas}" = "true"; then
+   final_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch nicas_c0_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}.sh ${final_cor_pids}
-      final_nicas_c0_pids=${final_nicas_c0_pids}:${pid}
+      run_sbatch nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}.sh ${final_cor_pids}
+      final_nicas_pids=${final_nicas_pids}:${pid}
    done
-fi
-
-# Run nicas - C1 interpolation
-if test "${run_final_nicas_c1}" = "true"; then
-   final_nicas_c1_pids=""
-   for var in ${vars}; do
-      run_sbatch nicas_c1_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}.sh ${final_cor_pids}
-      final_nicas_c1_pids=${final_nicas_c1_pids}:${pid}
-   done
-fi
-
-# Run nicas - smooth interpolation
-if test "${run_final_nicas_si}" = "true"; then
-   final_nicas_si_pids=""
-   for var in ${vars}; do
-      run_sbatch nicas_si_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}_${var}.sh ${final_cor_pids}
-      final_nicas_si_pids=${final_nicas_si_pids}:${pid}
-   done
-fi
-
-# Run psichitouv
-if test "${run_final_psichitouv}" = "true"; then
-   run_sbatch psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ""
-   final_psichitouv_pid=:${pid}
 fi
 
 # Merge runs
@@ -232,26 +208,14 @@ fi
 
 # Run states
 if test "${run_merge_states}" = "true"; then
-   run_sbatch merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_var_pids}${final_cor_pids}${final_nicas_c0_pids}${final_nicas_c1_pids}${final_nicas_si_pids}
+   run_sbatch merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_var_pids}${final_cor_pids}${final_nicas_pids}
    merge_states_pid=:${pid}
 fi
 
-# Run nicas - C0 interpolation
-if test "${run_merge_nicas_c0}" = "true"; then
-   run_sbatch merge_nicas_c0_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_nicas_c0_pids}
-   merge_nicas_c0_pid=:${pid}
-fi
-
-# Run nicas - C1 interpolation
-if test "${run_merge_nicas_c1}" = "true"; then
-   run_sbatch merge_nicas_c1_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_nicas_c1_pids}
-   merge_nicas_c1_pid=:${pid}
-fi
-
-# Run nicas - smooth interpolation
-if test "${run_merge_nicas_si}" = "true"; then
-   run_sbatch merge_nicas_si_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_nicas_si_pids}
-   merge_nicas_si_pid=:${pid}
+# Run nicas
+if test "${run_merge_nicas}" = "true"; then
+   run_sbatch merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${final_nicas_pids}
+   merge_nicas_pid=:${pid}
 fi
 
 # Regrid runs
@@ -287,34 +251,10 @@ fi
 # Dirac runs
 # ----------
 
-# Run dirac_c0
-if test "${run_dirac_c0}" = "true"; then
-   run_sbatch dirac_c0_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_c0_pid}${merge_states_pid}${final_vbal_pid}
-   dirac_c0_pid=:${pid}
-fi
-
-# Run dirac_c1
-if test "${run_dirac_c1}" = "true"; then
-   run_sbatch dirac_c1_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_c1_pid}${merge_states_pid}${final_vbal_pid}
-   dirac_c1_pid=:${pid}
-fi
-
-# Run dirac_si
-if test "${run_dirac_si}" = "true"; then
-   run_sbatch dirac_si_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_si_pid}${merge_states_pid}${final_vbal_pid}
-   dirac_si_pid=:${pid}
-fi
-
-# Run dirac_psichitouv
-if test "${run_dirac_psichitouv}" = "true"; then
-   run_sbatch dirac_psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_c0_pid}${merge_states_pid}${final_vbal_pid}${final_psichitouv_pid}
-   dirac_psichitouv_pid=:${pid}
-fi
-
-# Run dirac_c0_global
-if test "${run_dirac_c0_global}" = "true"; then
-   run_sbatch dirac_c0_global_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_c0_pid}${merge_states_pid}${final_vbal_pid}
-   dirac_c0_global_pid=:${pid}
+# Run dirac
+if test "${run_dirac}" = "true"; then
+   run_sbatch dirac_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
+   dirac_pid=:${pid}
 fi
 
 # Run dirac_regrid
@@ -332,25 +272,10 @@ if test "${run_variational_3dvar}" = "true"; then
    variational_3dvar_pid=:${pid}
 fi
 
-# Run 3dvar_specific_obs
-if test "${run_variational_3dvar_specific_obs}" = "true"; then
-   variational_3dvar_specific_obs_pid=''
-   for obs in ${obs_xp} ; do
-      run_sbatch variational_3dvar_${obs}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
-      variational_3dvar_specific_obs_pid=${variational_3dvar_specific_obs_pid}:${pid}
-   done
-fi
-
 # Run 3dvar_regrid
 if test "${run_variational_3dvar_regrid}" = "true"; then
    run_sbatch variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
    variational_3dvar_regrid_pid=:${pid}
-fi
-
-# Run 3dvar_full_regrid
-if test "${run_variational_3dvar_full_regrid}" = "true"; then
-   run_sbatch variational_3dvar_full_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}+${rr}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
-   variational_3dvar_full_regrid_pid=:${pid}
 fi
 
 exit 0
