@@ -60,7 +60,7 @@ export yyyymmddhh_list="2021080100"
 export yyyymmddhh_bkg="2021080100"
 
 # Observation date
-export yyyymmddhh_obs="2020121421"
+export yyyymmddhh_obs="2021080103"
 
 # Default layout
 export nlx_def=6
@@ -102,11 +102,7 @@ export run_regrid_merge_nicas=false
 
 # Dirac runs
 export run_dirac=false
-export run_dirac_regrid=true
-
-# Variational runs
-export run_variational_3dvar=false
-export run_variational_3dvar_regrid=false
+export run_dirac_regrid=false
 
 # Prepare scripts only (do not run sbatch)
 export prepare_scripts_only=false

@@ -115,11 +115,6 @@ if test "${run_dirac}" = "true" || "${run_dirac_regrid}" = "true" ; then
    ./dirac.sh
 fi
 
-if test "${run_variational_3dvar}" = "true"|| "${run_variational_3dvar_regrid}" = "true"; then
-   # Variational runs
-   ./variational.sh
-fi
-
 ####################################################################
 # Run sbatch #######################################################
 ####################################################################
@@ -268,21 +263,6 @@ fi
 if test "${run_dirac_regrid}" = "true"; then
    run_sbatch dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
    dirac_regrid_pid=:${pid}
-fi
-
-# Variational runs
-# ----------------
-
-# Run 3dvar
-if test "${run_variational_3dvar}" = "true"; then
-   run_sbatch variational_3dvar_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
-   variational_3dvar_pid=:${pid}
-fi
-
-# Run 3dvar_regrid
-if test "${run_variational_3dvar_regrid}" = "true"; then
-   run_sbatch variational_3dvar_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
-   variational_3dvar_regrid_pid=:${pid}
 fi
 
 exit 0
