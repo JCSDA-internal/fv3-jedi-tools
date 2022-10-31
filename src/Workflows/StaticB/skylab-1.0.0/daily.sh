@@ -236,35 +236,39 @@ bump:
       pattern: %mem%
       nmembers: ${nmem}
       zero padding: 3
-  output:
+output:
   - parameter: var
-    filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
-    prepend files with date: false
-    filename_core: var.fv_core.res.nc
-    filename_trcr: var.fv_tracer.res.nc
-    filename_cplr: var.coupler.res
+    file:
+      filetype: fms restart
+      datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+      prepend files with date: false
+      filename_core: var.fv_core.res.nc
+      filename_trcr: var.fv_tracer.res.nc
+      filename_cplr: var.coupler.res
   - parameter: m4
-    filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
-    prepend files with date: false
-    filename_core: m4.fv_core.res.nc
-    filename_trcr: m4.fv_tracer.res.nc
-    filename_cplr: m4.coupler.res
+    file:
+      filetype: fms restart
+      datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+      prepend files with date: false
+      filename_core: m4.fv_core.res.nc
+      filename_trcr: m4.fv_tracer.res.nc
+      filename_cplr: m4.coupler.res
   - parameter: cor_rh
-    filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
-    prepend files with date: false
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    file:
+      filetype: fms restart
+      datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+      prepend files with date: false
+      filename_core: cor_rh.fv_core.res.nc
+      filename_trcr: cor_rh.fv_tracer.res.nc
+      filename_cplr: cor_rh.coupler.res
   - parameter: cor_rv
-    filetype: fms restart
-    datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
-    prepend files with date: false
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
+    file:
+      filetype: fms restart
+      datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
+      prepend files with date: false
+      filename_core: cor_rv.fv_core.res.nc
+      filename_trcr: cor_rv.fv_tracer.res.nc
+      filename_cplr: cor_rv.coupler.res
 EOF
 
       # VAR-MOM sbatch

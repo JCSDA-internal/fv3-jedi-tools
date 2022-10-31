@@ -5,7 +5,7 @@
 ####################################################################
 
 # Input Data directory (need to be more generic)
-export r2d2_dir="/work/noaa/da/barre/gfs_aero_ensemble"
+export r2d2_dir="/data/users/jbarre/gfs_aero_ensemble"
 
 export WORK_DIR="/data/users/jbarre"
 
@@ -64,8 +64,8 @@ export offset=6
 
 # List of dates for the training (january or july or both)
 #make a for loop for this...
-start_date="2021080100"
-end_date="2021080106"
+start_date="2021080106"
+end_date="2021080112"
 d=$start_date
 until [[ $d > ${end_date} ]]; do
     yyyymmdd=${d:0:8}
