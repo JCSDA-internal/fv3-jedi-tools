@@ -18,9 +18,6 @@ prepare_sbatch () {
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
 #SBATCH -e ${work_dir}/${job}/${job}.err

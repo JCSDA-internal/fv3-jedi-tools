@@ -7,6 +7,8 @@
 # Input Data directory (need to be more generic)
 export r2d2_dir="/work/noaa/da/barre/gfs_aero_ensemble"
 
+export WORK_DIR="/data/users/jbarre"
+
 # Ouput Data directory
 export data_dir="${WORK_DIR}/StaticBTraining"
 
@@ -14,12 +16,12 @@ export data_dir="${WORK_DIR}/StaticBTraining"
 export data_dir_regrid_base="${WORK_DIR}/regrid"
 
 # FV3-JEDI source directory
-export fv3jedi_dir="${WORK_DIR}/jedi-release/jedi-bundle/fv3-jedi"
+export fv3jedi_dir="${WORK_DIR}/jedi-bundle/fv3-jedi"
 
 export fv3jeditools_dir="${WORK_DIR}/fv3-jedi-tools"
 
 # JEDI binaries directory
-export bin_dir="${WORK_DIR}/jedi-release/build/bin"
+export bin_dir="${WORK_DIR}/jedi-bundle/build/bin"
 #export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_RelWithDebInfo/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_debug/bin"
@@ -35,8 +37,8 @@ export bump_dir="skylab-1.0.0"
 # Provided: gnu-openmpi or intel-impi on Orion #####################
 ####################################################################
 
-export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
-#export env_script=${xp_dir}/env_script/intel-impi_env.sh
+#export env_script=${xp_dir}/env_script/gnu-openmpi_env.sh
+export env_script=${xp_dir}/env_script/intel-impi_env.sh
 export rankfile_script=${xp_dir}/env_script/rankfile.bash
 export cores_per_node=40
 
@@ -57,20 +59,22 @@ export varlist
 # Number of ensemble members
 export nmem=5
 
+#offset in hours to get forecast at analysis time
+export offset=6
+
 # List of dates for the training (january or july or both)
 #make a for loop for this...
-start_date="20210805"
-end_date="20210806"
+start_date="2021080100"
+end_date="2021080106"
 d=$start_date
 until [[ $d > ${end_date} ]]; do
-    yyyymmddhh_list=$yyyymmddhh_list$d"00 "
-    d=$(date +%Y%m%d -d "$d + 1 day")
+    yyyymmdd=${d:0:8}
+    hh=${d:8:2}
+    yyyymmddhh_list=$yyyymmddhh_list$d" "
+    d=$(date +%Y%m%d%H -d "$yyyymmdd $hh + $offset hour")
 done
 echo $yyyymmddhh_list
 export yyyymmddhh_list
-
-#offset in hours to get forecast at analysis time
-export offset=6
 
 # Background date
 export yyyymmddhh_bkg="2021080200"
