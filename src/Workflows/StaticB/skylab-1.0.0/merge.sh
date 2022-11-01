@@ -49,6 +49,21 @@ vars_files["sphum"]="fv_tracer"
 vars_files["liq_wat"]="fv_tracer"
 vars_files["o3mr"]="fv_tracer"
 
+vars_files["mass_fraction_of_sulfate_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_hydrophobic_black_carbon_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_hydrophilic_black_carbon_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_hydrophobic_organic_carbon_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_hydrophilic_organic_carbon_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_dust001_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_dust002_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_dust003_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_dust004_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_dust005_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_sea_salt001_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_sea_salt002_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_sea_salt003_in_air"]="fv_tracer"
+vars_files["mass_fraction_of_sea_salt004_in_air"]="fv_tracer"
+
 # States and corresponding directories
 states="stddev cor_rh cor_rv nicas_norm"
 declare -A states_dirs

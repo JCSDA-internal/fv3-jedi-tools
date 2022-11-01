@@ -12,6 +12,14 @@ for var in ${vars}; do
    mkdir -p ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 done
 
+# Date Offset
+yyyymmddhh_o=$(date +%Y%m%d%H -d "$yyyy_last$mm_last$dd_last $hh_last - $offset hour")
+
+yyyy_o=${yyyymmddhh_o:0:4}
+mm_o=${yyyymmddhh_o:4:2}
+dd_o=${yyyymmddhh_o:6:2}
+hh_o=${yyyymmddhh_o:8:2}
+
 # Generic variable names
 declare -A vars_generic
 vars_generic+=(["psi"]="stream_function")
@@ -152,16 +160,16 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [${varlist}]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
+  datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem001/RESTART
+  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.ges.nc
+  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.ges.nc
+  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res.ges
 input variables: [${var}]
 bump:
   prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -172,17 +180,22 @@ bump:
   var_filter: true
   var_niter: 1
   var_rhflt:
-    ${vars_generic[${var}]}: [3000.0e3]
+    ${var}: [3000.0e3]
   ne: $((nmem*yyyymmddhh_size))
-  input:
+input fields:
 EOF
+   comp=0
    for yyyymmddhh in ${yyyymmddhh_list}; do
+      let "comp+=1"
       yyyy=${yyyymmddhh:0:4}
       mm=${yyyymmddhh:4:2}
       dd=${yyyymmddhh:6:2}
       hh=${yyyymmddhh:8:2}
 cat<< EOF >> ${yaml_dir}/${job}.yaml
-  - parameter: var
+- parameter: var
+  component: ${comp}
+  file:
+    set datetime on read: true
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
@@ -190,7 +203,10 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
     filename_cplr: var.coupler.res
-  - parameter: m4
+- parameter: m4
+  component: ${comp}
+  file:
+    set datetime on read: true
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var-mom_${yyyymmddhh}_${var}
@@ -201,8 +217,9 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
 EOF
    done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
-  output:
-  - parameter: stddev
+output:
+- parameter: stddev
+  file:
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
@@ -239,16 +256,16 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [${varlist}]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
+  datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem001/RESTART
+  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.ges.nc
+  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.ges.nc
+  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res.ges
 input variables: [${var}]
 bump:
   prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -279,15 +296,17 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
   local_rad: 2000.0e3
   diag_rvflt: 0.1
   ne: $((nmem*yyyymmddhh_size))
-  output:
-  - parameter: cor_rh
+output:
+- parameter: cor_rh
+  file:
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-  - parameter: cor_rv
+- parameter: cor_rv
+  file:   
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false
@@ -324,16 +343,16 @@ geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: &stateVars [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: &stateVars [${varlist}]
   psinfile: true
-  datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
+  datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem001/RESTART
+  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.ges.nc
+  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.ges.nc
+  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res.ges
 input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -343,11 +362,11 @@ bump:
   new_nicas: true
   write_nicas_local: true
   write_nicas_global: true
-  resol: 10.0
-  nc1max: 50000
-  min_lev:
-    liq_wat: 76
-  universe radius:
+  resol: 4.0
+  nc1max: 5000
+input fields:
+- parameter: universe radius
+  file:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
@@ -355,8 +374,8 @@ bump:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-  input:
-  - parameter: rh
+- parameter: rh
+  file:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
@@ -364,7 +383,8 @@ bump:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
-  - parameter: rv
+- parameter: rv
+  file:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
@@ -372,8 +392,9 @@ bump:
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
-  output:
-  - parameter: nicas_norm
+output:
+- parameter: nicas_norm
+  file:
     filetype: fms restart
     datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
     prepend files with date: false

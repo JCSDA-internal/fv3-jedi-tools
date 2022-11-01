@@ -48,7 +48,25 @@ export cores_per_node=40
 
 # Variables
 #export vars="psi chi t ps sphum liq_wat o3mr"
-export vars="mass_fraction_of_dust001_in_air"
+export vars="mass_fraction_of_sulfate_in_air
+             mass_fraction_of_dust001_in_air"
+
+#            ("mass_fraction_of_sulfate_in_air
+#              mass_fraction_of_hydrophobic_black_carbon_in_air
+#              mass_fraction_of_hydrophilic_black_carbon_in_air
+#              mass_fraction_of_hydrophobic_organic_carbon_in_air
+#              mass_fraction_of_hydrophilic_organic_carbon_in_air
+#              mass_fraction_of_dust001_in_air 
+#              mass_fraction_of_dust002_in_air
+#              mass_fraction_of_dust003_in_air 
+#              mass_fraction_of_dust004_in_air
+#              mass_fraction_of_dust005_in_air
+#              mass_fraction_of_sea_salt001_in_air
+#              mass_fraction_of_sea_salt002_in_air 
+#              mass_fraction_of_sea_salt003_in_air
+#              mass_fraction_of_sea_salt004_in_air")
+
+
 #export vars="mass_fraction_of_sulfate_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
 varlist=""
 for var in ${vars}; do
@@ -124,14 +142,14 @@ export get_data_observations=false
 # Daily runs
 export run_daily_vbal=false
 export run_daily_unbal=false
-export run_daily_varmom=true
+export run_daily_varmom=false
 
 # Final runs
 export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
-export run_final_nicas=false
+export run_final_nicas=true
 
 # Merge runs
 export run_merge_states=false
