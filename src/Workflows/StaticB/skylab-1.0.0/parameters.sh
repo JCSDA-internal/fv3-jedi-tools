@@ -137,8 +137,8 @@ export run_final_cor=false
 export run_final_nicas=false
 
 # Merge runs
-export run_merge_states=true
-export run_merge_nicas=false
+export run_merge_states=false
+export run_merge_nicas=true
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_states=false

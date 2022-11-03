@@ -111,7 +111,7 @@ mkdir -p ${work_dir}/${job}
 
 # Merge NICAS files
 ntasks=1
-cpus_per_task=${cores_per_node}
+cpus_per_task=1 #${cores_per_node}
 threads=1
 time=00:30:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
