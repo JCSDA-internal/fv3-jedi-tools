@@ -27,8 +27,7 @@ export bin_dir="${HOME}/build/gnu-openmpi/bundle_RelWithDebInfo/bin"
 export xp_dir="${HOME}/xp"
 
 # BUMP directory
-export bump_dir_def="develop"
-export bump_dir_regrid="develop"
+export bump_dir="develop"
 
 ####################################################################
 # Environment script path ##########################################

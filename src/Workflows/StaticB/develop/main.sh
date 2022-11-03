@@ -49,13 +49,13 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
-export data_dir_def=${data_dir}/c${cdef}/${bump_dir_def}
-export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}/${bump_dir_regrid}
+export data_dir_def=${data_dir}/c${cdef}/${bump_dir}
+export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}/${bump_dir}
 export bkg_dir="bkg_${yyyymmddhh_bkg}"
-export sbatch_dir="${xp_dir}/${bump_dir_regrid}/sbatch"
-export work_dir="${xp_dir}/${bump_dir_regrid}/work"
-export yaml_dir="${xp_dir}/${bump_dir_regrid}/yaml"
-export script_dir="${xp_dir}/${bump_dir_regrid}/script"
+export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
+export work_dir="${xp_dir}/${bump_dir}/work"
+export yaml_dir="${xp_dir}/${bump_dir}/yaml"
+export script_dir="${xp_dir}/${bump_dir}/script"
 
 # Default geometry
 export npx_def=$((cdef+1))
