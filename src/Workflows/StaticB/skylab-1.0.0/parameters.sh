@@ -48,24 +48,9 @@ export cores_per_node=40
 
 # Variables
 #export vars="psi chi t ps sphum liq_wat o3mr"
-export vars="mass_fraction_of_sulfate_in_air
-             mass_fraction_of_dust001_in_air"
+#export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_dust001_in_air"
 
-#            ("mass_fraction_of_sulfate_in_air
-#              mass_fraction_of_hydrophobic_black_carbon_in_air
-#              mass_fraction_of_hydrophilic_black_carbon_in_air
-#              mass_fraction_of_hydrophobic_organic_carbon_in_air
-#              mass_fraction_of_hydrophilic_organic_carbon_in_air
-#              mass_fraction_of_dust001_in_air 
-#              mass_fraction_of_dust002_in_air
-#              mass_fraction_of_dust003_in_air 
-#              mass_fraction_of_dust004_in_air
-#              mass_fraction_of_dust005_in_air
-#              mass_fraction_of_sea_salt001_in_air
-#              mass_fraction_of_sea_salt002_in_air 
-#              mass_fraction_of_sea_salt003_in_air
-#              mass_fraction_of_sea_salt004_in_air")
-
+export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_hydrophobic_black_carbon_in_air mass_fraction_of_hydrophilic_black_carbon_in_air mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air mass_fraction_of_dust001_in_air mass_fraction_of_dust002_in_air mass_fraction_of_dust003_in_air mass_fraction_of_dust004_in_air mass_fraction_of_dust005_in_air mass_fraction_of_sea_salt001_in_air mass_fraction_of_sea_salt002_in_air mass_fraction_of_sea_salt003_in_air mass_fraction_of_sea_salt004_in_air"
 
 #export vars="mass_fraction_of_sulfate_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
 varlist=""
@@ -75,7 +60,7 @@ done
 varlist=${varlist:1}
 export varlist
 # Number of ensemble members
-export nmem=5
+export nmem=20
 
 #offset in hours to get forecast at analysis time
 export offset=6
@@ -83,7 +68,7 @@ export offset=6
 # List of dates for the training (january or july or both)
 #make a for loop for this...
 start_date="2021080106"
-end_date="2021080112"
+end_date="2021080500"
 d=$start_date
 until [[ $d > ${end_date} ]]; do
     yyyymmdd=${d:0:8}
@@ -149,10 +134,10 @@ export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
-export run_final_nicas=true
+export run_final_nicas=false
 
 # Merge runs
-export run_merge_states=false
+export run_merge_states=true
 export run_merge_nicas=false
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])

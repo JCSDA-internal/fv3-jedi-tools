@@ -21,9 +21,6 @@ time=00:10:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
 #SBATCH --ntasks=${ntasks}
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
@@ -120,9 +117,6 @@ time=00:30:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
 #SBATCH --ntasks=${ntasks}
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
