@@ -33,25 +33,14 @@ export yyyy_fc_last=${yyyymmddhh_fc_last:0:4}
 export mm_fc_last=${yyyymmddhh_fc_last:4:2}
 export dd_fc_last=${yyyymmddhh_fc_last:6:2}
 export hh_fc_last=${yyyymmddhh_fc_last:8:2}
-export yyyy_bkg=${yyyymmddhh_bkg:0:4}
-export mm_bkg=${yyyymmddhh_bkg:4:2}
-export dd_bkg=${yyyymmddhh_bkg:6:2}
-export hh_bkg=${yyyymmddhh_bkg:8:2}
-export yyyy_obs=${yyyymmddhh_obs:0:4}
-export mm_obs=${yyyymmddhh_obs:4:2}
-export dd_obs=${yyyymmddhh_obs:6:2}
-export hh_obs=${yyyymmddhh_obs:8:2}
 echo `date`": dates are ${yyyymmddhh_list}"
 echo `date`": first date is ${yyyymmddhh_first}"
 echo `date`": last date is ${yyyymmddhh_last}"
-echo `date`": background date is ${yyyymmddhh_bkg}"
-echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
 export data_dir_def=${data_dir}/c${cdef}/${bump_dir}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}/${bump_dir}
-export bkg_dir="bkg_${yyyymmddhh_bkg}"
 export sbatch_dir="${xp_dir}/${bump_dir}/sbatch"
 export work_dir="${xp_dir}/${bump_dir}/work"
 export yaml_dir="${xp_dir}/${bump_dir}/yaml"

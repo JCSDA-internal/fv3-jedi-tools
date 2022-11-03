@@ -55,12 +55,6 @@ export r=3
 # List of dates for the training
 export yyyymmddhh_list="2021080100"
 
-# Background date
-export yyyymmddhh_bkg="2021080100"
-
-# Observation date
-export yyyymmddhh_obs="2021080103"
-
 # Default layout
 export nlx_def=6
 export nly_def=6
@@ -104,7 +98,7 @@ export run_dirac=false
 export run_dirac_regrid=false
 
 # Prepare scripts only (do not run sbatch)
-export prepare_scripts_only=false
+export t=false
 
 # Benchmark mode
 export benchmark=false
