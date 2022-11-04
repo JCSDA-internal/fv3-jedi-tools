@@ -50,17 +50,51 @@ vars_files["cloud_liquid_water"]="fv_tracer"
 vars_files["ozone_mass_mixing_ratio"]="fv_tracer"
 
 # States and corresponding directories
-states="stddev cor_rh cor_rv nicas"
 declare -A states_files
 states_files["stddev"]="stddev"
 states_files["cor_rh"]="cor_rh"
+states_files["cor_rh1"]="cor_rh1"
+states_files["cor_rh2"]="cor_rh2"
+states_files["cor_rhc"]="cor_rhc"
 states_files["cor_rv"]="cor_rv"
 states_files["nicas"]="nicas_norm"
 declare -A states_dirs
 states_dirs["stddev"]="var"
 states_dirs["cor_rh"]="cor"
+states_dirs["cor_rh1"]="cor"
+states_dirs["cor_rh2"]="cor"
+states_dirs["cor_rhc"]="cor"
 states_dirs["cor_rv"]="cor"
 states_dirs["nicas"]="nicas"
+
+# Find existing states
+possible_states="stddev
+cor_rh
+cor_rh1
+cor_rh2
+cor_rhc
+cor_rv
+nicas"
+
+states=""
+for state in \${possible_states}; do
+   isfilepresent=true
+   for itile in \$(seq 1 6); do
+      for var in ${vars}; do
+         filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_\${var}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         if ! test -f \${filename_var}; then
+            isfilepresent=false
+         fi
+      done
+   done
+   if test "\${isfilepresent}" = "true"; then
+      states=\${states}" "\${state}
+      echo -e "State "\${state}" found"
+   else
+      echo -e "State "\${state}" not found"
+   fi
+done
+echo -e "Found the following states: "\${states}
 
 for state in \${states}; do
    # NetCDF files
