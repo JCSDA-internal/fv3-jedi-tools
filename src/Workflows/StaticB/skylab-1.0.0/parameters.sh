@@ -138,13 +138,13 @@ export run_final_nicas=false
 
 # Merge runs
 export run_merge_states=false
-export run_merge_nicas=true
+export run_merge_nicas=false
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_states=false
 export run_regrid_psichitouv=false
 export run_regrid_vbal=false
-export run_regrid_nicas=false
+export run_regrid_nicas=true
 export run_regrid_merge_nicas=false
 
 # Dirac runs

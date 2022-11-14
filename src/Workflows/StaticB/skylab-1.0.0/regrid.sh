@@ -35,7 +35,7 @@ input geometry:
   npx: ${npx_def}
   npy: ${npy_def}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 output geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -45,7 +45,7 @@ output geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 states:
 - input:
     datetime: ${yyyy_bkg}-${mm_bkg}-${dd_bkg}T${hh_bkg}:00:00Z
@@ -57,9 +57,7 @@ states:
     filename_trcr: fv_tracer.res.nc
     filename_phys: phy_data.nc
     filename_sfcd: sfc_data.nc
-    state variables: [ua,va,t,ps,delp,sphum,ice_wat,liq_wat,o3mr,phis,
-                      slmsk,sheleg,tsea,vtype,stype,vfrac,stc,smc,snwdph,
-                      u_srf,v_srf,f10m]
+    state variables: [${varlist}]
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/${bump_dir}/${bkg_dir}
@@ -73,7 +71,7 @@ states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    state variables: [${varlist}]
     psinfile: true
     datapath: ${data_dir_def}/${bump_dir}/${first_member_dir}
     filename_core: unbal.fv_core.res.nc
@@ -89,7 +87,7 @@ states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    state variables: [${varlist}]
     psinfile: true
     datapath: ${data_dir_def}/${bump_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: stddev.fv_core.res.nc
@@ -105,7 +103,7 @@ states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    state variables: [${varlist}]
     psinfile: true
     datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: cor_rh.fv_core.res.nc
@@ -121,7 +119,7 @@ states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    state variables: [${varlist}]
     psinfile: true
     datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: cor_rv.fv_core.res.nc
@@ -137,7 +135,7 @@ states:
 - input:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
-    state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+    state variables: [${varlist}]
     psinfile: true
     datapath: ${data_dir_def}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}
     filename_core: nicas_norm.fv_core.res.nc
@@ -178,17 +176,17 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [${varlist}]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
-input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+input variables: [${varlist}]
 bump:
   datadir: ${data_dir_regrid}/${bump_dir}
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -232,17 +230,17 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [${varlist}]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
   filename_trcr: unbal.fv_tracer.res.nc
   filename_cplr: unbal.coupler.res
-input variables: [psi,chi,t,ps]
+input variables: [${varlist}]
 bump:
   datadir: ${data_dir_regrid}/${bump_dir}
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
@@ -291,11 +289,11 @@ geometry:
   npx: ${npx_regrid}
   npy: ${npy_regrid}
   npz: ${npz_def}
-  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-restart.yaml
+  field metadata override: ${fv3jedi_dir}/test/Data/fieldmetadata/gfs-aerosol.yaml
 background:
   datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
   filetype: fms restart
-  state variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
+  state variables: [${varlist}]
   psinfile: true
   datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
   filename_core: unbal.fv_core.res.nc
