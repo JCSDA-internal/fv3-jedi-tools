@@ -16,6 +16,14 @@ for var in ${vars}; do
    mkdir -p ${data_dir_regrid}/${bump_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
 done
 
+# Date Offset
+yyyymmddhh_o=$(date +%Y%m%d%H -d "$yyyy_last$mm_last$dd_last $hh_last - $offset hour")
+
+yyyy_o=${yyyymmddhh_o:0:4}
+mm_o=${yyyymmddhh_o:4:2}
+dd_o=${yyyymmddhh_o:6:2}
+hh_o=${yyyymmddhh_o:8:2}
+
 ####################################################################
 # STATES ###########################################################
 ####################################################################
@@ -295,10 +303,10 @@ background:
   filetype: fms restart
   state variables: [${varlist}]
   psinfile: true
-  datapath: ${data_dir_regrid}/${bump_dir}/${first_member_dir}
-  filename_core: unbal.fv_core.res.nc
-  filename_trcr: unbal.fv_tracer.res.nc
-  filename_cplr: unbal.coupler.res
+  datapath: ${data_input_dir}/enkfgdas.${yyyy_o}${mm_o}${dd_o}/${hh_o}/mem001/RESTART
+  filename_core: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_core.res.ges.nc
+  filename_trcr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.fv_tracer.res.ges.nc
+  filename_cplr: ${yyyy_last}${mm_last}${dd_last}.${hh_last}0000.coupler.res.ges
 input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
@@ -309,17 +317,18 @@ bump:
   write_nicas_local: true
   min_lev:
     liq_wat: 76
-  universe radius:
-    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-    filetype: fms restart
-    psinfile: true
-    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
-    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-  input:
-  - parameter: nicas_norm
+#  universe radius:
+#    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+#    filetype: fms restart
+#    psinfile: true
+#    datapath: ${data_dir_regrid}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}
+#    filename_core: cor_rh.fv_core.res.nc
+#    filename_trcr: cor_rh.fv_tracer.res.nc
+#    filename_cplr: cor_rh.coupler.res
+#    date: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+input fields:
+- parameter: nicas_norm
+  file:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
     filetype: fms restart
     psinfile: true
@@ -349,15 +358,12 @@ mkdir -p ${work_dir}/${job}
 
 # Merge NICAS files
 ntasks=1
-cpus_per_task=${cores_per_node}
+cpus_per_task=1 #${cores_per_node}
 threads=1
 time=00:30:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
-#SBATCH -A da-cpu
-#SBATCH -p orion
-#SBATCH -q batch
 #SBATCH --ntasks=${ntasks}
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
