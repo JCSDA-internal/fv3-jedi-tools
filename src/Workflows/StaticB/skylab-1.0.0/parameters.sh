@@ -48,12 +48,12 @@ export cores_per_node=40
 
 # Variables
 #export vars="psi chi t ps sphum liq_wat o3mr"
-#export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_dust001_in_air"
+#export vars="mass_fraction_of_sulfate_in_air" #mass_fraction_of_dust001_in_air"
 
-#export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_hydrophobic_black_carbon_in_air mass_fraction_of_hydrophilic_black_carbon_in_air mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air mass_fraction_of_dust001_in_air mass_fraction_of_dust002_in_air mass_fraction_of_dust003_in_air mass_fraction_of_dust004_in_air mass_fraction_of_dust005_in_air mass_fraction_of_sea_salt001_in_air mass_fraction_of_sea_salt002_in_air mass_fraction_of_sea_salt003_in_air mass_fraction_of_sea_salt004_in_air"
+export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_hydrophobic_black_carbon_in_air mass_fraction_of_hydrophilic_black_carbon_in_air mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air mass_fraction_of_dust001_in_air mass_fraction_of_dust002_in_air mass_fraction_of_dust003_in_air mass_fraction_of_dust004_in_air mass_fraction_of_dust005_in_air mass_fraction_of_sea_salt001_in_air mass_fraction_of_sea_salt002_in_air mass_fraction_of_sea_salt003_in_air mass_fraction_of_sea_salt004_in_air"
 
 
-export vars="mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
+#export vars="mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
 varlist=""
 for var in ${vars}; do
     varlist=${varlist}","${var}
@@ -68,8 +68,8 @@ export offset=6
 
 # List of dates for the training (january or july or both)
 #make a for loop for this...
-start_date="2021080106"
-end_date="2021080500"
+start_date="2021080100"
+end_date="2021083118"
 d=$start_date
 until [[ $d > ${end_date} ]]; do
     yyyymmdd=${d:0:8}
@@ -87,8 +87,8 @@ export yyyymmddhh_bkg="2021080200"
 export yyyymmddhh_obs="2021080121"
 
 # Default layout
-export nlx_def=6
-export nly_def=6
+export nlx_def=4 #6
+export nly_def=4 #6
 export ntasks_def=$((6*nlx_def*nly_def))
 export cdef=96
 
@@ -135,7 +135,7 @@ export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
-export run_final_nicas=false
+export run_final_nicas=true
 
 # Merge runs
 export run_merge_states=false
@@ -145,7 +145,7 @@ export run_merge_nicas=false
 export run_regrid_states=false
 export run_regrid_psichitouv=false
 export run_regrid_vbal=false
-export run_regrid_nicas=true
+export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
 
 # Dirac runs

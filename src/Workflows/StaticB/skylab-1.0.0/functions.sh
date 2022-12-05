@@ -11,6 +11,7 @@ prepare_sbatch () {
    threads=$4
    time=$5
    exe=$6
+   qos=${7:-normal}
 
    # Create work directory
    mkdir -p ${work_dir}/${job}
@@ -37,6 +38,7 @@ EOF
       # Normal experiment directives
 cat<< EOF >> ${sbatch_dir}/${job}.sh
 #SBATCH --ntasks=${ntasks}
+#SBATCH --qos=${qos}
 EOF
    fi
 

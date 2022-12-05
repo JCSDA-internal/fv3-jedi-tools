@@ -357,29 +357,22 @@ input variables: [${var}]
 bump:
   prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_def}/${bump_dir}
-  verbosity: main
   strategy: specific_univariate
   new_nicas: true
   write_nicas_local: true
   write_nicas_global: true
   resol: 4.0
-  nc1max: 5000
-  universe_rad: 3000.0e3
-  forced_radii: true
-  rh:
-    ${var}: [3000000.0]
-  rv:
-    ${var}: [0.2]
+  nc1max: 10000
 input fields:
-#- parameter: universe radius
-#  file:
-#    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
-#    filetype: fms restart
-#    psinfile: true
-#    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
-#    filename_core: cor_rh.fv_core.res.nc
-#    filename_trcr: cor_rh.fv_tracer.res.nc
-#    filename_cplr: cor_rh.coupler.res
+- parameter: universe radius
+  file:
+    datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_def}/${bump_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
 - parameter: rh
   file:
     datetime: ${yyyy_last}-${mm_last}-${dd_last}T${hh_last}:00:00Z
@@ -410,10 +403,11 @@ output:
 EOF
 
    # NICAS sbatch
+   qos=long
    ntasks=${ntasks_def}
    cpus_per_task=2
    threads=2
-   time=06:00:00
+   time=24:00:00
    exe=fv3jedi_error_covariance_training.x
-   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
+   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe} ${qos}
 done
