@@ -41,27 +41,41 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
 bump:
-  datadir: ${data_dir_def}
-  prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-  verbosity: main
-  universe_rad: 2000.0e3
-  load_vbal_cov: true
-  new_vbal: true
-  write_vbal: true
-  fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
-  fname_vbal_cov:
+  general:
+    universe length-scale: 2000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+    overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
+    overriding vertical covariance file:
 EOF
 for yyyymmddhh in ${yyyymmddhh_list}; do
-  echo "  - vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
+  echo "    - vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
 done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
-  ens1_nsub: ${yyyymmddhh_size}
-  load_samp_local: true
-  write_samp_global: true
-  vbal_block: [true, true,false, true,false,false]
-  vbal_rad: 2000.0e3
-  vbal_diag_auto: [true, true,false, true,false,false]
-  vbal_diag_reg: [true, true,false, true,false,false]
+  drivers:
+    read local sampling: true
+    write global sampling: true
+    read vertical covariance: true
+    compute vertical balance: true
+    write vertical balance: true
+  ensemble sizes:
+    sub-ensembles: ${yyyymmddhh_size}
+  vertical balance:
+    averaging length-scale: 2000.0e3
+    vbal:
+    - balanced variable: velocity_potential
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
+    - balanced variable: air_temperature
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
+    - balanced variable: surface_pressure
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
 EOF
 
 # VBAL sbatch
@@ -103,22 +117,21 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-  datadir: ${data_dir_def}
-  verbosity: main
-  universe_rad: 3000.0e3
-  ens1_nsub: ${yyyymmddhh_size}
-  var_filter: true
-  var_niter: 1
-  var_rhflt:
-    stream_function: [3000.0e3]
-    velocity_potential: [3000.0e3]
-    air_temperature: [3000.0e3]
-    surface_pressure: [3000.0e3]
-    specific_humidity: [3000.0e3]
-    cloud_liquid_water: [3000.0e3]
-    ozone_mass_mixing_ratio: [3000.0e3]
-  ne: $((nmem*yyyymmddhh_size))
+  general:
+    universe length-scale: 3000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  ensemble sizes:
+    sub-ensembles: ${yyyymmddhh_size}
+  variance:
+    objective filtering: true
+    filtering iterations: 1
+    initial length-scale:
+    - variables: *stateVars
+      value: 3000.0e3
+  diagnostics:
+    target ensemble size: $((nmem*yyyymmddhh_size))
 input fields:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -199,34 +212,39 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-  datadir: ${data_dir_def}
-  verbosity: main
-  method: cor
-  strategy: specific_univariate
-  universe_rad: 4000.0e3
-  load_mom: true
-  new_hdiag: true
-  write_hdiag: true
-  fname_mom:
+  general:
+    universe length-scale: 4000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    overriding moments file:
 EOF
    for yyyymmddhh in ${yyyymmddhh_list}; do
-      echo "    - var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}_mom" >> ${yaml_dir}/${job}.yaml
+      echo "      - var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}_mom_000001_1" >> ${yaml_dir}/${job}.yaml
    done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
-  fname_samp: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
-  ens1_ne: $((nmem*yyyymmddhh_size))
-  ens1_nsub: ${yyyymmddhh_size}
-  load_samp_local: true
-  nc1: 5000
-  nc2: 1000
-  nc3: 50
-  dc: 75.0e3
-  nl0r: 15
-  local_diag: true
-  local_rad: 2000.0e3
-  diag_rvflt: 0.1
-  ne: $((nmem*yyyymmddhh_size))
+    overriding sampling file: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
+  drivers:
+    compute correlation: true
+    multivariate strategy: specific_univariate
+    read local sampling: true
+    read moments: true
+    write diagnostics: true
+  ensemble sizes:
+    total ensemble size: $((nmem*yyyymmddhh_size))
+    sub-ensembles: ${yyyymmddhh_size}
+  sampling:
+    computation grid size: 5000
+    diagnostic grid size: 1000
+    distance classes: 50
+    distance class width: 75.0e3
+    reduced levels: 15
+    local diagnostic: true
+    averaging length-scale: 2000.0e3
+  diagnostics:
+    target ensemble size: $((nmem*yyyymmddhh_size))
+  fit:
+    vertical filtering length-scale: 0.1
 output:
 - parameter: cor_rh
   file:
@@ -286,23 +304,24 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-  datadir: ${data_dir_def}
-  verbosity: main
-  strategy: specific_univariate
-  new_nicas: true
-  write_nicas_local: true
-  write_nicas_global: true
-  resol: 10.0
-  nc1max: 50000
-  nicas_draw_type: octahedral
-  min_lev:
-    cloud_liquid_water: 76
-  nicas_interp_type:
-    stream_function: si
-    velocity_potential: si
-    air_temperature: si
-    surface_pressure: si
+  io:
+    data directory: ${data_dir_def}
+    files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  drivers:
+    multivariate strategy: specific_univariate
+    compute nicas: true
+    write local nicas: true
+    write global nicas: true
+  nicas:
+    resolution: 10.0
+    max horizontal grid size: 50000
+    grid type: octahedral
+    minimum level:
+    - variables: [cloud_liquid_water]
+      value: 76
+    interpolation type:
+    - variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
+      type: si
 input fields:
 - parameter: universe radius
   file:

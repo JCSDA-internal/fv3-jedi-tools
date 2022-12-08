@@ -132,22 +132,37 @@ background:
   filename_cplr: balanced.coupler.res
 input variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
 bump:
-  datadir: ${data_dir_def}
-  prefix: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}
-  verbosity: main
-  universe_rad: 2000.0e3
-  update_vbal_cov: true
-  write_vbal_cov: true
-  new_vbal: true
-  write_vbal: true
-  write_samp_local: true
-  nc1: 5000
-  nc2: 3500
-  vbal_block: [true, true,false, true,false,false]
-  vbal_rad: 2000.0e3
-  vbal_diag_auto: [true, true,false, true,false,false]
-  vbal_diag_reg: [true, true,false, true,false,false]
-  vbal_interp_type: 'si' 
+  general:
+    universe length-scale: 2000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}
+  drivers:
+    compute vertical covariance: true
+    iterative algorithm: true
+    write vertical covariance: true
+    compute vertical balance: true
+    write vertical balance: true
+    write local sampling: true
+  sampling:
+    computation grid size: 5000
+    diagnostic grid size: 3500
+    interpolation type: 'si'
+  vertical balance:
+    averaging length-scale: 2000.0e3
+    vbal:
+    - balanced variable: velocity_potential
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
+    - balanced variable: air_temperature
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
+    - balanced variable: surface_pressure
+      unbalanced variable: stream_function
+      diagonal autocovariance: true
+      diagonal regression: true
   ensemble:
     members from template:
       template:
@@ -201,15 +216,24 @@ background:
   filename_cplr: balanced.coupler.res
 input variables: *stateVars
 bump:
-  datadir: ${data_dir_def}
-  prefix: unbal_${yyyymmddhh}${rr}/unbal_${yyyymmddhh}${rr}
-  verbosity: main
-  universe_rad: 2000.0e3
-  load_vbal: true
-  fname_samp: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_sampling
-  fname_vbal: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal
-  load_samp_local: true
-  vbal_block: [true, true,false, true,false,false]
+  general:
+    universe length-scale: 2000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: unbal_${yyyymmddhh}${rr}/unbal_${yyyymmddhh}${rr}
+    overriding sampling file: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_sampling
+    overriding vertical balance file: vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal
+  drivers:
+    read local sampling: true
+    read vertical balance: true
+  vertical balance:
+    vbal:
+    - balanced variable: velocity_potential
+      unbalanced variable: stream_function
+    - balanced variable: air_temperature
+      unbalanced variable: stream_function
+    - balanced variable: surface_pressure
+      unbalanced variable: stream_function
   operators application:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
@@ -273,26 +297,29 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}
-  datadir: ${data_dir_def}
-  verbosity: main
-  universe_rad: 4000.0e3
-  method: cor
-  strategy: specific_univariate
-  update_var: true
-  update_mom: true
-  write_mom: true
-  new_hdiag: true
-  write_hdiag: true
-  write_samp_local: true
-  nc1: 5000
-  nc2: 1000
-  nc3: 50
-  dc: 75.0e3
-  nl0r: 15
-  local_diag: true
-  local_rad: 2000.0e3
-  diag_rvflt: 0.1
+  general:
+    universe length-scale: 4000.0e3
+  io:
+    data directory: ${data_dir_def}
+    files prefix: var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}
+  drivers:
+    compute correlation: true
+    multivariate strategy: specific_univariate
+    compute variance: true
+    iterative algorithm: true
+    write local sampling: true
+    write moments: true
+    write diagnostics: true
+  sampling:
+    computation grid size: 5000
+    diagnostic grid size: 1000
+    distance classes: 50
+    distance class width: 75.0e3
+    reduced levels: 15
+    local diagnostic: true
+    averaging length-scale: 2000.0e3
+  fit:
+    vertical filtering length-scale: 0.1
   ensemble:
     members from template:
       template:

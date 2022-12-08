@@ -185,17 +185,27 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
 bump:
-  datadir: ${data_dir_regrid}
-  prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-  verbosity: main
-  universe_rad: 2000.0e3
-  load_vbal: true
-  write_vbal: true
-  fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
-  ens1_nsub: ${yyyymmddhh_size}
-  load_samp_global: true
-  write_samp_local: true
-  vbal_block: [true, true,false, true,false,false]
+  general:
+    universe length-scale: 2000.0e3
+  io:
+    data directory: ${data_dir_regrid}
+    files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+    overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
+  drivers:
+    read global sampling: true
+    write local sampling: true
+    read vertical balance: true
+    write vertical balance: true
+  ensemble sizes:
+    sub-ensembles: ${yyyymmddhh_size}
+  vertical balance:
+    vbal:
+    - balanced variable: velocity_potential
+      unbalanced variable: stream_function
+    - balanced variable: air_temperature
+      unbalanced variable: stream_function
+    - balanced variable: surface_pressure
+      unbalanced variable: stream_function
 EOF
 
 # VBAL sbatch
@@ -240,14 +250,19 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
-  prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-  datadir: ${data_dir_regrid}
-  verbosity: main
-  strategy: specific_univariate
-  load_nicas_global: true
-  write_nicas_local: true
-  min_lev:
-    cloud_liquid_water: 76
+  io:
+    data directory: ${data_dir_regrid}
+    files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+  drivers:
+    multivariate strategy: specific_univariate
+    read global nicas: true
+    write local nicas: true
+    minimum level:
+    - variables: [cloud_liquid_water]
+      value: 76
+    interpolation type:
+    - variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
+      type: si
 input fields:
 - parameter: universe radius
   file:

@@ -40,17 +40,22 @@ background error:
   saber central block:
     saber block name: BUMP_NICAS
     bump:
-      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-      datadir: ${data_dir_def}
-      verbosity: main
-      strategy: specific_univariate
-      load_nicas_local: true
-      min_lev:
-        cloud_liquid_water: 76
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+      io:
+        data directory: ${data_dir_def}
+        files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+      drivers:
+        multivariate strategy: specific_univariate
+        load local nicas: true
+      nicas:
+        minimum level:
+        - variables: [cloud_liquid_water]
+          value: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      - variables: [surface_pressure]
+      - model:
+          variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - model:
+          variables: [surface_pressure]
     input fields:
     - parameter: universe radius
       file:
@@ -77,14 +82,23 @@ background error:
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      datadir: ${data_dir_def}
-      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-      verbosity: main
-      universe_rad: 2000.0e3
-      load_vbal: true
-      fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
-      load_samp_local: true
-      vbal_block: [true, true,false, true,false,false]
+      general
+        universe length-scale: 2000.0e3
+      io:
+        data directory: ${data_dir_def}
+        files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
+      drivers:
+        read local sampling: true
+        read vertical balance: true
+      vertical balance:
+        vbal:
+        - balanced variable: velocity_potential
+          unbalanced variable: stream_function
+        - balanced variable: air_temperature
+          unbalanced variable: stream_function
+        - balanced variable: surface_pressure
+          unbalanced variable: stream_function
   linear variable change:
     linear variable change name: Control2Analysis
     input variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
@@ -146,17 +160,22 @@ background error:
   saber central block:
     saber block name: BUMP_NICAS
     bump:
-      prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-      datadir: ${data_dir_regrid}
-      verbosity: main
-      strategy: specific_univariate
-      load_nicas_local: true
-      min_lev:
-        cloud_liquid_water: 76
-      fname_nicas: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+      io:
+        data directory: ${data_dir_regrid}
+        files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+      drivers:
+        multivariate strategy: specific_univariate
+        load local nicas: true
+      nicas:
+        minimum level:
+        - variables: [cloud_liquid_water]
+          value: 76
       grids:
-      - variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
-      - variables: [surface_pressure]
+      - model:
+          variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+      - model:
+          variables: [surface_pressure]
     input fields:
     - parameter: universe radius
       file:
@@ -183,14 +202,23 @@ background error:
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      datadir: ${data_dir_regrid}
-      prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-      verbosity: main
-      universe_rad: 2000.0e3
-      load_vbal: true
-      fname_samp: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
-      load_samp_local: true
-      vbal_block: [true, true,false, true,false,false]
+      general
+        universe length-scale: 2000.0e3
+      io:
+        data directory: ${data_dir_regrid}
+        files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
+      drivers:
+        read local sampling: true
+        read vertical balance: true
+      vertical balance:
+        vbal:
+        - balanced variable: velocity_potential
+          unbalanced variable: stream_function
+        - balanced variable: air_temperature
+          unbalanced variable: stream_function
+        - balanced variable: surface_pressure
+          unbalanced variable: stream_function
   linear variable change:
     linear variable change name: Control2Analysis
     input variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
