@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source functions
-source ./functions.sh
+source ${script_dir}/functions.sh
 
 # Create data directories
 mkdir -p ${data_dir_def}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
@@ -46,7 +46,7 @@ background error:
         overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
       drivers:
         multivariate strategy: specific_univariate
-        load local nicas: true
+        read local nicas: true
       nicas:
         minimum level:
         - variables: [cloud_liquid_water]
@@ -82,7 +82,7 @@ background error:
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      general
+      general:
         universe length-scale: 2000.0e3
       io:
         data directory: ${data_dir_def}
@@ -166,7 +166,7 @@ background error:
         overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
       drivers:
         multivariate strategy: specific_univariate
-        load local nicas: true
+        read local nicas: true
       nicas:
         minimum level:
         - variables: [cloud_liquid_water]
@@ -202,7 +202,7 @@ background error:
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
     bump:
-      general
+      general:
         universe length-scale: 2000.0e3
       io:
         data directory: ${data_dir_regrid}

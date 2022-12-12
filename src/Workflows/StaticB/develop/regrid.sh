@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source functions
-source ./functions.sh
+source ${script_dir}/functions.sh
 
 # Create data directories
 mkdir -p ${data_dir_regrid}/${yyyymmddhh_last}${rr}/mem001
@@ -257,6 +257,7 @@ bump:
     multivariate strategy: specific_univariate
     read global nicas: true
     write local nicas: true
+  nicas:
     minimum level:
     - variables: [cloud_liquid_water]
       value: 76
@@ -273,6 +274,26 @@ input fields:
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+- parameter: rh
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+    filename_core: cor_rh.fv_core.res.nc
+    filename_trcr: cor_rh.fv_tracer.res.nc
+    filename_cplr: cor_rh.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+- parameter: rv
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+    filename_core: cor_rv.fv_core.res.nc
+    filename_trcr: cor_rv.fv_tracer.res.nc
+    filename_cplr: cor_rv.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
 - parameter: nicas_norm
   file:

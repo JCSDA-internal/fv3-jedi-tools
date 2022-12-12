@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source functions
-source ./functions.sh
+source ${script_dir}/functions.sh
 
 # Create data directories
 mkdir -p ${data_dir_def}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
@@ -61,8 +61,9 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     write vertical balance: true
   ensemble sizes:
     sub-ensembles: ${yyyymmddhh_size}
+  sampling:
+    averaging length-scale: 2000.0e3 
   vertical balance:
-    averaging length-scale: 2000.0e3
     vbal:
     - balanced variable: velocity_potential
       unbalanced variable: stream_function

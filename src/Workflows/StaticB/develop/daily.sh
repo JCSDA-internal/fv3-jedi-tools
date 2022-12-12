@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source functions
-source ./functions.sh
+source ${script_dir}/functions.sh
 
 # Create data directories
 for yyyymmddhh in ${yyyymmddhh_list}; do
@@ -147,9 +147,9 @@ bump:
   sampling:
     computation grid size: 5000
     diagnostic grid size: 3500
+    averaging length-scale: 2000.0e3
     interpolation type: 'si'
   vertical balance:
-    averaging length-scale: 2000.0e3
     vbal:
     - balanced variable: velocity_potential
       unbalanced variable: stream_function
@@ -308,6 +308,7 @@ bump:
     compute variance: true
     iterative algorithm: true
     write local sampling: true
+    compute moments: true
     write moments: true
     write diagnostics: true
   sampling:

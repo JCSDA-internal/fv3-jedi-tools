@@ -94,11 +94,11 @@ export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
 
 # Dirac runs
-export run_dirac=false
-export run_dirac_regrid=false
+export run_dirac=true
+export run_dirac_regrid=true
 
 # Prepare scripts only (do not run sbatch)
-export t=false
+export prepare_scripts_only=false
 
 # Benchmark mode
 export benchmark=false
