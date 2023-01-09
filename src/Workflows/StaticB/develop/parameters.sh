@@ -67,6 +67,9 @@ export nly_regrid=6
 export ntasks_regrid=$((6*nlx_regrid*nly_regrid))
 export cregrid=192
 
+# Interpolate GSI statistics
+export from_gsi=false
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################

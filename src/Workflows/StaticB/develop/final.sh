@@ -4,11 +4,11 @@
 source ${script_dir}/functions.sh
 
 # Create data directories
-mkdir -p ${data_dir_def}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+mkdir -p ${data_dir_def}/vbal_${suffix}
 for var in ${vars}; do
-   mkdir -p ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-   mkdir -p ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
-   mkdir -p ${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   mkdir -p ${data_dir_def}/var_${suffix}_${var}
+   mkdir -p ${data_dir_def}/cor_${suffix}_${var}
+   mkdir -p ${data_dir_def}/nicas_${suffix}_${var}
 done
 
 ####################################################################
@@ -16,7 +16,7 @@ done
 ####################################################################
 
 # Job name
-job=vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+job=vbal_${suffix}
 
 # VBAL yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -45,14 +45,40 @@ bump:
     universe length-scale: 2000.0e3
   io:
     data directory: ${data_dir_def}
-    files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+    files prefix: vbal_${suffix}/vbal_${suffix}
+EOF
+if test "${from_gsi}" = "true"; then
+   # GSI-based
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
+    gsi data file: gsi-coeffs-gmao-global-l72x72y46
+    gsi namelist: dirac_gsi_geos_global.nml
+  drivers:
+    write local sampling: true
+    write global sampling: true
+    compute vertical balance: true
+    write vertical balance: true
+    interpolate from gsi data: true
+  sampling:
+    diagnostic grid size: 89
+  vertical balance:
+    vbal:
+    - balanced variable: velocity_potential
+      unbalanced variable: stream_function
+    - balanced variable: air_temperature
+      unbalanced variable: stream_function
+    - balanced variable: surface_pressure
+      unbalanced variable: stream_function
+EOF
+else
+   # Ensemble-based
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
     overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
     overriding vertical covariance file:
 EOF
-for yyyymmddhh in ${yyyymmddhh_list}; do
-  echo "    - vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
-done
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+   for yyyymmddhh in ${yyyymmddhh_list}; do
+     echo "    - vbal_${yyyymmddhh}${rr}/vbal_${yyyymmddhh}${rr}_vbal_cov" >> ${yaml_dir}/${job}.yaml
+   done
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
   drivers:
     read local sampling: true
     write global sampling: true
@@ -78,6 +104,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
       diagonal autocovariance: true
       diagonal regression: true
 EOF
+fi
 
 # VBAL sbatch
 ntasks=${ntasks_def}
@@ -93,10 +120,10 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 
 for var in ${vars}; do
    # Job name
-   job=var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   job=var_${suffix}_${var}
 
    # VAR yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -122,7 +149,20 @@ bump:
     universe length-scale: 3000.0e3
   io:
     data directory: ${data_dir_def}
-    files prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    files prefix: var_${suffix}_${var}/var_${suffix}_${var}
+EOF
+   if test "${from_gsi}" = "true"; then
+      # GSI-based
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
+    gsi data file: gsi-coeffs-gmao-global-l72x72y46
+    gsi namelist: dirac_gsi_geos_global.nml
+  drivers:
+    compute variance: true
+    interpolate from gsi data: true
+EOF
+   else
+      # Ensemble-based
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
   ensemble sizes:
     sub-ensembles: ${yyyymmddhh_size}
   variance:
@@ -135,12 +175,12 @@ bump:
     target ensemble size: $((nmem*yyyymmddhh_size))
 input fields:
 EOF
-   for yyyymmddhh in ${yyyymmddhh_list}; do
-      yyyy=${yyyymmddhh:0:4}
-      mm=${yyyymmddhh:4:2}
-      dd=${yyyymmddhh:6:2}
-      hh=${yyyymmddhh:8:2}
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      for yyyymmddhh in ${yyyymmddhh_list}; do
+         yyyy=${yyyymmddhh:0:4}
+         mm=${yyyymmddhh:4:2}
+         dd=${yyyymmddhh:6:2}
+         hh=${yyyymmddhh:8:2}
+         cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: var
   file:
     datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
@@ -160,13 +200,14 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
 EOF
-   done
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      done
+   fi
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
 - parameter: stddev
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/var_${suffix}_${var}
     prepend files with date: false
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
@@ -188,10 +229,10 @@ done
 
 for var in ${vars}; do
    # Job name
-   job=cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   job=cor_${suffix}_${var}
 
    # COR yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -217,13 +258,27 @@ bump:
     universe length-scale: 4000.0e3
   io:
     data directory: ${data_dir_def}
-    files prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    files prefix: cor_${suffix}_${var}/cor_${suffix}_${var}
+EOF
+   if test "${from_gsi}" = "true"; then
+      # GSI-based
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
+  drivers:
+    multivariate strategy: specific_univariate
+    compute correlation: true
+    interpolate from gsi data: true
+  sampling:
+    diagnostic grid size: 89
+EOF
+   else
+      # Ensemble-based
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
     overriding moments file:
 EOF
-   for yyyymmddhh in ${yyyymmddhh_list}; do
-      echo "      - var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}_mom_000001_1" >> ${yaml_dir}/${job}.yaml
-   done
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      for yyyymmddhh in ${yyyymmddhh_list}; do
+         echo "      - var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}_mom_000001_1" >> ${yaml_dir}/${job}.yaml
+      done
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
     overriding sampling file: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
   drivers:
     compute correlation: true
@@ -246,11 +301,14 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     target ensemble size: $((nmem*yyyymmddhh_size))
   fit:
     vertical filtering length-scale: 0.1
+EOF
+   fi
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
 - parameter: cor_rh
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
     prepend files with date: false
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
@@ -258,7 +316,7 @@ output:
 - parameter: cor_rv
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
     prepend files with date: false
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
@@ -280,10 +338,10 @@ done
 
 for var in ${vars}; do
    # Job name
-   job=nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+   job=nicas_${suffix}_${var}
 
    # NICAS yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -307,7 +365,7 @@ input variables: [${var}]
 bump:
   io:
     data directory: ${data_dir_def}
-    files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    files prefix: nicas_${suffix}_${var}/nicas_${suffix}_${var}
   drivers:
     multivariate strategy: specific_univariate
     compute nicas: true
@@ -329,7 +387,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -338,7 +396,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -347,7 +405,7 @@ input fields:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
-    datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
@@ -355,7 +413,7 @@ output:
 - parameter: nicas_norm
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
+    datapath: ${data_dir_def}/nicas_${suffix}_${var}
     prepend files with date: false
     filename_core: nicas_norm.fv_core.res.nc
     filename_trcr: nicas_norm.fv_tracer.res.nc

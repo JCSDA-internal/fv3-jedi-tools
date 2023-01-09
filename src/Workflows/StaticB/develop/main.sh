@@ -38,6 +38,13 @@ echo `date`": dates are ${yyyymmddhh_list}"
 echo `date`": first date is ${yyyymmddhh_first}"
 echo `date`": last date is ${yyyymmddhh_last}"
 
+# Define suffix
+if test "${from_gsi}" = "true"; then
+   export suffix="from_gsi"
+else
+   export suffix=${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+fi
+
 # Define directories
 echo `date`": define directories"
 export data_dir_def=${data_dir}/c${cdef}/${bump_dir}
@@ -155,7 +162,7 @@ fi
 
 # Run vbal
 if test "${run_final_vbal}" = "true"; then
-   run_sbatch ${sbatch_dir}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${daily_vbal_pids}
+   run_sbatch ${sbatch_dir}/vbal_${suffix}.sh ${daily_vbal_pids}
    final_vbal_pid=:${pid}
 fi
 
@@ -163,7 +170,7 @@ fi
 if test "${run_final_var}" = "true"; then
    final_var_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}.sh ${daily_varmom_pids[${var}]}
+      run_sbatch ${sbatch_dir}/var_${suffix}_${var}.sh ${daily_varmom_pids[${var}]}
       final_var_pids=${final_var_pids}:${pid}
    done
 fi
@@ -172,7 +179,7 @@ fi
 if test "${run_final_cor}" = "true"; then
    final_cor_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}.sh ${daily_varmom_pids[${var}]}
+      run_sbatch ${sbatch_dir}/cor_${suffix}_${var}.sh ${daily_varmom_pids[${var}]}
       final_cor_pids=${final_cor_pids}:${pid}
    done
 fi
@@ -181,7 +188,7 @@ fi
 if test "${run_final_nicas}" = "true"; then
    final_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}.sh ${final_cor_pids}
+      run_sbatch ${sbatch_dir}/nicas_${suffix}_${var}.sh ${final_cor_pids}
       final_nicas_pids=${final_nicas_pids}:${pid}
    done
 fi
@@ -191,13 +198,13 @@ fi
 
 # Run states
 if test "${run_merge_states}" = "true"; then
-   run_sbatch ${sbatch_dir}/merge_states_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${final_var_pids}${final_cor_pids}${final_nicas_pids}
+   run_sbatch ${sbatch_dir}/merge_states_${suffix}.sh ${final_var_pids}${final_cor_pids}${final_nicas_pids}
    merge_states_pid=:${pid}
 fi
 
 # Run nicas
 if test "${run_merge_nicas}" = "true"; then
-   run_sbatch ${sbatch_dir}/merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${final_nicas_pids}
+   run_sbatch ${sbatch_dir}/merge_nicas_${suffix}.sh ${final_nicas_pids}
    merge_nicas_pid=:${pid}
 fi
 
@@ -206,13 +213,13 @@ fi
 
 # Run states
 if test "${run_regrid_states}" = "true"; then
-   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${merge_states_pid}
+   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${suffix}.sh ${merge_states_pid}
    regrid_states_pid=:${pid}
 fi
 
 # Run vbal
 if test "${run_regrid_vbal}" = "true"; then
-   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${regrid_states}${final_vbal_pid}
+   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_vbal_${suffix}.sh ${regrid_states}${final_vbal_pid}
    regrid_vbal_pid=:${pid}
 fi
 
@@ -220,14 +227,14 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
+      run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${suffix}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
       regrid_nicas_pids=${regrid_nicas_pids}:${pid}
    done
 fi
 
 # Run merge nicas
 if test "${run_regrid_merge_nicas}" = "true"; then
-   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${regrid_states}${regrid_nicas_pids}
+   run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_merge_nicas_${suffix}.sh ${regrid_states}${regrid_nicas_pids}
    regrid_merge_nicas_pid=:${pid}
 fi
 
@@ -236,13 +243,13 @@ fi
 
 # Run dirac
 if test "${run_dirac}" = "true"; then
-   run_sbatch ${sbatch_dir}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
+   run_sbatch ${sbatch_dir}/dirac_${suffix}.sh ${merge_nicas_pid}${merge_states_pid}${final_vbal_pid}
    dirac_pid=:${pid}
 fi
 
 # Run dirac_regrid
 if test "${run_dirac_regrid}" = "true"; then
-   run_sbatch ${sbatch_dir}/dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
+   run_sbatch ${sbatch_dir}/dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${suffix}.sh ${regrid_merge_nicas_pid}${regrid_vbal_pid}${regrid_states_pid}
    dirac_regrid_pid=:${pid}
 fi
 

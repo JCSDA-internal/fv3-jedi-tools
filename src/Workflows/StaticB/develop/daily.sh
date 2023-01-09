@@ -38,7 +38,7 @@ for yyyymmddhh in ${yyyymmddhh_list}; do
    job=state_to_control_${yyyymmddhh}${rr}
 
    # STATE_TO_CONTROL yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 input geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -71,7 +71,7 @@ states:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
 - input:
     datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
     filetype: fms restart
@@ -110,7 +110,7 @@ EOF
    job=vbal_${yyyymmddhh}${rr}
 
    # VBAL yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -194,7 +194,7 @@ EOF
    job=unbal_${yyyymmddhh}${rr}
 
    # UNBAL yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+   cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -238,7 +238,7 @@ bump:
 EOF
    for imem in $(seq 1 1 ${nmem}); do
       imemp=$(printf "%.3d" "${imem}")
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
   - input:
       datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
       filetype: fms restart
@@ -275,7 +275,7 @@ EOF
       job=var-mom_${yyyymmddhh}${rr}_${var}
 
       # VAR-MOM yaml
-cat<< EOF > ${yaml_dir}/${job}.yaml
+      cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml

@@ -4,15 +4,15 @@
 source ${script_dir}/functions.sh
 
 # Create data directories
-mkdir -p ${data_dir_def}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-mkdir -p ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+mkdir -p ${data_dir_def}/dirac_${suffix}
+mkdir -p ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${suffix}
 
 ####################################################################
 # DIRAC ############################################################
 ####################################################################
 
 # Job name
-job=dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+job=dirac_${suffix}
 
 # DIRAC yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -42,8 +42,8 @@ background error:
     bump:
       io:
         data directory: ${data_dir_def}
-        files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-        overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+        files prefix: nicas_${suffix}/nicas_${suffix}
+        overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
         multivariate strategy: specific_univariate
         read local nicas: true
@@ -63,7 +63,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        datapath: ${data_dir_def}/cor_${suffix}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -76,7 +76,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_def}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        datapath: ${data_dir_def}/var_${suffix}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -86,7 +86,7 @@ background error:
         universe length-scale: 2000.0e3
       io:
         data directory: ${data_dir_def}
-        files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        files prefix: vbal_${suffix}/vbal_${suffix}
         overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
       drivers:
         read local sampling: true
@@ -105,7 +105,7 @@ background error:
     output variables: *stateVars
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_def}/dirac_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+  datapath: ${data_dir_def}/dirac_${suffix}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
@@ -132,7 +132,7 @@ prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
 ####################################################################
 
 # Job name
-job=dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+job=dirac_c${cregrid}_${nlx_regrid}x${nly_regrid}_${suffix}
 
 # DIRAC_REGRID yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
@@ -162,8 +162,8 @@ background error:
     bump:
       io:
         data directory: ${data_dir_regrid}
-        files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
-        overriding nicas file: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_nicas
+        files prefix: nicas_${suffix}/nicas_${suffix}
+        overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
         multivariate strategy: specific_univariate
         read local nicas: true
@@ -183,7 +183,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        datapath: ${data_dir_regrid}/cor_${suffix}
         filename_core: cor_rh.fv_core.res.nc
         filename_trcr: cor_rh.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
@@ -196,7 +196,7 @@ background error:
         filetype: fms restart
         set datetime on read: true
         psinfile: true
-        datapath: ${data_dir_regrid}/var_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        datapath: ${data_dir_regrid}/var_${suffix}
         filename_core: stddev.fv_core.res.nc
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
@@ -206,7 +206,7 @@ background error:
         universe length-scale: 2000.0e3
       io:
         data directory: ${data_dir_regrid}
-        files prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+        files prefix: vbal_${suffix}/vbal_${suffix}
         overriding sampling file: vbal_${yyyymmddhh_last}${rr}/vbal_${yyyymmddhh_last}${rr}_sampling
       drivers:
         read local sampling: true
@@ -225,7 +225,7 @@ background error:
     output variables: *stateVars
 output dirac:
   filetype: fms restart
-  datapath: ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}
+  datapath: ${data_dir_regrid}/dirac_regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_${suffix}
   psinfile: true
   filename_core: dirac_%id%.fv_core.res.nc
   filename_trcr: dirac_%id%.fv_tracer.res.nc
