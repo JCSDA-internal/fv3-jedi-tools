@@ -11,6 +11,12 @@ for var in ${vars}; do
    mkdir -p ${data_dir_def}/nicas_${suffix}_${var}
 done
 
+# Copy GSI files
+if test "${from_gsi}" = "true"; then
+   cp -f ${fv3jedi_dir}/../saber/testdata/gsi-coeffs-gmao-global-l72x72y46.nc4 ${data_dir_def}
+   cp -f ${fv3jedi_dir}/../saber/testdata/dirac_gsi_geos_global.nml ${data_dir_def}
+fi
+
 ####################################################################
 # VBAL #############################################################
 ####################################################################
