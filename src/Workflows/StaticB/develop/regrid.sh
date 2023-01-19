@@ -28,6 +28,7 @@ input geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_regrid},${nly_regrid}]
   npx: ${npx_def}
   npy: ${npy_def}
@@ -38,6 +39,7 @@ output geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_regrid},${nly_regrid}]
   npx: ${npx_regrid}
   npy: ${npy_regrid}
@@ -169,6 +171,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_regrid},${nly_regrid}]
   npx: ${npx_regrid}
   npy: ${npy_regrid}
@@ -234,6 +237,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_regrid},${nly_regrid}]
   npx: ${npx_regrid}
   npy: ${npy_regrid}

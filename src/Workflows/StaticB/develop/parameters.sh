@@ -47,13 +47,13 @@ export cores_per_node=40
 export vars="stream_function velocity_potential air_temperature surface_pressure specific_humidity cloud_liquid_water ozone_mass_mixing_ratio"
 
 # Number of ensemble members
-export nmem=80
+export nmem=10
 
 # Forecast range (in hours)
 export r=3
 
 # List of dates for the training
-export yyyymmddhh_list="2021080100"
+export yyyymmddhh_list="2021080100 2021080106"
 
 # Default layout
 export nlx_def=6
@@ -84,7 +84,7 @@ export run_daily_varmom=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
-export run_final_nicas=false
+export run_final_nicas=true
 
 # Merge runs
 export run_merge_states=false
@@ -97,8 +97,8 @@ export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
 
 # Dirac runs
-export run_dirac=true
-export run_dirac_regrid=true
+export run_dirac=false
+export run_dirac_regrid=false
 
 # Prepare scripts only (do not run sbatch)
 export prepare_scripts_only=false

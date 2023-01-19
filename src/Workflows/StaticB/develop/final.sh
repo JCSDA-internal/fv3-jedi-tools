@@ -13,8 +13,8 @@ done
 
 # Copy GSI files
 if test "${from_gsi}" = "true"; then
-   cp -f ${fv3jedi_dir}/../saber/testdata/gsi-coeffs-gmao-global-l72x72y46.nc4 ${data_dir_def}
-   cp -f ${fv3jedi_dir}/../saber/testdata/dirac_gsi_geos_global.nml ${data_dir_def}
+   cp -f ${fv3jedi_dir}/../saber/test/testdata/gsi-coeffs-gmao-global-l72x72y46.nc4 ${data_dir_def}
+   cp -f ${fv3jedi_dir}/../saber/test/testdata/dirac_gsi_geos_global.nml ${data_dir_def}
 fi
 
 ####################################################################
@@ -31,6 +31,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
@@ -135,6 +136,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
@@ -181,31 +183,43 @@ EOF
     target ensemble size: $((nmem*yyyymmddhh_size))
 input fields:
 EOF
+      icomp=1
       for yyyymmddhh in ${yyyymmddhh_list}; do
          yyyy=${yyyymmddhh:0:4}
          mm=${yyyymmddhh:4:2}
          dd=${yyyymmddhh:6:2}
          hh=${yyyymmddhh:8:2}
+         yyyymmddhh_fc=`date -d "${yyyy}${mm}${dd} +${hh} hours ${rr} hours" '+%Y%m%d%H'`
+         yyyy_fc=${yyyymmddhh_fc:0:4}
+         mm_fc=${yyyymmddhh_fc:4:2}
+         dd_fc=${yyyymmddhh_fc:6:2}
+         hh_fc=${yyyymmddhh_fc:8:2}
+echo $yyyymmddhh " / " $yyyymmddhh_fc
          cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: var
+  component: ${icomp}
   file:
-    datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+    datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
+    set datetime on read: true
     psinfile: true
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
     filename_cplr: var.coupler.res
 - parameter: m4
+  component: ${icomp}
   file:
-    datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+    datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
+    set datetime on read: true
     psinfile: true
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
 EOF
+         icomp=$((icomp+1))
       done
    fi
    cat<< EOF >> ${yaml_dir}/${job}.yaml
@@ -244,6 +258,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
@@ -269,6 +284,8 @@ EOF
    if test "${from_gsi}" = "true"; then
       # GSI-based
       cat<< EOF >> ${yaml_dir}/${job}.yaml
+    gsi data file: gsi-coeffs-gmao-global-l72x72y46
+    gsi namelist: dirac_gsi_geos_global.nml
   drivers:
     multivariate strategy: specific_univariate
     compute correlation: true
@@ -353,6 +370,7 @@ geometry:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
     field table filename: ${fv3jedi_dir}/test/Data/fv3files/field_table_gfdl
   akbk: ${fv3jedi_dir}/test/Data/fv3files/akbk127.nc4
+  logp: true
   layout: [${nlx_def},${nly_def}]
   npx: ${npx_def}
   npy: ${npy_def}
@@ -392,8 +410,9 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    psinfile: true
     datapath: ${data_dir_def}/cor_${suffix}_${var}
+    psinfile: true
+    set datetime on read: true
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -401,8 +420,9 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    psinfile: true
     datapath: ${data_dir_def}/cor_${suffix}_${var}
+    set datetime on read: true
+    psinfile: true
     filename_core: cor_rh.fv_core.res.nc
     filename_trcr: cor_rh.fv_tracer.res.nc
     filename_cplr: cor_rh.coupler.res
@@ -410,8 +430,9 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    psinfile: true
     datapath: ${data_dir_def}/cor_${suffix}_${var}
+    set datetime on read: true
+    psinfile: true
     filename_core: cor_rv.fv_core.res.nc
     filename_trcr: cor_rv.fv_tracer.res.nc
     filename_cplr: cor_rv.coupler.res
