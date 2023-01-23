@@ -31,8 +31,7 @@ hh_o=${yyyymmddhh_o:8:2}
 # Job name
 job=regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_states_${yyyymmddhh_first}-${yyyymmddhh_last}
 
-# BACKGROUND yaml
-
+# STATE yaml
 cat<< EOF > ${yaml_dir}/${job}.yaml
 input geometry:
   fms initialization:
