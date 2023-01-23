@@ -62,7 +62,6 @@ input variables: [psi,chi,t,ps,sphum,liq_wat,o3mr]
 bump:
   datadir: ${data_dir_def}/${bump_dir}
   prefix: psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}/psichitouv_${yyyymmddhh_first}-${yyyymmddhh_last}
-  verbosity: main
   universe_rad: 2000.0e3
   new_wind: true
   write_wind_local: true
@@ -112,7 +111,6 @@ input variables: [psi,chi,t,ps]
 bump:
   datadir: ${data_dir_def}/${bump_dir}
   prefix: vbal_${yyyymmddhh_first}-${yyyymmddhh_last}/vbal_${yyyymmddhh_first}-${yyyymmddhh_last}
-  verbosity: main
   universe_rad: 2000.0e3
   load_vbal_cov: true
   new_vbal: true
@@ -174,7 +172,6 @@ input variables: [${var}]
 bump:
   prefix: var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/var_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_def}/${bump_dir}
-  verbosity: main
   universe_rad: 3000.0e3
   ens1_nsub: ${yyyymmddhh_size}
   var_filter: true
@@ -270,7 +267,6 @@ input variables: [${var}]
 bump:
   prefix: cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}_${var}
   datadir: ${data_dir_def}/${bump_dir}
-  verbosity: main
   method: cor
   strategy: specific_univariate
   universe_rad: 4000.0e3
@@ -361,8 +357,8 @@ bump:
   new_nicas: true
   write_nicas_local: true
   write_nicas_global: true
-  resol: 4.0
-  nc1max: 10000
+  resol: 8.0
+  nc1max: 250000
 input fields:
 - parameter: universe radius
   file:
@@ -407,7 +403,7 @@ EOF
    ntasks=${ntasks_def}
    cpus_per_task=2
    threads=2
-   time=24:00:00
+   time=3:00:00
    exe=fv3jedi_error_covariance_training.x
    prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe} ${qos}
 done

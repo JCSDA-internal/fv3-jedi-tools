@@ -64,7 +64,6 @@ input variables: [psi,chi,t,ps]
 bump:
   datadir: ${data_dir_def}/${bump_dir}
   prefix: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}
-  verbosity: main
   universe_rad: 2000.0e3
   update_vbal_cov: true
   write_vbal_cov: true
@@ -132,7 +131,6 @@ input variables: *stateVars
 bump:
   datadir: ${data_dir_def}/${bump_dir}
   prefix: unbal_${yyyymmddhh}/unbal_${yyyymmddhh}
-  verbosity: main
   universe_rad: 2000.0e3
   load_vbal: true
   fname_samp: vbal_${yyyymmddhh}/vbal_${yyyymmddhh}_sampling
@@ -205,7 +203,6 @@ input variables: [${var}]
 bump:
   prefix: var-mom_${yyyymmddhh}_${var}/var-mom_${yyyymmddhh}_${var}
   datadir: ${data_dir_def}/${bump_dir}
-  verbosity: main
   universe_rad: 4000.0e3
   method: cor
   strategy: specific_univariate

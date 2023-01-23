@@ -5,23 +5,23 @@
 ####################################################################
 
 # Input Data directory (need to be more generic)
-export r2d2_dir="/data/users/jbarre/gfs_aero_ensemble"
+export r2d2_dir="/work/noaa/da/barre/gfs_aero_ensemble"
 
-export WORK_DIR="/data/users/jbarre"
+export WORK_DIR="/work/noaa/da/barre"
 
 # Ouput Data directory
-export data_dir="${WORK_DIR}/StaticBTraining"
+export data_dir="${WORK_DIR}/StaticB"
 
 # Data directory for regridded data
 export data_dir_regrid_base="${WORK_DIR}/regrid"
 
 # FV3-JEDI source directory
-export fv3jedi_dir="${WORK_DIR}/jedi-bundle/fv3-jedi"
+export fv3jedi_dir="${WORK_DIR}/jedi-release/jedi-bundle/fv3-jedi"
 
 export fv3jeditools_dir="${WORK_DIR}/fv3-jedi-tools"
 
 # JEDI binaries directory
-export bin_dir="${WORK_DIR}/jedi-bundle/build/bin"
+export bin_dir="${WORK_DIR}/jedi-release/jedi-bundle/build/bin"
 #export bin_dir="${HOME}/build/gnu-openmpi/bundle_debug/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_RelWithDebInfo/bin"
 #export bin_dir="${HOME}/build/intel-impi/bundle_debug/bin"
@@ -51,7 +51,6 @@ export cores_per_node=40
 #export vars="mass_fraction_of_sulfate_in_air" #mass_fraction_of_dust001_in_air"
 
 export vars="mass_fraction_of_sulfate_in_air mass_fraction_of_hydrophobic_black_carbon_in_air mass_fraction_of_hydrophilic_black_carbon_in_air mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air mass_fraction_of_dust001_in_air mass_fraction_of_dust002_in_air mass_fraction_of_dust003_in_air mass_fraction_of_dust004_in_air mass_fraction_of_dust005_in_air mass_fraction_of_sea_salt001_in_air mass_fraction_of_sea_salt002_in_air mass_fraction_of_sea_salt003_in_air mass_fraction_of_sea_salt004_in_air"
-
 
 #export vars="mass_fraction_of_hydrophobic_organic_carbon_in_air mass_fraction_of_hydrophilic_organic_carbon_in_air" # bc1 bc2 oc1 oc2 dust1 dust2 dust3 dust4 dust5 seas1 seas2 seas3 seas4 seas5"
 varlist=""
@@ -135,11 +134,11 @@ export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false
 export run_final_cor=false
-export run_final_nicas=true
+export run_final_nicas=false
 
 # Merge runs
 export run_merge_states=false
-export run_merge_nicas=false
+export run_merge_nicas=true
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx},${nly}])
 export run_regrid_states=false

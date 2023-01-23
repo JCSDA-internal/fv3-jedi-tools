@@ -21,6 +21,9 @@ time=00:10:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
+#SBATCH -A da-cpu
+#SBATCH -p orion
+#SBATCH -q batch
 #SBATCH --ntasks=${ntasks}
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
@@ -113,10 +116,13 @@ mkdir -p ${work_dir}/${job}
 ntasks=1
 cpus_per_task=1 #${cores_per_node}
 threads=1
-time=00:30:00
+time=04:00:00
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
 #SBATCH --job-name=${job}
+#SBATCH -A da-cpu
+#SBATCH -p orion
+#SBATCH -q batch
 #SBATCH --ntasks=${ntasks}
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
