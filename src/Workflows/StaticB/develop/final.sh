@@ -339,7 +339,6 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    set datetime on read: true
     psinfile: true
     datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rh.fv_core.res.nc
@@ -349,7 +348,6 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    set datetime on read: true
     psinfile: true
     datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rh.fv_core.res.nc
@@ -359,7 +357,6 @@ input fields:
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
-    set datetime on read: true
     psinfile: true
     datapath: ${data_dir_def}/cor_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
     filename_core: cor_rv.fv_core.res.nc
