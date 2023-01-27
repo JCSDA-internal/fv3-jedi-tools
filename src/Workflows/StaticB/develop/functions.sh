@@ -70,6 +70,7 @@ EOF
 cat<< EOF >> ${sbatch_dir}/${job}.sh
 wait
 echo "ELAPSED TIME = \${SECONDS} s"
+sleep 30
 exit 0
 EOF
 
