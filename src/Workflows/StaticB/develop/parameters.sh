@@ -53,7 +53,7 @@ export nmem=80
 export r=3
 
 # List of dates for the training
-export yyyymmddhh_list="2021080100"
+export yyyymmddhh_list="2021080100 2021080106"
 
 # Default layout
 export nlx_def=6
