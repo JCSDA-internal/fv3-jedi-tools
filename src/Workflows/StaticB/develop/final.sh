@@ -135,31 +135,42 @@ bump:
     target ensemble size: $((nmem*yyyymmddhh_size))
 input fields:
 EOF
+   icomp=1
    for yyyymmddhh in ${yyyymmddhh_list}; do
       yyyy=${yyyymmddhh:0:4}
       mm=${yyyymmddhh:4:2}
       dd=${yyyymmddhh:6:2}
       hh=${yyyymmddhh:8:2}
+      yyyymmddhh_fc=`date -d "${yyyy}${mm}${dd} +${hh} hours ${rr} hours" '+%Y%m%d%H'`
+      yyyy_fc=${yyyymmddhh_fc:0:4}
+      mm_fc=${yyyymmddhh_fc:4:2}
+      dd_fc=${yyyymmddhh_fc:6:2}
+      hh_fc=${yyyymmddhh_fc:8:2}
 cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: var
+  component: ${icomp}
   file:
-    datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+    datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
+    set datetime on read: true
     psinfile: true
     filename_core: var.fv_core.res.nc
     filename_trcr: var.fv_tracer.res.nc
     filename_cplr: var.coupler.res
 - parameter: m4
+  component: ${icomp}
   file:
-    datetime: ${yyyy}-${mm}-${dd}T${hh}:00:00Z
+    datetime: ${yyyy_fc}-${mm_fc}-${dd_fc}T${hh_fc}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
+    set datetime on read: true
     psinfile: true
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
 EOF
+      icomp=$((icomp+1))
    done
 cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
@@ -227,7 +238,7 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     overriding sampling file: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
   drivers:
     compute correlation: true
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     read local sampling: true
     read moments: true
     write diagnostics: true
@@ -309,7 +320,7 @@ bump:
     data directory: ${data_dir_def}
     files prefix: nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}/nicas_${yyyymmddhh_first}-${yyyymmddhh_last}${rr}_${var}
   drivers:
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     compute nicas: true
     write local nicas: true
     write global nicas: true
@@ -318,10 +329,10 @@ bump:
     max horizontal grid size: 50000
     grid type: octahedral
     minimum level:
-    - variables: [cloud_liquid_water]
+    - groups: [cloud_liquid_water]
       value: 76
     interpolation type:
-    - variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
+    - groups: [stream_function,velocity_potential,air_temperature,surface_pressure]
       type: si
 input fields:
 - parameter: universe radius
