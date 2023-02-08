@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /etc/bashrc
+source /etc/bash.bashrc
 module purge
 module use /work/noaa/da/role-da/spack-stack/modulefiles
 module load miniconda/3.9.7
