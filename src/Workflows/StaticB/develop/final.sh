@@ -11,12 +11,6 @@ for var in ${vars}; do
    mkdir -p ${data_dir_def}/nicas_${suffix}_${var}
 done
 
-# Copy GSI files
-if test "${from_gsi}" = "true"; then
-   cp -f ${fv3jedi_dir}/../saber/test/testdata/gsi-coeffs-gmao-global-l72x72y46.nc4 ${data_dir_def}
-   cp -f ${fv3jedi_dir}/../saber/test/testdata/dirac_gsi_geos_global.nml ${data_dir_def}
-fi
-
 ####################################################################
 # VBAL #############################################################
 ####################################################################
@@ -194,8 +188,7 @@ EOF
          mm_fc=${yyyymmddhh_fc:4:2}
          dd_fc=${yyyymmddhh_fc:6:2}
          hh_fc=${yyyymmddhh_fc:8:2}
-echo $yyyymmddhh " / " $yyyymmddhh_fc
-         cat<< EOF >> ${yaml_dir}/${job}.yaml
+cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: var
   component: ${icomp}
   file:
@@ -305,7 +298,7 @@ EOF
     overriding sampling file: var-mom_${yyyymmddhh_last}${rr}_${var}/var-mom_${yyyymmddhh_last}${rr}_${var}_sampling
   drivers:
     compute correlation: true
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     read local sampling: true
     read moments: true
     write diagnostics: true
@@ -391,7 +384,7 @@ bump:
     data directory: ${data_dir_def}
     files prefix: nicas_${suffix}_${var}/nicas_${suffix}_${var}
   drivers:
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     compute nicas: true
     write local nicas: true
     write global nicas: true
@@ -400,10 +393,10 @@ bump:
     max horizontal grid size: 50000
     grid type: octahedral
     minimum level:
-    - variables: [cloud_liquid_water]
+    - groups: [cloud_liquid_water]
       value: 76
     interpolation type:
-    - variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
+    - groups: [stream_function,velocity_potential,air_temperature,surface_pressure]
       type: si
 input fields:
 - parameter: universe radius

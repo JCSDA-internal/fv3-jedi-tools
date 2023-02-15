@@ -258,15 +258,15 @@ bump:
     data directory: ${data_dir_regrid}
     files prefix: nicas_${suffix}_${var}/nicas_${suffix}_${var}
   drivers:
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     read global nicas: true
     write local nicas: true
   nicas:
     minimum level:
-    - variables: [cloud_liquid_water]
+    - groups: [cloud_liquid_water]
       value: 76
     interpolation type:
-    - variables: [stream_function,velocity_potential,air_temperature,surface_pressure]
+    - groups: [stream_function,velocity_potential,air_temperature,surface_pressure]
       type: si
 input fields:
 - parameter: universe radius

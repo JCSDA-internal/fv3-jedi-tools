@@ -309,7 +309,7 @@ bump:
     files prefix: var-mom_${yyyymmddhh}${rr}_${var}/var-mom_${yyyymmddhh}${rr}_${var}
   drivers:
     compute correlation: true
-    multivariate strategy: specific_univariate
+    multivariate strategy: univariate
     compute variance: true
     iterative algorithm: true
     write local sampling: true

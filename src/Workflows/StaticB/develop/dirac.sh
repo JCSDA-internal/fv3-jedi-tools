@@ -46,11 +46,11 @@ background error:
         files prefix: nicas_${suffix}/nicas_${suffix}
         overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
-        multivariate strategy: specific_univariate
+        multivariate strategy: univariate
         read local nicas: true
       nicas:
         minimum level:
-        - variables: [cloud_liquid_water]
+        - groups: [cloud_liquid_water]
           value: 76
       grids:
       - model:
@@ -167,11 +167,11 @@ background error:
         files prefix: nicas_${suffix}/nicas_${suffix}
         overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
-        multivariate strategy: specific_univariate
+        multivariate strategy: univariate
         read local nicas: true
       nicas:
         minimum level:
-        - variables: [cloud_liquid_water]
+        - groups: [cloud_liquid_water]
           value: 76
       grids:
       - model:
