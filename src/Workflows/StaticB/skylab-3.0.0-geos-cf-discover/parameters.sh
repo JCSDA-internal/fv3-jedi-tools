@@ -7,7 +7,8 @@
 # Input Data directory (need to be more generic)
 
 #export WORK_DIR="/work/noaa/da/barre"
-export WORK_DIR="/discover/nobackup/mabdiosk/staticB"
+#export WORK_DIR="/discover/nobackup/mabdiosk/staticB"
+export WORK_DIR="/work/noaa/da/maryamao/JEDI/staticb/geos_cf"
 
 # Ouput Data directory
 export data_dir="${WORK_DIR}/output"
@@ -17,12 +18,14 @@ export data_dir_regrid_base="${WORK_DIR}/regrid"
 
 # FV3-JEDI source directory
 #export fv3jedi_dir="${WORK_DIR}/jedi-release/jedi-bundle/fv3-jedi"
-export fv3jedi_dir="/discover/nobackup/mabdiosk/jedi-bundle/fv3-jedi"
+#export fv3jedi_dir="/discover/nobackup/mabdiosk/jedi-bundle/fv3-jedi"
+export fv3jedi_dir="/work/noaa/da/maryamao/JEDI/fv3-bundle/fv3-jedi"
 
 export fv3jeditools_dir="${WORK_DIR}/fv3-jedi-tools"
 
 # JEDI binaries directory
-export bin_dir="/discover/nobackup/mabdiosk/jedi-bundle/build/bin"
+#export bin_dir="/discover/nobackup/mabdiosk/jedi-bundle/build/bin"
+export bin_dir="/work/noaa/da/maryamao/JEDI/fv3-bundle/build/bin"
 
 # Experiments directory
 export xp_dir="${WORK_DIR}/xp"
@@ -70,7 +73,8 @@ export offset=6
 # List of dates for the training (january or july or both)
 #make a for loop for this...
 start_date="2021080100"
-end_date="2021080200"
+#end_date="2021080200"
+end_date="2021090100"
 d=$start_date
 until [[ $d > ${end_date} ]]; do
     yyyymmdd=${d:0:8}
@@ -136,7 +140,7 @@ export run_final_psichitouv=false
 export run_final_vbal=false
 export run_final_var=false #step 2
 export run_final_cor=false #step 3
-export run_final_nicas=true #step 4
+export run_final_nicas=false #step 4
 
 # Merge runs
 export run_merge_states=false
@@ -150,7 +154,7 @@ export run_regrid_nicas=false
 export run_regrid_merge_nicas=false
 
 # Dirac runs
-export run_dirac_cor_local=false
+export run_dirac_cor_local=true #step 5
 export run_dirac_cor_global=false
 export run_dirac_cov_local=false
 export run_dirac_cov_global=false

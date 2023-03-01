@@ -18,10 +18,18 @@ prepare_sbatch () {
    # Common directives
 cat<< EOF > ${sbatch_dir}/${job}.sh
 #!/bin/bash
+##SBATCH --job-name=${job}
+##SBATCH --account=s2127
+##SBATCH --partition=compute
+##SBATCH --qos=allnccs
+##SBATCH --cpus-per-task=${cpus_per_task}
+##SBATCH --time=${time}
+##SBATCH -e ${work_dir}/${job}/${job}.err
+##SBATCH -o ${work_dir}/${job}/${job}.out
 #SBATCH --job-name=${job}
-#SBATCH --account=s2127
-#SBATCH --partition=compute
-#SBATCH --qos=allnccs
+#SBATCH -A da-cpu
+#SBATCH -p orion
+#SBATCH -q batch
 #SBATCH --cpus-per-task=${cpus_per_task}
 #SBATCH --time=${time}
 #SBATCH -e ${work_dir}/${job}/${job}.err

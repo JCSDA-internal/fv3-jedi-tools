@@ -36,7 +36,8 @@ echo `date`": observations date is ${yyyymmddhh_obs}"
 
 # Define directories
 echo `date`": define directories"
-export data_input_dir="/discover/nobackup/projects/gmao/geos_cf_dev/cakelle2/JEDI/bkg_files/ens_20210801_31days/"
+#export data_input_dir="/discover/nobackup/projects/gmao/geos_cf_dev/cakelle2/JEDI/bkg_files/ens_20210801_31days/"
+export data_input_dir="/work/noaa/da/barre/geos_cf_ensemble"
 export data_dir_def=${data_dir}/c${cdef}
 export data_dir_regrid=${data_dir_regrid_base}/c${cregrid}
 export first_member_dir="${yyyymmddhh_last}/mem001"
