@@ -94,55 +94,75 @@ states:
     filename_core: stddev.fv_core.res.nc
     filename_trcr: stddev.fv_tracer.res.nc
     filename_cplr: stddev.coupler.res
+EOF
+for icomp in $(seq 1 ${number_of_components}); do
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
 - input:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     psinfile: true
     datapath: ${data_dir_def}/cor_${suffix}
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_a_${icomp}.fv_core.res.nc
+    filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_a_${icomp}.coupler.res
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/cor_${suffix}
     prepend files with date: false
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_a_${icomp}.fv_core.res.nc
+    filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_a_${icomp}.coupler.res
 - input:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     psinfile: true
     datapath: ${data_dir_def}/cor_${suffix}
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/cor_${suffix}
     prepend files with date: false
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
+- input:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    psinfile: true
+    datapath: ${data_dir_def}/cor_${suffix}
+    filename_core: cor_rv_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${icomp}.coupler.res
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    prepend files with date: false
+    filename_core: cor_rv_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${icomp}.coupler.res
 - input:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
     psinfile: true
     datapath: ${data_dir_def}/nicas_${suffix}
-    filename_core: nicas_norm.fv_core.res.nc
-    filename_trcr: nicas_norm.fv_tracer.res.nc
-    filename_cplr: nicas_norm.coupler.res
+    filename_core: nicas_norm_${icomp}.fv_core.res.nc
+    filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
+    filename_cplr: nicas_norm_${icomp}.coupler.res
   output:
     filetype: fms restart
     datapath: ${data_dir_regrid}/nicas_${suffix}
     prepend files with date: false
-    filename_core: nicas_norm.fv_core.res.nc
-    filename_trcr: nicas_norm.fv_tracer.res.nc
-    filename_cplr: nicas_norm.coupler.res
+    filename_core: nicas_norm_${icomp}.fv_core.res.nc
+    filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
+    filename_cplr: nicas_norm_${icomp}.coupler.res
 EOF
+done
 
 # BACKGROUND sbatch
 ntasks=${ntasks_regrid}
@@ -275,41 +295,59 @@ input fields:
     filetype: fms restart
     psinfile: true
     datapath: ${data_dir_regrid}/cor_${suffix}
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_rh_1.fv_core.res.nc
+    filename_trcr: cor_rh_1.fv_tracer.res.nc
+    filename_cplr: cor_rh_1.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+EOF
+   for icomp in $(seq 1 ${number_of_components}); do
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
+- parameter: a
+  component: ${icomp}
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    filename_core: cor_a_${icomp}.fv_core.res.nc
+    filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_a_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
 - parameter: rh
+  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
     datapath: ${data_dir_regrid}/cor_${suffix}
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
 - parameter: rv
+  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
     datapath: ${data_dir_regrid}/cor_${suffix}
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
+    filename_core: cor_rv_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
 - parameter: nicas_norm
+  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     psinfile: true
     datapath: ${data_dir_def}/nicas_${suffix}
-    filename_core: nicas_norm.fv_core.res.nc
-    filename_trcr: nicas_norm.fv_tracer.res.nc
-    filename_cplr: nicas_norm.coupler.res
+    filename_core: nicas_norm_${icomp}.fv_core.res.nc
+    filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
+    filename_cplr: nicas_norm_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
 EOF
+   done
 
    # NICAS sbatch
    ntasks=${ntasks_regrid}

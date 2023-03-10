@@ -65,9 +65,9 @@ background error:
         set datetime on read: true
         psinfile: true
         datapath: ${data_dir_def}/cor_${suffix}
-        filename_core: cor_rh.fv_core.res.nc
-        filename_trcr: cor_rh.fv_tracer.res.nc
-        filename_cplr: cor_rh.coupler.res
+        filename_core: cor_rh_1.fv_core.res.nc
+        filename_trcr: cor_rh_1.fv_tracer.res.nc
+        filename_cplr: cor_rh_1.coupler.res
   saber outer blocks:  
   - saber block name: StdDev
     input fields:
@@ -186,8 +186,8 @@ background error:
         set datetime on read: true
         psinfile: true
         datapath: ${data_dir_regrid}/cor_${suffix}
-        filename_core: cor_rh.fv_core.res.nc
-        filename_trcr: cor_rh.fv_tracer.res.nc
+        filename_core: cor_rh_1.fv_core.res.nc
+        filename_trcr: cor_rh_1.fv_tracer.res.nc
         filename_cplr: cor_rh.coupler.res
   saber outer blocks:
   - saber block name: StdDev

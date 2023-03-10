@@ -285,6 +285,8 @@ EOF
     interpolate from gsi data: true
   sampling:
     diagnostic grid size: 89
+  fit:
+    number of components: 3
 EOF
    else
       # Ensemble-based
@@ -321,23 +323,38 @@ EOF
    fi
    cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
-- parameter: cor_rh
-  file:
-    filetype: fms restart
-    datapath: ${data_dir_def}/cor_${suffix}_${var}
-    prepend files with date: false
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
-- parameter: cor_rv
-  file:
-    filetype: fms restart
-    datapath: ${data_dir_def}/cor_${suffix}_${var}
-    prepend files with date: false
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
 EOF
+   for icomp in $(seq 1 ${number_of_components}); do
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
+- parameter: cor_a
+  component: ${icomp}
+  file:
+    filetype: fms restart
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
+    prepend files with date: false
+    filename_core: cor_a_${icomp}.fv_core.res.nc
+    filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_a_${icomp}.coupler.res
+- parameter: cor_rh
+  component: ${icomp}
+  file:
+    filetype: fms restart
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
+    prepend files with date: false
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
+- parameter: cor_rv
+  component: ${icomp}
+  file:
+    filetype: fms restart
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
+    prepend files with date: false
+    filename_core: cor_rv_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${icomp}.coupler.res
+EOF
+   done
 
    # COR sbatch
    ntasks=${ntasks_def}
@@ -406,39 +423,63 @@ input fields:
     datapath: ${data_dir_def}/cor_${suffix}_${var}
     psinfile: true
     set datetime on read: true
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_rh_1.fv_core.res.nc
+    filename_trcr: cor_rh_1.fv_tracer.res.nc
+    filename_cplr: cor_rh_1.coupler.res
+EOF
+   for icomp in $(seq 1 ${number_of_components}); do
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
+- parameter: a
+  component: ${icomp}
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    datapath: ${data_dir_def}/cor_${suffix}_${var}
+    set datetime on read: true
+    psinfile: true
+    filename_core: cor_a_${icomp}.fv_core.res.nc
+    filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_a_${icomp}.coupler.res
 - parameter: rh
+  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/cor_${suffix}_${var}
     set datetime on read: true
     psinfile: true
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
 - parameter: rv
+  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
     datapath: ${data_dir_def}/cor_${suffix}_${var}
     set datetime on read: true
     psinfile: true
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
+    filename_core: cor_rv_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rv_${icomp}.coupler.res
+EOF
+   done
+   cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
+EOF
+   for icomp in $(seq 1 ${number_of_components}); do
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: nicas_norm
+  component: ${icomp}
   file:
     filetype: fms restart
     datapath: ${data_dir_def}/nicas_${suffix}_${var}
     prepend files with date: false
-    filename_core: nicas_norm.fv_core.res.nc
-    filename_trcr: nicas_norm.fv_tracer.res.nc
-    filename_cplr: nicas_norm.coupler.res
+    filename_core: nicas_norm_${icomp}.fv_core.res.nc
+    filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
+    filename_cplr: nicas_norm_${icomp}.coupler.res
 EOF
+   done
 
    # NICAS sbatch
    ntasks=${ntasks_def}

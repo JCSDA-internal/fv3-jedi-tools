@@ -50,22 +50,14 @@ vars_files["cloud_liquid_water"]="fv_tracer"
 vars_files["ozone_mass_mixing_ratio"]="fv_tracer"
 
 # States and corresponding directories
-declare -A states_files
-states_files["stddev"]="stddev"
-states_files["cor_rh"]="cor_rh"
-states_files["cor_rh1"]="cor_rh1"
-states_files["cor_rh2"]="cor_rh2"
-states_files["cor_rhc"]="cor_rhc"
-states_files["cor_rv"]="cor_rv"
-states_files["nicas"]="nicas_norm"
-declare -A states_dirs
-states_dirs["stddev"]="var"
-states_dirs["cor_rh"]="cor"
-states_dirs["cor_rh1"]="cor"
-states_dirs["cor_rh2"]="cor"
-states_dirs["cor_rhc"]="cor"
-states_dirs["cor_rv"]="cor"
-states_dirs["nicas"]="nicas"
+declare -A dirs
+dirs["stddev"]="var"
+dirs["cor_rh"]="cor"
+dirs["cor_rh1"]="cor"
+dirs["cor_rh2"]="cor"
+dirs["cor_rhc"]="cor"
+dirs["cor_rv"]="cor"
+dirs["nicas_norm"]="nicas"
 
 # Find existing states
 possible_states="stddev
@@ -74,25 +66,27 @@ cor_rh1
 cor_rh2
 cor_rhc
 cor_rv
-nicas"
+nicas_norm"
 
 states=""
 for state in \${possible_states}; do
-   isfilepresent=true
-   for itile in \$(seq 1 6); do
-      for var in ${vars}; do
-         filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}_\${var}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
-         if ! test -f \${filename_var}; then
-            isfilepresent=false
-         fi
+   for icomp in \${number_of_components}; do
+      isfilepresent=true
+      for itile in \$(seq 1 6); do
+         for var in ${vars}; do
+            filename_var=${data_dir_def}/\${dirs[\${state}]}_${suffix}_\${var}/\${state}_\${icomp}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+            if ! test -f \${filename_var}; then
+               isfilepresent=false
+            fi
+         done
       done
+      if test "\${isfilepresent}" = "true"; then
+         states=\${states}" "\${state}_\${icomp}
+         echo -e "State "\${state}_\${icomp}" found"
+      else
+         echo -e "State "\${state}_\${icomp}" not found"
+      fi
    done
-   if test "\${isfilepresent}" = "true"; then
-      states=\${states}" "\${state}
-      echo -e "State "\${state}" found"
-   else
-      echo -e "State "\${state}" not found"
-   fi
 done
 echo -e "Found the following states: "\${states}
 
@@ -100,25 +94,25 @@ for state in \${states}; do
    # NetCDF files
    for itile in \$(seq 1 6); do
       # Rename surface_pressure file axis
-      filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}_surface_pressure/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
+      filename_var=${data_dir_def}/\${dirs[\${state}]}_${suffix}_surface_pressure/\${state}.fv_core.res.tile\${itile}.nc
       ncrename -d .zaxis_1,zaxis_2 \${filename_var}
 
       # Remove existing files
-      filename_core=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}/\${states_files[\${state}]}.fv_core.res.tile\${itile}.nc
-      filename_tracer=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}/\${states_files[\${state}]}.fv_tracer.res.tile\${itile}.nc
+      filename_core=${data_dir_def}/\${dirs[\${state}]}_${suffix}/\${state}.fv_core.res.tile\${itile}.nc
+      filename_tracer=${data_dir_def}/\${dirs[\${state}]}_${suffix}/\${state}.fv_tracer.res.tile\${itile}.nc
       rm -f \${filename_core} \${filename_tracer}
 
       # Append files
       for var in ${vars}; do
-         filename_full=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
-         filename_var=${data_dir_def}/\${states_dirs[\${state}]}_${suffix}_\${var}/\${states_files[\${state}]}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         filename_full=${data_dir_def}/\${dirs[\${state}]}_${suffix}/\${state}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         filename_var=${data_dir_def}/\${dirs[\${state}]}_${suffix}_\${var}/\${state}.\${vars_files[\${var}]}.res.tile\${itile}.nc
          echo -e "ncks -A \${filename_var} \${filename_full}"
          ncks -A \${filename_var} \${filename_full}
       done
    done
 
    # Create coupler file
-   ${script_dir}/coupler.sh ${yyyymmddhh_fc_last} ${data_dir_def}/\${states_dirs[\${state}]}_${suffix}/\${states_files[\${state}]}.coupler.res
+   ${script_dir}/coupler.sh ${yyyymmddhh_fc_last} ${data_dir_def}/\${dirs[\${state}]}_${suffix}/\${state}.coupler.res
 done
 
 # Timer

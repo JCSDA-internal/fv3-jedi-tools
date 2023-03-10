@@ -70,6 +70,9 @@ export cregrid=192
 # Interpolate GSI statistics
 export from_gsi=false
 
+# Number of correlation components (should be 3 for GSI)
+export number_of_components=3
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################
