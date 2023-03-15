@@ -371,11 +371,12 @@ done
 ####################################################################
 
 for var in ${vars}; do
-   # Job name
-   job=nicas_${suffix}_${var}
+   for icomp in $(seq 1 ${number_of_components}); do
+      # Job name
+      job=nicas_${suffix}_${var}_${icomp}
 
-   # NICAS yaml
-   cat<< EOF > ${yaml_dir}/${job}.yaml
+      # NICAS yaml
+      cat<< EOF > ${yaml_dir}/${job}.yaml
 geometry:
   fms initialization:
     namelist filename: ${fv3jedi_dir}/test/Data/fv3files/fmsmpp.nml
@@ -400,7 +401,7 @@ input variables: [${var}]
 bump:
   io:
     data directory: ${data_dir_def}
-    files prefix: nicas_${suffix}_${var}/nicas_${suffix}_${var}
+    files prefix: nicas_${suffix}_${var}_${icomp}/nicas_${suffix}_${var}_${icomp}
   drivers:
     multivariate strategy: univariate
     compute nicas: true
@@ -410,12 +411,10 @@ bump:
     resolution: 10.0
     max horizontal grid size: 50000
     grid type: octahedral
-    minimum level:
-    - groups: [cloud_liquid_water]
-      value: 76
     interpolation type:
     - groups: [stream_function,velocity_potential,air_temperature,surface_pressure]
       type: si
+    overriding component in file: ${icomp}
 input fields:
 - parameter: universe radius
   file:
@@ -424,14 +423,10 @@ input fields:
     datapath: ${data_dir_def}/cor_${suffix}_${var}
     psinfile: true
     set datetime on read: true
-    filename_core: cor_rh_1.fv_core.res.nc
-    filename_trcr: cor_rh_1.fv_tracer.res.nc
-    filename_cplr: cor_rh_1.coupler.res
-EOF
-   for icomp in $(seq 1 ${number_of_components}); do
-      cat<< EOF >> ${yaml_dir}/${job}.yaml
+    filename_core: cor_rh_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh_${icomp}.coupler.res
 - parameter: a
-  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
@@ -442,7 +437,6 @@ EOF
     filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_a_${icomp}.coupler.res
 - parameter: rh
-  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
@@ -453,7 +447,6 @@ EOF
     filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rh_${icomp}.coupler.res
 - parameter: rv
-  component: ${icomp}
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
@@ -463,15 +456,8 @@ EOF
     filename_core: cor_rv_${icomp}.fv_core.res.nc
     filename_trcr: cor_rv_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rv_${icomp}.coupler.res
-EOF
-   done
-   cat<< EOF >> ${yaml_dir}/${job}.yaml
 output:
-EOF
-   for icomp in $(seq 1 ${number_of_components}); do
-      cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: nicas_norm
-  component: ${icomp}
   file:
     filetype: fms restart
     datapath: ${data_dir_def}/nicas_${suffix}_${var}
@@ -480,13 +466,13 @@ EOF
     filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
     filename_cplr: nicas_norm_${icomp}.coupler.res
 EOF
-   done
 
-   # NICAS sbatch
-   ntasks=${ntasks_def}
-   cpus_per_task=2
-   threads=2
-   time=03:00:00
-   exe=fv3jedi_error_covariance_training.x
-   prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
+      # NICAS sbatch
+      ntasks=${ntasks_def}
+      cpus_per_task=2
+      threads=2
+      time=03:00:00
+      exe=fv3jedi_error_covariance_training.x
+      prepare_sbatch ${job} ${ntasks} ${cpus_per_task} ${threads} ${time} ${exe}
+   done
 done

@@ -172,8 +172,10 @@ for itot in \$(seq 1 \${nlocal}); do
    # Create scripts to merge local files
    echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
    for var in ${vars}; do
-      filename_var=${data_dir_def}/nicas_${suffix}_\${var}/nicas_${suffix}_\${var}_nicas_local_\${ntotpad}-\${itotpad}.nc
-      echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_\${itotpad}.sh
+      for icomp in $(seq 1 ${number_of_components}); do
+         filename_var_comp=${data_dir_def}/nicas_${suffix}_\${var}_\${icomp}/nicas_${suffix}_\${var}_\${icomp}_nicas_local_\${ntotpad}-\${itotpad}.nc
+         echo -e "ncks -A \${filename_var_comp} \${filename_full}" >> merge_nicas_\${itotpad}.sh
+      done
    done
 done
 
@@ -188,8 +190,10 @@ nlocalp1=\$((nlocal+1))
 itotpad=\$(printf "%.6d" "\${nlocalp1}")
 echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
 for var in ${vars}; do
-   filename_var=${data_dir_def}/nicas_${suffix}_\${var}/nicas_${suffix}_\${var}_nicas.nc
-   echo -e "ncks -A \${filename_var} \${filename_full}" >> merge_nicas_\${itotpad}.sh
+   for icomp in $(seq 1 ${number_of_components}); do
+      filename_var_comp=${data_dir_def}/nicas_${suffix}_\${var}_\${icomp}/nicas_${suffix}_\${var}_\${icomp}_nicas.nc
+      echo -e "ncks -A \${filename_var_comp} \${filename_full}" >> merge_nicas_\${itotpad}.sh
+   done
 done
 
 # Run scripts in parallel

@@ -48,10 +48,6 @@ background error:
       drivers:
         multivariate strategy: univariate
         read local nicas: true
-      nicas:
-        minimum level:
-        - groups: [cloud_liquid_water]
-          value: 76
       grids:
       - model:
           variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
@@ -169,10 +165,6 @@ background error:
       drivers:
         multivariate strategy: univariate
         read local nicas: true
-      nicas:
-        minimum level:
-        - groups: [cloud_liquid_water]
-          value: 76
       grids:
       - model:
           variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
