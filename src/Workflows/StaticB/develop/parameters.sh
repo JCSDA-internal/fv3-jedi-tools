@@ -71,7 +71,10 @@ export cregrid=192
 export from_gsi=false
 
 # Number of correlation components (should be 3 for GSI)
-export number_of_components=3
+export number_of_components=2
+if test "${from_gsi}" = "true"; then
+  export number_of_components=3
+fi
 
 ####################################################################
 # What should be run? ##############################################

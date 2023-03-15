@@ -286,7 +286,7 @@ EOF
   sampling:
     diagnostic grid size: 89
   fit:
-    number of components: 3
+    number of components: ${number_of_components}
 EOF
    else
       # Ensemble-based
@@ -319,6 +319,7 @@ EOF
     target ensemble size: $((nmem*yyyymmddhh_size))
   fit:
     vertical filtering length-scale: 0.1
+    number of components: ${number_of_components}
 EOF
    fi
    cat<< EOF >> ${yaml_dir}/${job}.yaml
