@@ -73,7 +73,6 @@ mkdir -p ${yaml_dir}
 mkdir -p ${sbatch_dir}
 mkdir -p ${work_dir}
 mkdir -p ${data_dir}
-mkdir -p ${data_dir_def}
 
 ####################################################################
 # Run generators ###################################################
@@ -188,8 +187,10 @@ fi
 if test "${run_final_nicas}" = "true"; then
    final_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/nicas_${suffix}_${var}.sh ${final_cor_pids}
-      final_nicas_pids=${final_nicas_pids}:${pid}
+      for icomp in $(seq 1 ${number_of_components}); do
+         run_sbatch ${sbatch_dir}/nicas_${suffix}_${var}_${icomp}.sh ${final_cor_pids}
+         final_nicas_pids=${final_nicas_pids}:${pid}
+      done
    done
 fi
 
@@ -227,8 +228,10 @@ fi
 if test "${run_regrid_nicas}" = "true"; then
    regrid_nicas_pids=""
    for var in ${vars}; do
-      run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${suffix}_${var}.sh ${regrid_states_pid}${final_nicas_pids}
-      regrid_nicas_pids=${regrid_nicas_pids}:${pid}
+      for icomp in $(seq 1 ${number_of_components}); do
+         run_sbatch ${sbatch_dir}/regrid_c${cregrid}_${nlx_regrid}x${nly_regrid}_nicas_${suffix}_${var}_${icomp}.sh ${regrid_states_pid}${final_nicas_pids}
+         regrid_nicas_pids=${regrid_nicas_pids}:${pid}
+      done
    done
 fi
 

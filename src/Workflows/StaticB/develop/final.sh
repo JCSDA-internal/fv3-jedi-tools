@@ -8,7 +8,9 @@ mkdir -p ${data_dir_def}/vbal_${suffix}
 for var in ${vars}; do
    mkdir -p ${data_dir_def}/var_${suffix}_${var}
    mkdir -p ${data_dir_def}/cor_${suffix}_${var}
-   mkdir -p ${data_dir_def}/nicas_${suffix}_${var}
+   for icomp in $(seq 1 ${number_of_components}); do
+      mkdir -p ${data_dir_def}/nicas_${suffix}_${var}_${icomp}
+   done
 done
 
 ####################################################################
@@ -399,6 +401,8 @@ background:
   filename_cplr: unbal.coupler.res
 input variables: [${var}]
 bump:
+  general:
+    universe length-scale: 4000.0e3
   io:
     data directory: ${data_dir_def}
     files prefix: nicas_${suffix}_${var}_${icomp}/nicas_${suffix}_${var}_${icomp}
@@ -460,11 +464,11 @@ output:
 - parameter: nicas_norm
   file:
     filetype: fms restart
-    datapath: ${data_dir_def}/nicas_${suffix}_${var}
+    datapath: ${data_dir_def}/nicas_${suffix}_${var}_${icomp}
     prepend files with date: false
-    filename_core: nicas_norm_${icomp}.fv_core.res.nc
-    filename_trcr: nicas_norm_${icomp}.fv_tracer.res.nc
-    filename_cplr: nicas_norm_${icomp}.coupler.res
+    filename_core: nicas_norm.fv_core.res.nc
+    filename_trcr: nicas_norm.fv_tracer.res.nc
+    filename_cplr: nicas_norm.coupler.res
 EOF
 
       # NICAS sbatch

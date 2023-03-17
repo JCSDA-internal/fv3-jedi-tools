@@ -11,7 +11,9 @@ mkdir -p ${data_dir_regrid}/nicas_${suffix}
 mkdir -p ${data_dir_regrid}/vbal_${yyyymmddhh_last}${rr}
 mkdir -p ${data_dir_regrid}/vbal_${suffix}
 for var in ${vars}; do
-   mkdir -p ${data_dir_regrid}/nicas_${suffix}_${var}
+   for icomp in $(seq 1 ${number_of_components}); do
+      mkdir -p ${data_dir_regrid}/nicas_${suffix}_${var}_${icomp}
+   done
 done
 
 ####################################################################
