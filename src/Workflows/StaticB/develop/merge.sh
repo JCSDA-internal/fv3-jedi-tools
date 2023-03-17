@@ -70,7 +70,25 @@ nicas_norm"
 
 states=""
 for state in \${possible_states}; do
-   for icomp in \${number_of_components}; do
+   # No component suffix
+   isfilepresent=true
+   for itile in \$(seq 1 6); do
+      for var in ${vars}; do
+         filename_var=${data_dir_def}/\${dirs[\${state}]}_${suffix}_\${var}/\${state}.\${vars_files[\${var}]}.res.tile\${itile}.nc
+         if ! test -f \${filename_var}; then
+            isfilepresent=false
+         fi
+      done
+   done
+   if test "\${isfilepresent}" = "true"; then
+      states=\${states}" "\${state}
+      echo -e "State "\${state}" found"
+   else
+      echo -e "State "\${state}" not found"
+   fi
+
+   # With component suffix
+   for icomp in \$(seq 1 ${number_of_components}; do
       isfilepresent=true
       for itile in \$(seq 1 6); do
          for var in ${vars}; do
@@ -172,7 +190,7 @@ for itot in \$(seq 1 \${nlocal}); do
    # Create scripts to merge local files
    echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
    for var in ${vars}; do
-      for icomp in $(seq 1 ${number_of_components}); do
+      for icomp in \$(seq 1 ${number_of_components}); do
          filename_var_comp=${data_dir_def}/nicas_${suffix}_\${var}_\${icomp}/nicas_${suffix}_\${var}_\${icomp}_nicas_local_\${ntotpad}-\${itotpad}.nc
          echo -e "ncks -A \${filename_var_comp} \${filename_full}" >> merge_nicas_\${itotpad}.sh
       done
@@ -190,7 +208,7 @@ nlocalp1=\$((nlocal+1))
 itotpad=\$(printf "%.6d" "\${nlocalp1}")
 echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
 for var in ${vars}; do
-   for icomp in $(seq 1 ${number_of_components}); do
+   for icomp in \$(seq 1 ${number_of_components}); do
       filename_var_comp=${data_dir_def}/nicas_${suffix}_\${var}_\${icomp}/nicas_${suffix}_\${var}_\${icomp}_nicas.nc
       echo -e "ncks -A \${filename_var_comp} \${filename_full}" >> merge_nicas_\${itotpad}.sh
    done

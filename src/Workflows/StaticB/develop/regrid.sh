@@ -364,6 +364,9 @@ input fields:
     filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_a_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+EOF
+      if [ ${angular_sectors} -eq 1 ]; then
+         cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: rh
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -374,6 +377,42 @@ input fields:
     filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rh_${icomp}.coupler.res
     date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+EOF
+      else
+         cat<< EOF >> ${yaml_dir}/${job}.yaml
+- parameter: rh1
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    filename_core: cor_rh1_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh1_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh1_${icomp}.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+- parameter: rh2
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    filename_core: cor_rh2_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh2_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh2_${icomp}.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+- parameter: rhc
+  file:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    psinfile: true
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    filename_core: cor_rhc_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rhc_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rhc_${icomp}.coupler.res
+    date: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+EOF
+      fi
+cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: rv
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -456,7 +495,7 @@ for itot in \$(seq 1 \${nlocal}); do
    # Create scripts to merge local files
    echo "#!/bin/bash" > merge_nicas_\${itotpad}.sh
    for var in ${vars}; do
-      for icomp in \${number_of_components}; do
+      for icomp in \$(seq 1 ${number_of_components}; do
          filename_var_comp=${data_dir_regrid}/nicas_${suffix}_\${var}_\${icomp}/nicas_${suffix}_\${var}_\${icomp}_nicas_local_\${ntotpad}-\${itotpad}.nc
          echo -e "ncks -A \${filename_var}_\${icomp} \${filename_full}" >> merge_nicas_\${itotpad}.sh
       done

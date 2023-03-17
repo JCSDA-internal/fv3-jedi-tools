@@ -47,7 +47,7 @@ export cores_per_node=40
 export vars="stream_function velocity_potential air_temperature surface_pressure specific_humidity cloud_liquid_water ozone_mass_mixing_ratio"
 
 # Number of ensemble members
-export nmem=10
+export nmem=80
 
 # Forecast range (in hours)
 export r=3
@@ -76,24 +76,23 @@ if test "${from_gsi}" = "true"; then
   export number_of_components=3
 fi
 
-
-# Number of angular sectors for anisotropic sampling
-export angular_sectors=8
+# Number of angular sectors for anisotropic correlations (should be 1 for isotropic)
+export angular_sectors=1
 
 ####################################################################
 # What should be run? ##############################################
 ####################################################################
 
 # Daily runs
-export run_daily_state_to_control=false
-export run_daily_vbal=false
-export run_daily_unbal=false
-export run_daily_varmom=false
+export run_daily_state_to_control=true
+export run_daily_vbal=true
+export run_daily_unbal=true
+export run_daily_varmom=true
 
 # Final runs
 export run_final_vbal=false
 export run_final_var=false
-export run_final_cor=false
+export run_final_cor=true
 export run_final_nicas=true
 
 # Merge runs

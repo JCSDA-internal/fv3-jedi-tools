@@ -320,8 +320,10 @@ EOF
     averaging length-scale: 2000.0e3
   diagnostics:
     target ensemble size: $((nmem*yyyymmddhh_size))
+    diagnosed lengths scaling: 4.0
   fit:
     vertical filtering length-scale: 0.1
+    horizontal filtering length-scale: 2000.0e3
     number of components: ${number_of_components}
 EOF
    fi
@@ -349,8 +351,8 @@ EOF
     filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rh_${icomp}.coupler.res
 EOF
-if [ ${angular_sectors} -gt 1 ]; then
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+   if [ ${angular_sectors} -gt 1 ]; then
+      cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: cor_rh1
   component: ${icomp}
   file:
@@ -379,8 +381,8 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_trcr: cor_rhc_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rhc_${icomp}.coupler.res
 EOF
-fi
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+   fi
+  cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: cor_rv
   component: ${icomp}
   file:
@@ -436,7 +438,7 @@ background:
 input variables: [${var}]
 bump:
   general:
-    universe length-scale: 4000.0e3
+    universe length-scale: 5000.0e3
   io:
     data directory: ${data_dir_def}
     files prefix: nicas_${suffix}_${var}_${icomp}/nicas_${suffix}_${var}_${icomp}
@@ -475,8 +477,8 @@ input fields:
     filename_trcr: cor_a_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_a_${icomp}.coupler.res
 EOF
-if [ ${angular_sectors} -eq 1 ]; then
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      if [ ${angular_sectors} -eq 1 ]; then
+        cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: rh
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -488,8 +490,8 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rh_${icomp}.coupler.res
 EOF
-else
-cat<< EOF >> ${yaml_dir}/${job}.yaml
+      else
+         cat<< EOF >> ${yaml_dir}/${job}.yaml
 - parameter: rh1
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -521,8 +523,8 @@ cat<< EOF >> ${yaml_dir}/${job}.yaml
     filename_trcr: cor_rhc_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rhc_${icomp}.coupler.res
 EOF
-fi
-cat<< EOF >> ${yaml_dir}/${job}.yaml 
+      fi
+      cat<< EOF >> ${yaml_dir}/${job}.yaml 
 - parameter: rv
   file:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
