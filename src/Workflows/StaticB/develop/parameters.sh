@@ -76,6 +76,10 @@ if test "${from_gsi}" = "true"; then
   export number_of_components=3
 fi
 
+
+# Number of angular sectors for anisotropic sampling
+export angular_sectors=8
+
 ####################################################################
 # What should be run? ##############################################
 ####################################################################

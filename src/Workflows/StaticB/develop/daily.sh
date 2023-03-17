@@ -317,6 +317,7 @@ bump:
     write moments: true
     write diagnostics: true
   sampling:
+    angular sectors: ${angular_sectors}
     computation grid size: 5000
     diagnostic grid size: 1000
     distance classes: 50
@@ -356,22 +357,6 @@ output:
     filename_core: m4.fv_core.res.nc
     filename_trcr: m4.fv_tracer.res.nc
     filename_cplr: m4.coupler.res
-- parameter: cor_rh
-  file:
-    filetype: fms restart
-    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
-    prepend files with date: false
-    filename_core: cor_rh.fv_core.res.nc
-    filename_trcr: cor_rh.fv_tracer.res.nc
-    filename_cplr: cor_rh.coupler.res
-- parameter: cor_rv
-  file:
-    filetype: fms restart
-    datapath: ${data_dir_def}/var-mom_${yyyymmddhh}${rr}_${var}
-    prepend files with date: false
-    filename_core: cor_rv.fv_core.res.nc
-    filename_trcr: cor_rv.fv_tracer.res.nc
-    filename_cplr: cor_rv.coupler.res
 EOF
 
       # VAR-MOM sbatch

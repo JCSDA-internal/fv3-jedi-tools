@@ -131,6 +131,60 @@ for icomp in $(seq 1 ${number_of_components}); do
     filename_core: cor_rh_${icomp}.fv_core.res.nc
     filename_trcr: cor_rh_${icomp}.fv_tracer.res.nc
     filename_cplr: cor_rh_${icomp}.coupler.res
+EOF
+if [ ${angular_sectors} -gt 1 ]; then
+cat<< EOF >> ${yaml_dir}/${job}.yaml
+- input:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    psinfile: true
+    datapath: ${data_dir_def}/cor_${suffix}
+    filename_core: cor_rh1_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh1_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh1_${icomp}.coupler.res
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    prepend files with date: false
+    filename_core: cor_rh1_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh1_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh1_${icomp}.coupler.res
+- input:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    psinfile: true
+    datapath: ${data_dir_def}/cor_${suffix}
+    filename_core: cor_rh2_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh2_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh2_${icomp}.coupler.res
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    prepend files with date: false
+    filename_core: cor_rh2_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rh2_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rh2_${icomp}.coupler.res
+- input:
+    datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
+    filetype: fms restart
+    state variables: [stream_function,velocity_potential,air_temperature,surface_pressure,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
+    psinfile: true
+    datapath: ${data_dir_def}/cor_${suffix}
+    filename_core: cor_rhc_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rhc_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rhc_${icomp}.coupler.res
+  output:
+    filetype: fms restart
+    datapath: ${data_dir_regrid}/cor_${suffix}
+    prepend files with date: false
+    filename_core: cor_rhc_${icomp}.fv_core.res.nc
+    filename_trcr: cor_rhc_${icomp}.fv_tracer.res.nc
+    filename_cplr: cor_rhc_${icomp}.coupler.res
+EOF
+fi
+cat<< EOF >> ${yaml_dir}/${job}.yaml
 - input:
     datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
     filetype: fms restart
