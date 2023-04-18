@@ -338,10 +338,10 @@ EOF
         averaging length-scale: 2000.0e3
       diagnostics:
         target ensemble size: $((nmem*yyyymmddhh_size))
-        diagnosed lengths scaling: 4.0
+#        diagnosed lengths scaling: 4.0
       fit:
         vertical filtering length-scale: 0.1
-        horizontal filtering length-scale: 2000.0e3
+#        horizontal filtering length-scale: 2000.0e3
         number of components: ${number_of_components}
 EOF
 fi
