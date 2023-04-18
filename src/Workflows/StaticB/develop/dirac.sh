@@ -40,33 +40,24 @@ background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
-    bump:
+    read:
       io:
         data directory: ${data_dir_def}
         files prefix: nicas_${suffix}/nicas_${suffix}
+        overriding universe radius file: cor_${suffix}/cor_${suffix}_universe_radius
         overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
         multivariate strategy: univariate
+        read universe radius: true
         read local nicas: true
       grids:
       - model:
           variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       - model:
           variables: [surface_pressure]
-    input fields:
-    - parameter: universe radius
-      file:
-        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
-        filetype: fms restart
-        set datetime on read: true
-        psinfile: true
-        datapath: ${data_dir_def}/cor_${suffix}
-        filename_core: cor_rh_1.fv_core.res.nc
-        filename_trcr: cor_rh_1.fv_tracer.res.nc
-        filename_cplr: cor_rh_1.coupler.res
   saber outer blocks:  
   - saber block name: StdDev
-    input fields:
+    input model files:
     - parameter: StdDev
       file:
         datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -78,7 +69,7 @@ background error:
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
-    bump:
+    read:
       general:
         universe length-scale: 2000.0e3
       io:
@@ -157,33 +148,24 @@ background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
-    bump:
+    read:
       io:
         data directory: ${data_dir_regrid}
         files prefix: nicas_${suffix}/nicas_${suffix}
+        overriding universe radius file: cor_${suffix}/cor_${suffix}_universe_radius
         overriding nicas file: nicas_${suffix}/nicas_${suffix}_nicas
       drivers:
         multivariate strategy: univariate
+        read universe radius: true
         read local nicas: true
       grids:
       - model:
           variables: [stream_function,velocity_potential,air_temperature,specific_humidity,cloud_liquid_water,ozone_mass_mixing_ratio]
       - model:
           variables: [surface_pressure]
-    input fields:
-    - parameter: universe radius
-      file:
-        datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
-        filetype: fms restart
-        set datetime on read: true
-        psinfile: true
-        datapath: ${data_dir_regrid}/cor_${suffix}
-        filename_core: cor_rh_1.fv_core.res.nc
-        filename_trcr: cor_rh_1.fv_tracer.res.nc
-        filename_cplr: cor_rh.coupler.res
   saber outer blocks:
   - saber block name: StdDev
-    input fields:
+    input model files:
     - parameter: StdDev
       file:
         datetime: ${yyyy_fc_last}-${mm_fc_last}-${dd_fc_last}T${hh_fc_last}:00:00Z
@@ -195,7 +177,7 @@ background error:
         filename_trcr: stddev.fv_tracer.res.nc
         filename_cplr: stddev.coupler.res
   - saber block name: BUMP_VerticalBalance
-    bump:
+    read:
       general:
         universe length-scale: 2000.0e3
       io:

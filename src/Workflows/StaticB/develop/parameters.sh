@@ -71,7 +71,7 @@ export cregrid=192
 export from_gsi=false
 
 # Number of correlation components (should be 3 for GSI)
-export number_of_components=2
+export number_of_components=1
 if test "${from_gsi}" = "true"; then
   export number_of_components=3
 fi
@@ -84,20 +84,15 @@ export angular_sectors=1
 ####################################################################
 
 # Daily runs
-export run_daily_state_to_control=true
-export run_daily_vbal=true
-export run_daily_unbal=true
-export run_daily_varmom=true
+export run_daily_state_to_control=false
+export run_daily_prep=true
 
 # Final runs
 export run_final_vbal=false
 export run_final_var=false
-export run_final_cor=true
-export run_final_nicas=true
-
-# Merge runs
-export run_merge_states=false
-export run_merge_nicas=false
+export run_final_cor=false
+export run_final_nicas=false
+export run_final_merge_nicas=false
 
 # Regrid runs (at resolution ${cregrid} and with a layout [${nlx_regrid},${nly_regrid}])
 export run_regrid_states=false
